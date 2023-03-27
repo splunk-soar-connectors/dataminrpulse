@@ -50,7 +50,7 @@ from unittest.mock import patch
 import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
-from . import config
+from . import dataminrpulse_config
 
 
 class TestConnectivityAction(unittest.TestCase):
@@ -59,7 +59,7 @@ class TestConnectivityAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = DataminrPulseConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(dataminrpulse_config.TEST_JSON)
         self.test_json.update({"action": "test connectivity", "identifier": "test_connectivity"})
 
         return super().setUp()
@@ -72,7 +72,7 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the post() to return valid token.
         """
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"dmaToken": "dummy_token", "refreshToken": "dummy_refresh_token", "expire": "expire"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -83,8 +83,8 @@ class TestConnectivityAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}',
-            headers=config.TOKEN_HEADER,
-            data=config.TOKEN_DATA,
+            headers=dataminrpulse_config.TOKEN_HEADER,
+            data=dataminrpulse_config.TOKEN_DATA,
             params=None,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             verify=False,
@@ -98,7 +98,7 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the post() to return authentication error.
         """
         mock_post.return_value.status_code = 401
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"errors": [{"code": 103, "message": "Authentication error. Invalid token"}]}
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -108,8 +108,8 @@ class TestConnectivityAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}',
-            headers=config.TOKEN_HEADER,
-            data=config.TOKEN_DATA,
+            headers=dataminrpulse_config.TOKEN_HEADER,
+            data=dataminrpulse_config.TOKEN_DATA,
             params=None,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             verify=False,
@@ -123,24 +123,24 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the post() to return response with incorrect client secret.
         """
         mock_post.return_value.status_code = 401
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"errors": [{"code": 102, "message": "Invalid client Id or client secret"}]}
 
-        self.test_json['config']['client_secret'] = config.CLIENT_SECRET_DUMMY_ENCRYPTED
+        self.test_json['config']['client_secret'] = dataminrpulse_config.CLIENT_SECRET_DUMMY_ENCRYPTED
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val['result_summary']['total_objects'], 1)
         self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
         self.assertEqual(ret_val['status'], 'failed')
 
-        config.TOKEN_DATA['client_secret'] = config.CLIENT_DUMMY_ACTUAL
+        dataminrpulse_config.TOKEN_DATA['client_secret'] = dataminrpulse_config.CLIENT_DUMMY_ACTUAL
         mock_post.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}',
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             verify=False,
             params=None,
-            data=config.TOKEN_DATA,
-            headers=config.TOKEN_HEADER,
+            data=dataminrpulse_config.TOKEN_DATA,
+            headers=dataminrpulse_config.TOKEN_HEADER,
         )
 
     @patch("dataminrpulse_utils.requests.post")
@@ -151,22 +151,22 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the post() to return response with incorrect client id.
         """
         mock_post.return_value.status_code = 401
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"errors": [{"code": 102, "message": "Invalid client Id or client secret"}]}
 
-        self.test_json['config']['client_id'] = config.CLIENT_DUMMY_ACTUAL
+        self.test_json['config']['client_id'] = dataminrpulse_config.CLIENT_DUMMY_ACTUAL
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val['result_summary']['total_objects'], 1)
         self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
         self.assertEqual(ret_val['status'], 'failed')
 
-        config.TOKEN_DATA['client_id'] = config.CLIENT_DUMMY_ACTUAL
+        dataminrpulse_config.TOKEN_DATA['client_id'] = dataminrpulse_config.CLIENT_DUMMY_ACTUAL
         mock_post.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}',
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             verify=False,
             params=None,
-            data=config.TOKEN_DATA,
-            headers=config.TOKEN_HEADER,
+            data=dataminrpulse_config.TOKEN_DATA,
+            headers=dataminrpulse_config.TOKEN_HEADER,
         )

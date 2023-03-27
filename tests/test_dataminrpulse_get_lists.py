@@ -28,7 +28,7 @@ from unittest.mock import patch
 import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
-from . import config
+from . import dataminrpulse_config
 
 
 class TestGetListsAction(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestGetListsAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = DataminrPulseConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(dataminrpulse_config.TEST_JSON)
         self.test_json.update({"action": "get lists", "identifier": "get_lists"})
 
         return super().setUp()
@@ -49,11 +49,11 @@ class TestGetListsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {
             "watchlists": {
                 "TOPIC": [
@@ -82,7 +82,7 @@ class TestGetListsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,
             verify=False,
@@ -95,11 +95,11 @@ class TestGetListsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the unauthorized response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{}]
 
         mock_get.return_value.status_code = 401
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"errors": [{"code": 102, "message": "Invalid client Id or client secret"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -114,7 +114,7 @@ class TestGetListsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,
             verify=False,

@@ -1,7 +1,7 @@
 {
     "appid": "8630b723-b317-4765-b923-5be5229c71d1",
     "name": "Dataminr Pulse for Splunk SOAR",
-    "description": "Pulse’s AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response",
+    "description": "Pulse\u2019s AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response",
     "type": "network security",
     "product_vendor": "Dataminr",
     "logo": "logo_dataminrpulse.svg",
@@ -11,18 +11,17 @@
     "product_version_regex": ".*",
     "publisher": "Dataminr",
     "license": "Copyright (c) 2023 Dataminr",
-    "app_version": "1.0.0",
+    "app_version": "1.1.0",
     "utctime_updated": "2023-01-09T11:47:05.103867Z",
     "package_name": "phantom_dataminrpulse",
     "main_module": "dataminrpulse_connector.py",
     "min_phantom_version": "5.5.0",
-    "fips_compliant": true,
+    "fips_compliant": false,
     "latest_tested_versions": [
         "Mar 7, 2023, Dataminr Pulse, API v2 v3"
     ],
     "pip39_dependencies": {
-        "wheel": [
-            {
+        "wheel": [{
                 "module": "beautifulsoup4",
                 "input_file": "wheels/py3/beautifulsoup4-4.11.1-py3-none-any.whl"
             },
@@ -94,8 +93,7 @@
             "order": 5
         }
     },
-    "actions": [
-        {
+    "actions": [{
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
@@ -112,8 +110,7 @@
             "type": "investigate",
             "read_only": true,
             "parameters": {},
-            "output": [
-                {
+            "output": [{
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
@@ -146,7 +143,7 @@
                     "data_path": "action_result.data.*.id",
                     "data_type": "numeric",
                     "example_values": [
-                        "0123456"
+                        1234563
                     ]
                 },
                 {
@@ -174,7 +171,7 @@
                     "data_path": "action_result.summary",
                     "data_type": "string",
                     "example_values": [
-                        1
+                        "1"
                     ]
                 },
                 {
@@ -238,7 +235,7 @@
                     "order": 2
                 },
                 "query": {
-                    "description": "query",
+                    "description": "Query",
                     "data_type": "string",
                     "order": 3
                 },
@@ -249,7 +246,7 @@
                     "order": 4
                 },
                 "from": {
-                    "description": "from value",
+                    "description": "From value",
                     "data_type": "string",
                     "primary": true,
                     "contains": [
@@ -258,7 +255,7 @@
                     "order": 5
                 },
                 "to": {
-                    "description": "to value",
+                    "description": "To value",
                     "data_type": "string",
                     "primary": true,
                     "contains": [
@@ -267,8 +264,7 @@
                     "order": 6
                 }
             },
-            "output": [
-                {
+            "output": [{
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
@@ -548,17 +544,17 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.alerts.*.eventLocation.places.*",
+                    "data_type": "string",
+                    "example_values": [
+                        "f936217c29800258e86e4f84d2012345"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.alerts.*.eventLocation.probability",
                     "data_type": "numeric",
                     "example_values": [
                         1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.alerts.*.eventLocation.places.*",
-                    "data_type": "numeric",
-                    "example_values": [
-                        "f936217c29800258e86e4f84d2012345"
                     ]
                 },
                 {
@@ -667,10 +663,10 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.hashValues.*.value",
+                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.asns.*",
                     "data_type": "string",
                     "example_values": [
-                        "0123456d5c516e1137b6d336bff7656e1b85695uwjiw4c83fc5a78c11fdec6"
+                        "AS0123"
                     ]
                 },
                 {
@@ -681,6 +677,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.hashValues.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "0123456d5c516e1137b6d336bff7656e1b85695uwjiw4c83fc5a78c11fdec6"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.alerts.*.metadata.cyber.hashes.*",
                     "data_type": "string",
                     "example_values": [
@@ -688,10 +691,10 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.asns.*",
+                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.malwares.*",
                     "data_type": "string",
                     "example_values": [
-                        "AS0123"
+                        "malware"
                     ]
                 },
                 {
@@ -702,10 +705,17 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.vulnerabilities.*.id",
+                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.products.*",
                     "data_type": "string",
                     "example_values": [
-                        "CVE-0123-4567"
+                        "products"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.threats.*",
+                    "data_type": "string",
+                    "example_values": [
+                        "threat"
                     ]
                 },
                 {
@@ -720,6 +730,13 @@
                     "data_type": "string",
                     "example_values": [
                         "https://www.domain.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.vulnerabilities.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "CVE-0123-4567"
                     ]
                 },
                 {
@@ -741,27 +758,6 @@
                     "data_type": "string",
                     "example_values": [
                         "*"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.products.*",
-                    "data_type": "string",
-                    "example_values": [
-                        "products"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.malwares.*",
-                    "data_type": "string",
-                    "example_values": [
-                        "malware"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.alerts.*.metadata.cyber.threats.*",
-                    "data_type": "string",
-                    "example_values": [
-                        "threat"
                     ]
                 },
                 {
@@ -1130,9 +1126,7 @@
                 {
                     "data_path": "action_result.data.*.alerts.*.watchlistsMatchedByType.*.locationGroups.*.locations.*.lng",
                     "data_type": "numeric",
-                    "example_values": [
-                        -122.3884732
-                    ]
+                    "example_values": [-122.3884732]
                 },
                 {
                     "data_path": "action_result.data.*.alerts.*.watchlistsMatchedByType.*.locationGroups.*.locations.*.name",
@@ -1201,7 +1195,7 @@
                     "data_path": "action_result.summary",
                     "data_type": "string",
                     "example_values": [
-                        1
+                        "1"
                     ]
                 },
                 {
@@ -1265,8 +1259,7 @@
                     "order": 1
                 }
             },
-            "output": [
-                {
+            "output": [{
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
@@ -1487,10 +1480,10 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.metadata.cyber.hashValues.*.value",
+                    "data_path": "action_result.data.*.metadata.cyber.asns.*",
                     "data_type": "string",
                     "example_values": [
-                        "0123456d5c516e1137b6d336bff7656e1b85695uwjiw4c83fc5a78c11fdec6"
+                        "AS0123"
                     ]
                 },
                 {
@@ -1501,6 +1494,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.metadata.cyber.hashValues.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "0123456d5c516e1137b6d336bff7656e1b85695uwjiw4c83fc5a78c11fdec6"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.metadata.cyber.hashes.*",
                     "data_type": "string",
                     "example_values": [
@@ -1508,10 +1508,10 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.metadata.cyber.asns.*",
+                    "data_path": "action_result.data.*.metadata.cyber.malwares.*",
                     "data_type": "string",
                     "example_values": [
-                        "AS0123"
+                        "malware"
                     ]
                 },
                 {
@@ -1522,10 +1522,17 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.metadata.cyber.vulnerabilities.*.id",
+                    "data_path": "action_result.data.*.metadata.cyber.products.*",
                     "data_type": "string",
                     "example_values": [
-                        "CVE-0123-4567"
+                        "products"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.cyber.threats.*",
+                    "data_type": "string",
+                    "example_values": [
+                        "threat"
                     ]
                 },
                 {
@@ -1540,6 +1547,13 @@
                     "data_type": "string",
                     "example_values": [
                         "https://www.domain.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.cyber.vulnerabilities.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "CVE-0123-4567"
                     ]
                 },
                 {
@@ -1561,27 +1575,6 @@
                     "data_type": "string",
                     "example_values": [
                         "*"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metadata.cyber.products.*",
-                    "data_type": "string",
-                    "example_values": [
-                        "products"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metadata.cyber.malwares.*",
-                    "data_type": "string",
-                    "example_values": [
-                        "malware"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.metadata.cyber.threats.*",
-                    "data_type": "string",
-                    "example_values": [
-                        "threat"
                     ]
                 },
                 {
@@ -1902,7 +1895,7 @@
                     "data_path": "action_result.summary",
                     "data_type": "string",
                     "example_values": [
-                        1
+                        "1"
                     ]
                 },
                 {
@@ -1952,25 +1945,30 @@
             "parameters": {
                 "start_time": {
                     "data_type": "numeric",
-                    "description": "Parameter Ignored in this app"
+                    "description": "Parameter Ignored in this app",
+                    "order": 0
                 },
                 "end_time": {
                     "data_type": "numeric",
-                    "description": "Parameter Ignored in this app"
+                    "description": "Parameter Ignored in this app",
+                    "order": 1
                 },
                 "container_id": {
                     "data_type": "string",
-                    "description": "Parameter Ignored in this app"
+                    "description": "Parameter Ignored in this app",
+                    "order": 2
                 },
                 "container_count": {
                     "data_type": "numeric",
                     "description": "Parameter Ignored in this app",
-                    "value": 100
+                    "value": 100,
+                    "order": 3
                 },
                 "artifact_count": {
                     "data_type": "numeric",
                     "description": "Parameter Ignored in this app",
-                    "value": 1000
+                    "value": 1000,
+                    "order": 4
                 }
             },
             "output": [],

@@ -30,7 +30,7 @@ from phantom.action_result import ActionResult
 
 from dataminrpulse_utils import DataminrPulseUtils, RetVal
 
-from . import config
+from . import dataminrpulse_config
 
 
 class TestRetValClass(unittest.TestCase):
@@ -95,7 +95,7 @@ class TestEncryptionMethod(unittest.TestCase):
         """Set up method for the tests."""
         connector = Mock()
         connector.get_app_json.return_value = {"app_version": "1.0.0"}
-        connector.get_asset_id.return_value = config.DEFAULT_ASSET_ID
+        connector.get_asset_id.return_value = dataminrpulse_config.DEFAULT_ASSET_ID
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
@@ -103,15 +103,15 @@ class TestEncryptionMethod(unittest.TestCase):
     @parameterized.expand(
         [
             ["token1", {'token': {
-                'dmaToken': config.TOKEN_DUMMY_DMA_TOKEN_1,
-                'refreshToken': config.TOKEN_DUMMY_REFRESH_TOKEN_1,
+                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_1,
+                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_1,
                 'expire': 12345
-            }}, config.TOKEN_DUMMY_DMA_CIPHER_1],
+            }}, dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1],
             ["token2", {'token': {
-                'dmaToken': config.TOKEN_DUMMY_DMA_TOKEN_2,
-                'refreshToken': config.TOKEN_DUMMY_REFRESH_TOKEN_2,
+                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_2,
+                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_2,
                 'expire': 67891
-            }}, config.TOKEN_DUMMY_REFRESH_CIPHER_2],
+            }}, dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_2],
             ["no_token", {'app_version': '1.0.0'}, {}],
         ]
     )
@@ -128,15 +128,15 @@ class TestEncryptionMethod(unittest.TestCase):
     @parameterized.expand(
         [
             ["token1", {'token': {
-                'dmaToken': config.TOKEN_DUMMY_DMA_CIPHER_1,
-                'refreshToken': config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
                 'expire': 12345
-            }}, config.TOKEN_DUMMY_DMA_TOKEN_1],
+            }}, dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_1],
             ["token2", {'token': {
-                'dmaToken': config.TOKEN_DUMMY_DMA_CIPHER_2,
-                'refreshToken': config.TOKEN_DUMMY_REFRESH_CIPHER_2,
+                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_2,
+                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_2,
                 'expire': 12345
-            }}, config.TOKEN_DUMMY_REFRESH_TOKEN_2],
+            }}, dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_2],
             ["no_token", {'app_version': '1.0.0'}, {}],
         ]
     )
@@ -158,8 +158,8 @@ class TestEncryptionMethod(unittest.TestCase):
         output = self.util._encrypt_state(
             {
                 'token': {
-                    'dmaToken': config.TOKEN_DUMMY_DMA_CIPHER_1,
-                    'refreshToken': config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                    'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                    'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
                     'expire': 123456
                 }
             })
@@ -173,8 +173,8 @@ class TestEncryptionMethod(unittest.TestCase):
         output = self.util._decrypt_state(
             {
                 'token': {
-                    'dmaToken': config.TOKEN_DUMMY_DMA_CIPHER_1,
-                    'refreshToken': config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                    'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                    'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
                     'expire': 123456
                 }
             })
@@ -380,7 +380,7 @@ class TestUseRefreshToken(unittest.TestCase):
     def test_use_refresh_token_method(self, _, expiration_time, expected_value):
         """Test the pass and fail cases of use refresh token method."""
         self.util._expiration_time = expiration_time
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
 
         ret_val = self.util._use_refresh_token()
         self.assertEqual(ret_val, expected_value)
@@ -394,7 +394,7 @@ class TestGetListId(unittest.TestCase):
         connector = Mock()
         connector.error_print.return_value = None
         connector.config = dict()
-        json_data = config.JSON_DATA
+        json_data = dataminrpulse_config.JSON_DATA
         connector.util._make_rest_call_helper = Mock(return_value=(True, json_data))
         self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
@@ -444,12 +444,12 @@ class TestAddCEF(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["add_cef", config.ALERT_DATA, config.ALERT_DATA_CEF],
+        ["add_cef", dataminrpulse_config.ALERT_DATA, dataminrpulse_config.ALERT_DATA_CEF],
         ["epoch_to_utc", {}, {}],
     ])
     def test_add_cef_method(self, _, alert, expected_value):
         """Test the pass and fail cases of add CEF method."""
-        config.ALERT_DATA_CEF.update({"alertId": config.ALERT_DATA.get('alertId')})
+        dataminrpulse_config.ALERT_DATA_CEF.update({"alertId": dataminrpulse_config.ALERT_DATA.get('alertId')})
         response = self.util._add_cef(alert)
         self.assertEqual(response, expected_value)
 
@@ -465,7 +465,7 @@ class TestAddListValueToCEF(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["add_cef", config.ALERT_DATA_CEF, "key", "value"],
+        ["add_cef", dataminrpulse_config.ALERT_DATA_CEF, "key", "value"],
         ["add_cef", {}, "", ""],
     ])
     def test_add_list_value_to_cef_method(self, _, cef, key, value):
@@ -486,11 +486,12 @@ class TestExtractCyberValues(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["extract_ip", config.FILE_DATA, "addresses", [{'ip': '0.0.0[.]0', 'port': '1977'}]],
+        ["extract_ip", dataminrpulse_config.FILE_DATA, "addresses", [{'ip': '0.0.0[.]0', 'port': '1977'}]],
         ["extract_ip", {}, "addresses", []],
-        ["extract_urls", config.FILE_DATA, "URLs", [{'requestURL': 'test[.]com'}, {'requestURL': 'test2[.]edu'}]],
+        ["extract_urls", dataminrpulse_config.FILE_DATA, "URLs", [{'requestURL': 'test[.]com'}, {'requestURL': 'test2[.]edu'}]],
         ["extract_urls", {}, "URLs", []],
-        ["extract_hashes", config.FILE_DATA, "hashes", [{'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
+        ["extract_hashes", dataminrpulse_config.FILE_DATA, "hashes", [
+            {'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
         ["extract_hashes", {}, "hashes", []]
     ])
     def test_extract_cyber_values_method(self, _, file_data, key, expected_value):
@@ -511,7 +512,7 @@ class TestCreateAlertArtifacts(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["create_ip_hash_artifacts", 1000, config.ALERT_DATA],
+        ["create_ip_hash_artifacts", 1000, dataminrpulse_config.ALERT_DATA],
         ["create_alert_artifacts", 1000, {}],
     ])
     def test_create_alert_artifacts_method(self, name, container_id, alert):
@@ -538,10 +539,10 @@ class TestProcessAlertData(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["valid_container_valid_artifacts", config.ALERT_DATA, True],
-        ["valid_container_invalid_artifacts", config.ALERT_DATA, False],
-        ["invalid_container_valid_artifacts", config.ALERT_DATA, False],
-        ["invalid_container_invalid_artifacts", config.ALERT_DATA, False],
+        ["valid_container_valid_artifacts", dataminrpulse_config.ALERT_DATA, True],
+        ["valid_container_invalid_artifacts", dataminrpulse_config.ALERT_DATA, False],
+        ["invalid_container_valid_artifacts", dataminrpulse_config.ALERT_DATA, False],
+        ["invalid_container_invalid_artifacts", dataminrpulse_config.ALERT_DATA, False],
     ])
     def test_process_alert_data_valid_method(self, name, alert, expected_value):
         """Test the the pass and fail cases of process alert data method."""

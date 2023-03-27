@@ -52,8 +52,10 @@ class GetAlertsAction(BaseAction):
         elif use_asset_configured_lists:
             list_id = self._connector.util._get_list_id(self._action_result)
             if not (list_id or query):
-                return self._action_result.set_status(phantom.APP_ERROR,
-                    "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter")
+                return self._action_result.set_status(
+                    phantom.APP_ERROR,
+                    "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter"
+                )
 
         from_value = self._param.get("from", None)
         to_value = self._param.get("to", None)

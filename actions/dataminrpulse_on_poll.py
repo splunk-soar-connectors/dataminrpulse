@@ -38,8 +38,10 @@ class OnPollAction(BaseAction):
         query = self._connector.config.get("query", None)
 
         if not (list_id or query):
-            return self._action_result.set_status(phantom.APP_ERROR,
-                "Please provide either valid 'list names' or 'query' in the asset configuration parameter")
+            return self._action_result.set_status(
+                phantom.APP_ERROR,
+                "Please provide either valid 'list names' or 'query' in the asset configuration parameter"
+            )
 
         list_id_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_LIST_ID_VALUE, None)
         query_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_QUERY_VALUE, None)

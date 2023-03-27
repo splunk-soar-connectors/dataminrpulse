@@ -27,7 +27,7 @@ from unittest.mock import patch
 import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
-from . import config
+from . import dataminrpulse_config
 
 
 class TestGetRelatedAlertsAction(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = DataminrPulseConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(dataminrpulse_config.TEST_JSON)
         self.test_json.update({"action": "get related alerts", "identifier": "get_related_alerts"})
 
         return super().setUp()
@@ -48,11 +48,11 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'alert_id': '1732199368-1670922260060-3'}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = [
             {
                 "data": "dummy_data"
@@ -66,7 +66,7 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'id': '1732199368-1670922260060-3', 'includeRoot': False},
             verify=False,
@@ -79,11 +79,11 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the unauthorized response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'alert_id': '1732199368-1670922260060-3'}]
 
         mock_get.return_value.status_code = 401
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"errors": [
             {
                 "code": 102,
@@ -101,7 +101,7 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'id': '1732199368-1670922260060-3', 'includeRoot': False},
             verify=False,
@@ -114,11 +114,11 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the unauthorized response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'alert_id': 'alert-id'}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = []
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -128,7 +128,7 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'id': 'alert-id', 'includeRoot': False},
             verify=False,

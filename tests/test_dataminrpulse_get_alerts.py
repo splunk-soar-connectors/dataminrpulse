@@ -29,7 +29,7 @@ import requests
 import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
-from . import config
+from . import dataminrpulse_config
 
 
 class TestGetAlertsAction(unittest.TestCase):
@@ -38,7 +38,7 @@ class TestGetAlertsAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = DataminrPulseConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(dataminrpulse_config.TEST_JSON)
         self.test_json.update({"action": "get alerts", "identifier": "get_alerts"})
 
         return super().setUp()
@@ -50,11 +50,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 1}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": {
             "alerts": ['dummy_data'],
             "from": "dummy_from",
@@ -67,7 +67,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 40},
             verify=False
@@ -80,11 +80,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the unauthorized response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 1}]
 
         mock_get.return_value.status_code = 401
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"errors": [
             {
                 "code": 102,
@@ -99,7 +99,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 40},
             verify=False,
@@ -112,11 +112,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '3343815', 'query': None, 'from': None, 'to': None, 'num': 1}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": {
             "alerts": ['dummy_data'],
             "from": "dummy_from",
@@ -129,7 +129,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': '3343815', 'query': None, 'from': None, 'to': None, 'num': 40},
             verify=False,
@@ -142,12 +142,12 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
 
         self.test_json['parameters'] = [{'list_id': None, 'query': None, 'from': None, 'to': None, 'num': 1, 'use_asset_configured_lists': True}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": {
             "alerts": ['dummy_data'],
             "from": "dummy_from",
@@ -157,8 +157,10 @@ class TestGetAlertsAction(unittest.TestCase):
         ret_val = json.loads(ret_val)
 
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"],
-            "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter")
+        self.assertEqual(
+            ret_val["result_data"][0]["message"],
+            "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter"
+        )
 
     @patch("dataminrpulse_utils.requests.get")
     def test_get_alerts_use_asset_configured_lists_pass(self, mock_get):
@@ -167,19 +169,19 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['config']['list_names'] = "test1"
         self.test_json['parameters'] = [{'list_id': None, 'query': None, 'from': None, 'to': None, 'num': 1, 'use_asset_configured_lists': True}]
 
         get_response_1 = requests.Response()
-        get_response_1._content = json.dumps(config.JSON_DATA).encode()
+        get_response_1._content = json.dumps(dataminrpulse_config.JSON_DATA).encode()
         get_response_1.status_code = 200
-        get_response_1.headers = config.DEFAULT_HEADERS
+        get_response_1.headers = dataminrpulse_config.DEFAULT_HEADERS
 
         get_response_2 = requests.Response()
         get_response_2._content = json.dumps({}).encode()
         get_response_2.status_code = 200
-        get_response_2.headers = config.DEFAULT_HEADERS
+        get_response_2.headers = dataminrpulse_config.DEFAULT_HEADERS
 
         mock_get.side_effect = [get_response_1, get_response_2]
 
@@ -191,7 +193,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': '3342659', 'query': None, 'from': None, 'to': None, 'num': 40},
             verify=False,
@@ -204,7 +206,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['config']['list_names'] = "test1"
         self.test_json['parameters'] = [
             {
@@ -217,14 +219,14 @@ class TestGetAlertsAction(unittest.TestCase):
             }]
 
         get_response_1 = requests.Response()
-        get_response_1._content = json.dumps(config.JSON_DATA).encode()
+        get_response_1._content = json.dumps(dataminrpulse_config.JSON_DATA).encode()
         get_response_1.status_code = 200
-        get_response_1.headers = config.DEFAULT_HEADERS
+        get_response_1.headers = dataminrpulse_config.DEFAULT_HEADERS
 
         get_response_2 = requests.Response()
         get_response_2._content = json.dumps({}).encode()
         get_response_2.status_code = 200
-        get_response_2.headers = config.DEFAULT_HEADERS
+        get_response_2.headers = dataminrpulse_config.DEFAULT_HEADERS
 
         mock_get.side_effect = [get_response_1, get_response_2]
 
@@ -236,7 +238,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': '3342659', 'query': None, 'from': None, 'to': None, 'num': 40},
             verify=False,
@@ -249,11 +251,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': None, 'query': '1247060284', 'from': None, 'to': None, 'num': 1}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": {
             "alerts": ['dummy_data'],
             "from": "dummy_from",
@@ -266,7 +268,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': None, 'query': '1247060284', 'from': None, 'to': None, 'num': 40},  # doubt
             verify=False,
@@ -279,7 +281,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{
             'list_id': None, 'query': '1247060284',
             'from': 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
@@ -291,7 +293,7 @@ class TestGetAlertsAction(unittest.TestCase):
         }]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": {
             "alerts": ['dummy_data'],
             "from": "dummy_from",
@@ -304,7 +306,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
                 'lists': None, 'query': '1247060284',
@@ -325,7 +327,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [
             {
                 'list_id': None,
@@ -341,7 +343,7 @@ class TestGetAlertsAction(unittest.TestCase):
         ]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": {
             "alerts": ['dummy_data'],
             "from": "dummy_from",
@@ -354,7 +356,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
                 'lists': None,
@@ -377,11 +379,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '123', 'query': None, 'from': None, 'to': None, 'num': 1}]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {
             "data": {
                 "alerts": [],
@@ -397,7 +399,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
-            headers=config.ACTION_HEADER,
+            headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={'lists': '123', 'query': None, 'from': None, 'to': None, 'num': 40},
             verify=False
@@ -410,11 +412,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '123', 'query': None, 'from': None, 'to': None, 'num': -1}]
 
         mock_get.return_value.status_code = 400
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = "Please provide a valid non-negative integer value in the 'Max Alerts' parameter"
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -432,7 +434,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': None, 'query': None, 'from': None, 'to': None, 'num': 1}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -447,7 +449,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [
             {
                 'list_id': '3343815',
@@ -467,7 +469,7 @@ class TestGetAlertsAction(unittest.TestCase):
         ]
 
         mock_get.return_value.status_code = 400
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = "Error message: Only one of 'from' and 'to' can be present"
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -482,18 +484,20 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '3343815', 'query': None, 'from': 'abc', 'to': None, 'num': 1}]
 
         mock_get.return_value.status_code = 400
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = "Error message: Unable to decode \"from\" cursor, invalid format"
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"],
-            "Error from server. Error message: Unable to decode \"from\" cursor, invalid format")
+        self.assertEqual(
+            ret_val["result_data"][0]["message"],
+            "Error from server. Error message: Unable to decode \"from\" cursor, invalid format"
+        )
 
     @patch("dataminrpulse_utils.requests.get")
     def test_get_alerts_invalid_to_fail(self, mock_get):
@@ -502,15 +506,17 @@ class TestGetAlertsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(dmaToken=True)
+        dataminrpulse_config.set_state_file(dmaToken=True)
         self.test_json['parameters'] = [{'list_id': '3343815', 'query': None, 'from': None, 'to': 'abc', 'num': 1}]
 
         mock_get.return_value.status_code = 400
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = "Error message: Unable to decode \"to\" cursor, invalid format"
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"],
-            "Error from server. Error message: Unable to decode \"to\" cursor, invalid format")
+        self.assertEqual(
+            ret_val["result_data"][0]["message"],
+            "Error from server. Error message: Unable to decode \"to\" cursor, invalid format"
+        )

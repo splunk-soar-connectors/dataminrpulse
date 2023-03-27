@@ -64,7 +64,7 @@ class DataminrPulseUtils(object):
         :return: error message
         """
         error_code = None
-        error_msg = consts.DATAMINRPULSE_ERROR_MESSAGE_UNAVAILABLE
+        error_msg = consts.DATAMINRPULSE_ERROR_MSG_UNAVAILABLE
 
         self._connector.error_print("Error occurred.", e)
         try:
@@ -148,7 +148,7 @@ class DataminrPulseUtils(object):
         except Exception:
             error_text = "Cannot parse error details"
 
-        message = consts.DATAMINRPULSE_ERROR_GENERAL_MESSAGE.format(status_code, error_text)
+        message = consts.DATAMINRPULSE_ERROR_GENERAL_MSG.format(status_code, error_text)
         message = message.replace("{", "{{").replace("}", "}}")
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
@@ -224,7 +224,7 @@ class DataminrPulseUtils(object):
             return self._process_empty_response(response, action_result)
 
         # everything else is actually an error at this point
-        message = consts.DATAMINRPULSE_ERROR_GENERAL_MESSAGE.format(
+        message = consts.DATAMINRPULSE_ERROR_GENERAL_MSG.format(
             response.status_code,
             response.text.replace("{", "{{").replace("}", "}}")
         )
