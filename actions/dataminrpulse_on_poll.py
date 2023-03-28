@@ -62,7 +62,7 @@ class OnPollAction(BaseAction):
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
-        alert_type = self._connector.config.get("alert_type", 'All')
+        alert_type = self._connector.config.get("alert_type", "All")
         if alert_type not in consts.DATAMINRPULSE_ALERT_TYPE_VALUE:
             return self._action_result.set_status(phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_INVALID_PARAMETER_VALUE)
 
@@ -91,18 +91,18 @@ class OnPollAction(BaseAction):
             return self._action_result.get_status()
 
         alerts = []
-        if alert_type != 'All':
-            for alert in response.get('data').get('alerts'):
-                if alert_type == alert.get('alertType', {}).get('name', ""):
+        if alert_type != "All":
+            for alert in response.get("data").get("alerts"):
+                if alert_type == alert.get("alertType", {}).get("name", ""):
                     alerts.append(alert)
         else:
-            alerts.extend(response.get('data').get('alerts', []))
+            alerts.extend(response.get("data").get("alerts", []))
 
         # Schedule Polling
         if not self._connector.is_poll_now():
             self._connector.is_state_updated = True
-            to_value = response.get('data', {}).get('to', None)
-            from_value = response.get('data', {}).get('from', None)
+            to_value = response.get("data", {}).get("to", None)
+            from_value = response.get("data", {}).get("from", None)
 
             if to_value:
                 self._connector.state[consts.DATAMINRPULSE_STATE_TO_VALUE] = to_value
@@ -123,7 +123,7 @@ class OnPollAction(BaseAction):
 
         for index, alert in enumerate(alerts):
             try:
-                self._connector.send_progress('Processing alert # {} with Alert ID ending in: {}'.format(index + 1, alert['alertId'][-10:]))
+                self._connector.send_progress("Processing alert # {} with Alert ID ending in: {}".format(index + 1, alert["alertId"][-10:]))
                 ret_val = self._connector.util._process_alert_data(self._action_result, alert)
                 if phantom.is_fail(ret_val):
                     failed_alert_ids += 1

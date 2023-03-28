@@ -32,8 +32,8 @@ class GetRelatedAlertsAction(BaseAction):
     def execute(self):
         """Execute the get related alerts action."""
         params = {
-            "id": self._param['alert_id'],
-            "includeRoot": self._param.get('include_root', False)
+            "id": self._param["alert_id"],
+            "includeRoot": self._param.get("include_root", False)
         }
 
         status, response = self._connector.util._make_rest_call_helper(
@@ -44,6 +44,6 @@ class GetRelatedAlertsAction(BaseAction):
         for alerts in response:
             self._action_result.add_data(alerts)
 
-        self._action_result.update_summary({'total_related_alerts': len(response)})
+        self._action_result.update_summary({"total_related_alerts": len(response)})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

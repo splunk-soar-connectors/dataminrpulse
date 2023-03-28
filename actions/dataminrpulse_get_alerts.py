@@ -31,15 +31,15 @@ class GetAlertsAction(BaseAction):
     """Class to handle get alerts action."""
 
     def execute(self):
-        """Execute the  get alerts action."""
+        """Execute the get alerts action."""
         list_id = self._param.get("list_id", None)
         use_asset_configured_lists = self._param.get("use_asset_configured_lists", False)
         query = self._param.get("query", None)
 
         # Accepts comma-seperated list only
         if list_id:
-            list_id = list_id.strip(',')
-            list_id = str(list_id).replace(" ", '')
+            list_id = list_id.strip(",")
+            list_id = str(list_id).replace(" ", "")
 
             if not list_id and use_asset_configured_lists:
                 list_id = self._connector.util._get_list_id(self._action_result)
@@ -83,10 +83,10 @@ class GetAlertsAction(BaseAction):
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
-        data = response.get('data', {})
+        data = response.get("data", {})
         self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({'total_alerts': len(data.get('alerts', []))})
+        self._action_result.update_summary({"total_alerts": len(data.get("alerts", []))})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

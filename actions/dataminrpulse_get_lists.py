@@ -43,6 +43,6 @@ class GetListsAction(BaseAction):
             for list in watchlist_type:
                 self._action_result.add_data(list)
 
-        self._action_result.update_summary({'total_watchlists': self._action_result.get_data_size()})
+        self._action_result.update_summary({"total_watchlists": self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)
