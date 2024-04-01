@@ -1,7 +1,7 @@
 {
     "appid": "8630b723-b317-4765-b923-5be5229c71d1",
     "name": "Dataminr Pulse for Splunk SOAR",
-    "description": "Pulse\u2019s AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response",
+    "description": "Pulse's AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response",
     "type": "network security",
     "product_vendor": "Dataminr",
     "logo": "logo_dataminrpulse.svg",
@@ -10,15 +10,15 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Dataminr",
-    "license": "Copyright (c) 2023 Dataminr",
-    "app_version": "1.1.0",
+    "license": "Copyright (c) 2023-2024 Dataminr",
+    "app_version": "1.2.0",
     "utctime_updated": "2023-01-09T11:47:05.103867Z",
     "package_name": "phantom_dataminrpulse",
     "main_module": "dataminrpulse_connector.py",
     "min_phantom_version": "5.5.0",
     "fips_compliant": false,
     "latest_tested_versions": [
-        "Mar 7, 2023, Dataminr Pulse, API v2 v3"
+        "Mar 31, 2024, Dataminr Pulse, API v2 v3"
     ],
     "pip39_dependencies": {
         "wheel": [{

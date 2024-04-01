@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_on_poll.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2024 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -176,7 +176,11 @@ class TestOnPollAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': None, 'query': 'query', 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': None, 'query': 'query', 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False,
         )
 

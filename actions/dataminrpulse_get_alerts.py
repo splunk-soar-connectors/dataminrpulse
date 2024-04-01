@@ -1,6 +1,6 @@
 # File: dataminrpulse_get_alerts.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2024 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -74,11 +74,20 @@ class GetAlertsAction(BaseAction):
             "query": query,
             "from": from_value,
             "to": to_value,
-            "num": num
+            "num": num,
+            "application": "splunk_soar",
+            "application_version": f"{consts.DATAMINRPULSE_APPLICATION_VERSION}".format(
+                self._connector.get_product_version()
+            ),
+            "integration_version": f"{consts.DATAMINRPULSE_INTEGRATION_VERSION}".format(
+                self._connector.get_app_json().get('app_version')
+            )
         }
 
         # Make rest call to fetch the alerts
-        ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params)
+        ret_val, response = self._connector.util._make_rest_call_helper(
+            consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params
+        )
 
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()

@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_utils.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2024 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -156,13 +156,12 @@ class TestEncryptionMethod(unittest.TestCase):
         mock_encrypt.side_effect = Exception("Couldn't encrypt")
 
         output = self.util._encrypt_state(
-            {
-                'token': {
-                    'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
-                    'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
-                    'expire': 123456
-                }
-            })
+            {'token': {
+                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                'expire': 123456
+            }}
+        )
         self.assertEqual(output, {})
 
     @patch('dataminrpulse_utils.encryption_helper.decrypt')
@@ -171,13 +170,11 @@ class TestEncryptionMethod(unittest.TestCase):
         mock_decrypt.side_effect = Exception("Couldn't decrypt")
 
         output = self.util._decrypt_state(
-            {
-                'token': {
-                    'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
-                    'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
-                    'expire': 123456
-                }
-            })
+            {'token': {
+                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                'expire': 123456
+            }})
         self.assertEqual(output, {})
 
 
@@ -490,8 +487,7 @@ class TestExtractCyberValues(unittest.TestCase):
         ["extract_ip", {}, "addresses", []],
         ["extract_urls", dataminrpulse_config.FILE_DATA, "URLs", [{'requestURL': 'test[.]com'}, {'requestURL': 'test2[.]edu'}]],
         ["extract_urls", {}, "URLs", []],
-        ["extract_hashes", dataminrpulse_config.FILE_DATA, "hashes", [
-            {'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
+        ["extract_hashes", dataminrpulse_config.FILE_DATA, "hashes", [{'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
         ["extract_hashes", {}, "hashes", []]
     ])
     def test_extract_cyber_values_method(self, _, file_data, key, expected_value):
