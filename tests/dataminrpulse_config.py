@@ -31,8 +31,8 @@ from dotenv import load_dotenv
 # Load '.env' file to the environment variables.
 load_dotenv()
 
-APPLICATION_VERSION = "SplunkSOARVersion_6.1.1.212"
-INTEGRATION_VERSION = "DataminrPulseForSplunkSOARVersion_1.2.0"
+APPLICATION_VERSION = "6.1.1.212"
+INTEGRATION_VERSION = "1.2.0"
 CONTENT_TYPE = "application/json"
 DEFAULT_ASSET_ID = "10"
 DEFAULT_HEADERS = {"Content-Type": CONTENT_TYPE}

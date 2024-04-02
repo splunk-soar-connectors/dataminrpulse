@@ -74,12 +74,8 @@ class OnPollAction(BaseAction):
             "from": None,
             "to": None,
             "application": "splunk_soar",
-            "application_version": f"{consts.DATAMINRPULSE_APPLICATION_VERSION}".format(
-                self._connector.get_product_version()
-            ),
-            "integration_version": f"{consts.DATAMINRPULSE_INTEGRATION_VERSION}".format(
-                self._connector.get_app_json().get('app_version')
-            )
+            "application_version": f"{self._connector.get_product_version()}",
+            "integration_version": f"{self._connector.get_app_json().get('app_version')}"
         }
         if not self._connector.is_poll_now() and self._connector.state.get(consts.DATAMINRPULSE_STATE_TO_VALUE, None):
             # To fetch new alerts, we assign to's value in from

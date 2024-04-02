@@ -76,12 +76,8 @@ class GetAlertsAction(BaseAction):
             "to": to_value,
             "num": num,
             "application": "splunk_soar",
-            "application_version": f"{consts.DATAMINRPULSE_APPLICATION_VERSION}".format(
-                self._connector.get_product_version()
-            ),
-            "integration_version": f"{consts.DATAMINRPULSE_INTEGRATION_VERSION}".format(
-                self._connector.get_app_json().get('app_version')
-            )
+            "application_version": f"{self._connector.get_product_version()}",
+            "integration_version": f"{self._connector.get_app_json().get('app_version')}"
         }
 
         # Make rest call to fetch the alerts

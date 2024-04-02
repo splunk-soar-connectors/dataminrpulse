@@ -21,8 +21,6 @@
 # and limitations under the License.
 
 # Endpoints
-DATAMINRPULSE_APPLICATION_VERSION = "SplunkSOARVersion_{}"
-DATAMINRPULSE_INTEGRATION_VERSION = "DataminrPulseForSplunkSOARVersion_{}"
 DATAMINRPULSE_BASE_URL = "https://gateway.dataminr.com"
 DATAMINRPULSE_GET_LISTS = "/account/2/get_lists?alertversion=14"
 DATAMINRPULSE_GET_ALERTS = "/api/3/alerts?alertversion=14"
