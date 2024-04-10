@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_get_alerts.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2024 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -69,7 +69,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False
         )
 
@@ -101,7 +105,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False,
         )
 
@@ -131,7 +139,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3343815', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': '3343815', 'query': None, 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False,
         )
 
@@ -195,7 +207,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3342659', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': '3342659', 'query': None, 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False,
         )
 
@@ -240,7 +256,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3342659', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': '3342659', 'query': None, 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False,
         )
 
@@ -270,7 +290,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': None, 'query': '1247060284', 'from': None, 'to': None, 'num': 40},  # doubt
+            params={
+                'lists': None, 'query': '1247060284', 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False,
         )
 
@@ -315,7 +339,8 @@ class TestGetAlertsAction(unittest.TestCase):
                         '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
                         'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
                         'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                'to': None, 'num': 40
+                'to': None, 'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
             },
             verify=False,
         )
@@ -367,7 +392,8 @@ class TestGetAlertsAction(unittest.TestCase):
                       '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
                       'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
                       'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                'num': 40,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
             },
             verify=False,
         )
@@ -401,7 +427,11 @@ class TestGetAlertsAction(unittest.TestCase):
             f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '123', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                'lists': '123', 'query': None, 'from': None, 'to': None,
+                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+            },
             verify=False
         )
 

@@ -1,6 +1,6 @@
 [comment]: # " File: README.md"
 [comment]: # ""
-[comment]: # "    Copyright (c) 2023 Dataminr"
+[comment]: # "    Copyright (c) 2023-2024 Dataminr"
 [comment]: # ""
 [comment]: # "    This unpublished material is proprietary to Dataminr."
 [comment]: # "    All rights reserved. The methods and"
@@ -157,15 +157,15 @@ application. The parameters related to test connectivity action are Client ID an
             severities to your ingested data.  
               
             **Administration** \> **User Management** \> **Users** **\> + User**
-            [![](img/create_user.png)](img/create_user.png)  
+            [![](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_user.png)](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_user.png)  
               
               
             **Administration** \> **User Management** \> **Roles & Permissions** **\> + Role**
-            [![](img/create_role.png)](img/create_role.png)  
+            [![](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_role.png)](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_role.png)  
               
               
             **Asset Settings** \> **Advanced**
-            [![](img/asset_settings.png)](img/asset_settings.png)  
+            [![](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/asset_settings.png)](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/asset_settings.png)  
               
               
 
