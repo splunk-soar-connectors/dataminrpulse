@@ -1,6 +1,6 @@
 # File: dataminrpulse_on_poll.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2024 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -72,7 +72,10 @@ class OnPollAction(BaseAction):
             "query": query,
             "num": num,
             "from": None,
-            "to": None
+            "to": None,
+            "application": "splunk_soar",
+            "application_version": f"{self._connector.get_product_version()}",
+            "integration_version": f"{self._connector.get_app_json().get('app_version')}"
         }
         if not self._connector.is_poll_now() and self._connector.state.get(consts.DATAMINRPULSE_STATE_TO_VALUE, None):
             # To fetch new alerts, we assign to's value in from
@@ -80,7 +83,9 @@ class OnPollAction(BaseAction):
             params.update({"from": from_value})
 
         # Polling
-        ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params)
+        ret_val, response = self._connector.util._make_rest_call_helper(
+            consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params
+        )
         if phantom.is_fail(ret_val):
             msg = self._action_result.get_message()
             if msg and (consts.DATAMINRPULSE_DECODE_FROM_ERROR in msg):

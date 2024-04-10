@@ -1,6 +1,6 @@
 # File: dataminrpulse_get_lists.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2024 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -43,6 +43,6 @@ class GetListsAction(BaseAction):
             for list in watchlist_type:
                 self._action_result.add_data(list)
 
-        self._action_result.update_summary({"total_watchlists": self._action_result.get_data_size()})
+        self._action_result.update_summary({'total_watchlists': self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

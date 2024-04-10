@@ -2,17 +2,17 @@
 # Dataminr Pulse for Splunk SOAR
 
 Publisher: Dataminr  
-Connector Version: 1.1.0  
+Connector Version: 1.2.0  
 Product Vendor: Dataminr  
 Product Name: Dataminr Pulse  
 Product Version Supported (regex): ".\*"  
 Minimum Product Version: 5.5.0  
 
-Pulse’s AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response
+Pulse's AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response
 
 [comment]: # " File: README.md"
 [comment]: # ""
-[comment]: # "    Copyright (c) 2023 Dataminr"
+[comment]: # "    Copyright (c) 2023-2024 Dataminr"
 [comment]: # ""
 [comment]: # "    This unpublished material is proprietary to Dataminr."
 [comment]: # "    All rights reserved. The methods and"
@@ -169,15 +169,15 @@ application. The parameters related to test connectivity action are Client ID an
             severities to your ingested data.  
               
             **Administration** \> **User Management** \> **Users** **\> + User**
-            [![](img/create_user.png)](img/create_user.png)  
+            [![](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_user.png)](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_user.png)  
               
               
             **Administration** \> **User Management** \> **Roles & Permissions** **\> + Role**
-            [![](img/create_role.png)](img/create_role.png)  
+            [![](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_role.png)](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/create_role.png)  
               
               
             **Asset Settings** \> **Advanced**
-            [![](img/asset_settings.png)](img/asset_settings.png)  
+            [![](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/asset_settings.png)](/app_resource/dataminrpulseforsplunksoar_8630b723-b317-4765-b923-5be5229c71d1/img/asset_settings.png)  
               
               
 
