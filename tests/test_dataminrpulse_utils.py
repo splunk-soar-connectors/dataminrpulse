@@ -487,7 +487,8 @@ class TestExtractCyberValues(unittest.TestCase):
         ["extract_ip", {}, "addresses", []],
         ["extract_urls", dataminrpulse_config.FILE_DATA, "URLs", [{'requestURL': 'test[.]com'}, {'requestURL': 'test2[.]edu'}]],
         ["extract_urls", {}, "URLs", []],
-        ["extract_hashes", dataminrpulse_config.FILE_DATA, "hashes", [{'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
+        ["extract_hashes", dataminrpulse_config.FILE_DATA, "hashes",
+         [{'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
         ["extract_hashes", {}, "hashes", []]
     ])
     def test_extract_cyber_values_method(self, _, file_data, key, expected_value):

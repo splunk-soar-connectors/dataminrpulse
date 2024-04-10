@@ -642,9 +642,11 @@ class DataminrPulseUtils(object):
         refresh_token = state.get(consts.DATAMINRPULSE_STATE_TOKEN, {}).get(consts.DATAMINRPULSE_STATE_REFRESH_TOKEN)
         try:
             if dma_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = encryption_helper.encrypt(dma_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = \
+                    encryption_helper.encrypt(dma_token, self._connector.get_asset_id())
             if refresh_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = encryption_helper.encrypt(refresh_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = \
+                    encryption_helper.encrypt(refresh_token, self._connector.get_asset_id())
         except Exception as e:
             self._connector.debug_print("Error occurred while encrypting the state file.", e)
             state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)
@@ -660,9 +662,11 @@ class DataminrPulseUtils(object):
         refresh_token = state.get(consts.DATAMINRPULSE_STATE_TOKEN, {}).get(consts.DATAMINRPULSE_STATE_REFRESH_TOKEN)
         try:
             if dma_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = encryption_helper.decrypt(dma_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = \
+                    encryption_helper.decrypt(dma_token, self._connector.get_asset_id())
             if refresh_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = encryption_helper.decrypt(refresh_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = \
+                    encryption_helper.decrypt(refresh_token, self._connector.get_asset_id())
         except Exception as e:
             self._connector.debug_print("Error occurred while decrypting the state file.", e)
             state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)

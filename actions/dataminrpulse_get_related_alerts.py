@@ -36,7 +36,11 @@ class GetRelatedAlertsAction(BaseAction):
             "includeRoot": self._param.get('include_root', False)
         }
 
-        status, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_RELATED_ALERTS, self._action_result, params=params)
+        status, response = self._connector.util._make_rest_call_helper(
+            consts.DATAMINRPULSE_GET_RELATED_ALERTS,
+            self._action_result,
+            params=params
+        )
         if phantom.is_fail(status):
             return self._action_result.get_status()
 
