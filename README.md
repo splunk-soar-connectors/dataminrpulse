@@ -8,7 +8,7 @@ Product Name: Dataminr Pulse
 Product Version Supported (regex): ".\*"  
 Minimum Product Version: 5.5.0  
 
-Pulse’s AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response
+Pulse's AI-powered real-time intelligence integrates into Splunk SOAR workflows for faster detection and response
 
 [comment]: # " File: README.md"
 [comment]: # ""
