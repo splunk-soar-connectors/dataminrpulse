@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_get_related_alerts.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -49,15 +49,11 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'alert_id': '1732199368-1670922260060-3'}]
+        self.test_json["parameters"] = [{"alert_id": "1732199368-1670922260060-3"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = [
-            {
-                "data": "dummy_data"
-            }
-        ]
+        mock_get.return_value.json.return_value = [{"data": "dummy_data"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -65,10 +61,10 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total related alerts: 1")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'id': '1732199368-1670922260060-3', 'includeRoot': False},
+            params={"id": "1732199368-1670922260060-3", "includeRoot": False},
             verify=False,
         )
 
@@ -80,16 +76,11 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         Patch the get() to return the unauthorized response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'alert_id': '1732199368-1670922260060-3'}]
+        self.test_json["parameters"] = [{"alert_id": "1732199368-1670922260060-3"}]
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"errors": [
-            {
-                "code": 102,
-                "message": "Invalid client Id or client secret"
-            }
-        ]}
+        mock_get.return_value.json.return_value = {"errors": [{"code": 102, "message": "Invalid client Id or client secret"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -100,10 +91,10 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         )
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'id': '1732199368-1670922260060-3', 'includeRoot': False},
+            params={"id": "1732199368-1670922260060-3", "includeRoot": False},
             verify=False,
         )
 
@@ -115,7 +106,7 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         Patch the get() to return the unauthorized response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'alert_id': 'alert-id'}]
+        self.test_json["parameters"] = [{"alert_id": "alert-id"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
@@ -127,9 +118,9 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total related alerts: 0")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'id': 'alert-id', 'includeRoot': False},
+            params={"id": "alert-id", "includeRoot": False},
             verify=False,
         )

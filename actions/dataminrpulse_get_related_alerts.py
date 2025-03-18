@@ -1,6 +1,6 @@
 # File: dataminrpulse_get_related_alerts.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -31,15 +31,10 @@ class GetRelatedAlertsAction(BaseAction):
 
     def execute(self):
         """Execute the get related alerts action."""
-        params = {
-            "id": self._param['alert_id'],
-            "includeRoot": self._param.get('include_root', False)
-        }
+        params = {"id": self._param["alert_id"], "includeRoot": self._param.get("include_root", False)}
 
         status, response = self._connector.util._make_rest_call_helper(
-            consts.DATAMINRPULSE_GET_RELATED_ALERTS,
-            self._action_result,
-            params=params
+            consts.DATAMINRPULSE_GET_RELATED_ALERTS, self._action_result, params=params
         )
         if phantom.is_fail(status):
             return self._action_result.get_status()
@@ -47,6 +42,6 @@ class GetRelatedAlertsAction(BaseAction):
         for alerts in response:
             self._action_result.add_data(alerts)
 
-        self._action_result.update_summary({'total_related_alerts': len(response)})
+        self._action_result.update_summary({"total_related_alerts": len(response)})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_utils.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -39,7 +39,7 @@ class TestRetValClass(unittest.TestCase):
     @parameterized.expand(
         [
             ["single_value", [True], (True, None)],
-            ["two_value", [True, {'key': 'value'}], (True, {'key': 'value'})],
+            ["two_value", [True, {"key": "value"}], (True, {"key": "value"})],
         ]
     )
     def test_ret_val_pass(self, _, input_val, expected):
@@ -65,7 +65,7 @@ class TestValidateIntegerMethod(unittest.TestCase):
     )
     def test_validate_integer_pass(self, _, input_value, expected_value, expected_message):
         """Test the valid cases for the validate integer method."""
-        ret_val, output = self.util._validate_integer(self.action_result, input_value, 'page', True)
+        ret_val, output = self.util._validate_integer(self.action_result, input_value, "page", True)
 
         self.assertTrue(ret_val)
         self.assertEqual(output, expected_value)
@@ -81,7 +81,7 @@ class TestValidateIntegerMethod(unittest.TestCase):
     )
     def test_validate_integer_fail(self, _, input_value, expected_message):
         """Test the failed cases for the validate integer method."""
-        ret_val, output = self.util._validate_integer(self.action_result, input_value, 'page', False)
+        ret_val, output = self.util._validate_integer(self.action_result, input_value, "page", False)
 
         self.assertFalse(ret_val)
         self.assertIsNone(output)
@@ -102,79 +102,108 @@ class TestEncryptionMethod(unittest.TestCase):
 
     @parameterized.expand(
         [
-            ["token1", {'token': {
-                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_1,
-                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_1,
-                'expire': 12345
-            }}, dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1],
-            ["token2", {'token': {
-                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_2,
-                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_2,
-                'expire': 67891
-            }}, dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_2],
-            ["no_token", {'app_version': '1.0.0'}, {}],
+            [
+                "token1",
+                {
+                    "token": {
+                        "dmaToken": dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_1,
+                        "refreshToken": dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_1,
+                        "expire": 12345,
+                    }
+                },
+                dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+            ],
+            [
+                "token2",
+                {
+                    "token": {
+                        "dmaToken": dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_2,
+                        "refreshToken": dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_2,
+                        "expire": 67891,
+                    }
+                },
+                dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_2,
+            ],
+            ["no_token", {"app_version": "1.0.0"}, {}],
         ]
     )
     def test_encrypt_state_pass(self, name, input_value, expected_value):
         """Test the pass cases for the encrypt state method."""
         output = self.util._encrypt_state(input_value)
         if "token1" in name:
-            self.assertEqual(output.get('token', {}).get('dmaToken', ''), expected_value)
+            self.assertEqual(output.get("token", {}).get("dmaToken", ""), expected_value)
         elif "token2" in name:
-            self.assertEqual(output.get('token', {}).get('refreshToken', ''), expected_value)
+            self.assertEqual(output.get("token", {}).get("refreshToken", ""), expected_value)
         else:
-            self.assertEqual(output.get('token', {}), expected_value)
+            self.assertEqual(output.get("token", {}), expected_value)
 
     @parameterized.expand(
         [
-            ["token1", {'token': {
-                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
-                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
-                'expire': 12345
-            }}, dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_1],
-            ["token2", {'token': {
-                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_2,
-                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_2,
-                'expire': 12345
-            }}, dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_2],
-            ["no_token", {'app_version': '1.0.0'}, {}],
+            [
+                "token1",
+                {
+                    "token": {
+                        "dmaToken": dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                        "refreshToken": dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                        "expire": 12345,
+                    }
+                },
+                dataminrpulse_config.TOKEN_DUMMY_DMA_TOKEN_1,
+            ],
+            [
+                "token2",
+                {
+                    "token": {
+                        "dmaToken": dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_2,
+                        "refreshToken": dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_2,
+                        "expire": 12345,
+                    }
+                },
+                dataminrpulse_config.TOKEN_DUMMY_REFRESH_TOKEN_2,
+            ],
+            ["no_token", {"app_version": "1.0.0"}, {}],
         ]
     )
     def test_decrypt_state_pass(self, name, input_value, expected_value):
         """Test the pass cases for the decrypt state method."""
         output = self.util._decrypt_state(input_value)
         if "token1" in name:
-            self.assertEqual(output.get('token', {}).get('dmaToken', ''), expected_value)
+            self.assertEqual(output.get("token", {}).get("dmaToken", ""), expected_value)
         elif "token2" in name:
-            self.assertEqual(output.get('token', {}).get('refreshToken', ''), expected_value)
+            self.assertEqual(output.get("token", {}).get("refreshToken", ""), expected_value)
         else:
-            self.assertEqual(output.get('token', {}), expected_value)
+            self.assertEqual(output.get("token", {}), expected_value)
 
-    @patch('dataminrpulse_utils.encryption_helper.encrypt')
+    @patch("dataminrpulse_utils.encryption_helper.encrypt")
     def test_encrypt_state_fail(self, mock_encrypt):
         """Test the fail cases for the encrypt state method."""
         mock_encrypt.side_effect = Exception("Couldn't encrypt")
 
         output = self.util._encrypt_state(
-            {'token': {
-                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
-                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
-                'expire': 123456
-            }}
+            {
+                "token": {
+                    "dmaToken": dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                    "refreshToken": dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                    "expire": 123456,
+                }
+            }
         )
         self.assertEqual(output, {})
 
-    @patch('dataminrpulse_utils.encryption_helper.decrypt')
+    @patch("dataminrpulse_utils.encryption_helper.decrypt")
     def test_decrypt_state_fail(self, mock_decrypt):
         """Test the fail cases for the decrypt state method."""
         mock_decrypt.side_effect = Exception("Couldn't decrypt")
 
         output = self.util._decrypt_state(
-            {'token': {
-                'dmaToken': dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
-                'refreshToken': dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
-                'expire': 123456
-            }})
+            {
+                "token": {
+                    "dmaToken": dataminrpulse_config.TOKEN_DUMMY_DMA_CIPHER_1,
+                    "refreshToken": dataminrpulse_config.TOKEN_DUMMY_REFRESH_CIPHER_1,
+                    "expire": 123456,
+                }
+            }
+        )
         self.assertEqual(output, {})
 
 
@@ -235,9 +264,11 @@ class TestProcessHtmlResponse(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["normal_response", "Oops!<script>document.getElementById('demo')</script>", False, "Status code: 500, Data from server: Oops!"],
-    ])
+    @parameterized.expand(
+        [
+            ["normal_response", "Oops!<script>document.getElementById('demo')</script>", False, "Status code: 500, Data from server: Oops!"],
+        ]
+    )
     def test_process_html_response(self, _, response_value, expected_value, expected_message):
         """Test the pass and fail cases of process html response method."""
         if response_value:
@@ -272,20 +303,20 @@ class TestProcessJsonResponse(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["token_response", 200, True, {
-            "dmaToken": "dummy_token",
-            "refreshToken": "dummy_refresh_token",
-            "expire": 1675091202903
-        }, {
-            "dmaToken": "dummy_token",
-            "refreshToken": "dummy_refresh_token",
-            "expire": 1675091202903
-        }],
-        ["valid_success_json_response", 200, True, {"results": []}, {"results": []}],
-        ["valid_failure_json_response", 401, False, {"errors": [{"code": 103, "message": "Authentication error. Invalid token"}]}, None],
-        ["invalid_json_response", 404, False, KeyError("Invalid Json"), None],
-    ])
+    @parameterized.expand(
+        [
+            [
+                "token_response",
+                200,
+                True,
+                {"dmaToken": "dummy_token", "refreshToken": "dummy_refresh_token", "expire": 1675091202903},
+                {"dmaToken": "dummy_token", "refreshToken": "dummy_refresh_token", "expire": 1675091202903},
+            ],
+            ["valid_success_json_response", 200, True, {"results": []}, {"results": []}],
+            ["valid_failure_json_response", 401, False, {"errors": [{"code": 103, "message": "Authentication error. Invalid token"}]}, None],
+            ["invalid_json_response", 404, False, KeyError("Invalid Json"), None],
+        ]
+    )
     def test_process_json_response(self, name, mock_code, expected_status, mock_response, expected_value):
         """Test the pass and fail cases of process json response method."""
         self.response.status_code = mock_code
@@ -320,10 +351,10 @@ class TestGeneralCases(unittest.TestCase):
         self.assertIsNone(response)
         self.assertEqual(self.action_result.get_message(), "Invalid method: invalid_method")
 
-    @patch('dataminrpulse_utils.requests.get')
+    @patch("dataminrpulse_utils.requests.get")
     def test_make_rest_call_throw_exception(self, mock_get):
         """Test the _make_rest_call for error case."""
-        mock_get.side_effect = Exception('error code', 'error message')
+        mock_get.side_effect = Exception("error code", "error message")
 
         ret_val, response = self.util._make_rest_call("/endpoint", self.action_result)
         self.assertFalse(ret_val)
@@ -369,11 +400,13 @@ class TestUseRefreshToken(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["use_refresh_token", 1776091202903, True],
-        ["no_refresh_token2", 0, False],
-        ["no_refresh_token", 30000, False],
-    ])
+    @parameterized.expand(
+        [
+            ["use_refresh_token", 1776091202903, True],
+            ["no_refresh_token2", 0, False],
+            ["no_refresh_token", 30000, False],
+        ]
+    )
     def test_use_refresh_token_method(self, _, expiration_time, expected_value):
         """Test the pass and fail cases of use refresh token method."""
         self.util._expiration_time = expiration_time
@@ -397,14 +430,12 @@ class TestGetListId(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["get_list_id", "test1", '3342659'],
-        ["get_list_id2", "test1,test2", '3342659,3342660'],
-        ["get_list_id_invalid", "dummy_list", None]
-    ])
+    @parameterized.expand(
+        [["get_list_id", "test1", "3342659"], ["get_list_id2", "test1,test2", "3342659,3342660"], ["get_list_id_invalid", "dummy_list", None]]
+    )
     def test_get_list_id_method(self, _, list_names, expected_value):
         """Test the pass and fail cases of get list id method."""
-        self.util._connector.config['list_names'] = list_names
+        self.util._connector.config["list_names"] = list_names
         response = self.util._get_list_id(self.action_result)
         self.assertEqual(response, expected_value)
 
@@ -419,11 +450,13 @@ class TestEpochToUTC(unittest.TestCase):
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
 
-    @parameterized.expand([
-        ["epoch_to_utc", 1675689304597, '2023-02-06 13:15:04 UTC'],
-        ["epoch_to_utc", 0, '1970-01-01 00:00:00 UTC'],
-        ["epoch_to_utc", -777, '1969-12-31 23:59:59 UTC'],
-    ])
+    @parameterized.expand(
+        [
+            ["epoch_to_utc", 1675689304597, "2023-02-06 13:15:04 UTC"],
+            ["epoch_to_utc", 0, "1970-01-01 00:00:00 UTC"],
+            ["epoch_to_utc", -777, "1969-12-31 23:59:59 UTC"],
+        ]
+    )
     def test_epoch_to_utc_method(self, _, parameter, expected_value):
         """Test the pass and fail cases of epoh to UTC method."""
         response = self.util._epoch_to_utc(parameter)
@@ -440,13 +473,15 @@ class TestAddCEF(unittest.TestCase):
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
 
-    @parameterized.expand([
-        ["add_cef", dataminrpulse_config.ALERT_DATA, dataminrpulse_config.ALERT_DATA_CEF],
-        ["epoch_to_utc", {}, {}],
-    ])
+    @parameterized.expand(
+        [
+            ["add_cef", dataminrpulse_config.ALERT_DATA, dataminrpulse_config.ALERT_DATA_CEF],
+            ["epoch_to_utc", {}, {}],
+        ]
+    )
     def test_add_cef_method(self, _, alert, expected_value):
         """Test the pass and fail cases of add CEF method."""
-        dataminrpulse_config.ALERT_DATA_CEF.update({"alertId": dataminrpulse_config.ALERT_DATA.get('alertId')})
+        dataminrpulse_config.ALERT_DATA_CEF.update({"alertId": dataminrpulse_config.ALERT_DATA.get("alertId")})
         response = self.util._add_cef(alert)
         self.assertEqual(response, expected_value)
 
@@ -461,10 +496,12 @@ class TestAddListValueToCEF(unittest.TestCase):
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
 
-    @parameterized.expand([
-        ["add_cef", dataminrpulse_config.ALERT_DATA_CEF, "key", "value"],
-        ["add_cef", {}, "", ""],
-    ])
+    @parameterized.expand(
+        [
+            ["add_cef", dataminrpulse_config.ALERT_DATA_CEF, "key", "value"],
+            ["add_cef", {}, "", ""],
+        ]
+    )
     def test_add_list_value_to_cef_method(self, _, cef, key, value):
         """Test the pass and fail cases of add list value to CEF method."""
         response = self.util._add_list_value_to_cef(cef, key, value)
@@ -482,15 +519,21 @@ class TestExtractCyberValues(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["extract_ip", dataminrpulse_config.FILE_DATA, "addresses", [{'ip': '0.0.0[.]0', 'port': '1977'}]],
-        ["extract_ip", {}, "addresses", []],
-        ["extract_urls", dataminrpulse_config.FILE_DATA, "URLs", [{'requestURL': 'test[.]com'}, {'requestURL': 'test2[.]edu'}]],
-        ["extract_urls", {}, "URLs", []],
-        ["extract_hashes", dataminrpulse_config.FILE_DATA, "hashes",
-         [{'fileHash': '012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c'}]],
-        ["extract_hashes", {}, "hashes", []]
-    ])
+    @parameterized.expand(
+        [
+            ["extract_ip", dataminrpulse_config.FILE_DATA, "addresses", [{"ip": "0.0.0[.]0", "port": "1977"}]],
+            ["extract_ip", {}, "addresses", []],
+            ["extract_urls", dataminrpulse_config.FILE_DATA, "URLs", [{"requestURL": "test[.]com"}, {"requestURL": "test2[.]edu"}]],
+            ["extract_urls", {}, "URLs", []],
+            [
+                "extract_hashes",
+                dataminrpulse_config.FILE_DATA,
+                "hashes",
+                [{"fileHash": "012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"}],
+            ],
+            ["extract_hashes", {}, "hashes", []],
+        ]
+    )
     def test_extract_cyber_values_method(self, _, file_data, key, expected_value):
         """Test the the pass and fail cases of extract cyber values method."""
         response = self.util._extract_cyber_values(file_data, key)
@@ -508,20 +551,22 @@ class TestCreateAlertArtifacts(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["create_ip_hash_artifacts", 1000, dataminrpulse_config.ALERT_DATA],
-        ["create_alert_artifacts", 1000, {}],
-    ])
+    @parameterized.expand(
+        [
+            ["create_ip_hash_artifacts", 1000, dataminrpulse_config.ALERT_DATA],
+            ["create_alert_artifacts", 1000, {}],
+        ]
+    )
     def test_create_alert_artifacts_method(self, name, container_id, alert):
         """Test the the pass and fail cases of create alert artifacts method."""
         response = self.util._create_alert_artifacts(container_id, alert)
 
         if "create_ip_hash_artifacts" in name:
-            self.assertIn("Addresses Artifact", response[0]['name'])
-            self.assertIn("Hashes Artifact", response[1]['name'])
+            self.assertIn("Addresses Artifact", response[0]["name"])
+            self.assertIn("Hashes Artifact", response[1]["name"])
 
         if "create_alert_artifacts" in name:
-            self.assertIn("Alert Artifact", response[0]['name'])
+            self.assertIn("Alert Artifact", response[0]["name"])
 
 
 class TestProcessAlertData(unittest.TestCase):
@@ -535,12 +580,14 @@ class TestProcessAlertData(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand([
-        ["valid_container_valid_artifacts", dataminrpulse_config.ALERT_DATA, True],
-        ["valid_container_invalid_artifacts", dataminrpulse_config.ALERT_DATA, False],
-        ["invalid_container_valid_artifacts", dataminrpulse_config.ALERT_DATA, False],
-        ["invalid_container_invalid_artifacts", dataminrpulse_config.ALERT_DATA, False],
-    ])
+    @parameterized.expand(
+        [
+            ["valid_container_valid_artifacts", dataminrpulse_config.ALERT_DATA, True],
+            ["valid_container_invalid_artifacts", dataminrpulse_config.ALERT_DATA, False],
+            ["invalid_container_valid_artifacts", dataminrpulse_config.ALERT_DATA, False],
+            ["invalid_container_invalid_artifacts", dataminrpulse_config.ALERT_DATA, False],
+        ]
+    )
     def test_process_alert_data_valid_method(self, name, alert, expected_value):
         """Test the the pass and fail cases of process alert data method."""
         if "valid_container_valid_artifacts" == name:
