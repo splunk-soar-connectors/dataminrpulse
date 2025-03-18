@@ -343,11 +343,11 @@ class TestGetAlertsAction(unittest.TestCase):
             params={
                 "lists": None,
                 "query": "1247060284",
-                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"
-                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"
-                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"
-                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"
-                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",
+                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
                 "to": None,
                 "num": 40,
                 "application": "splunk_soar",
@@ -370,11 +370,11 @@ class TestGetAlertsAction(unittest.TestCase):
                 "list_id": None,
                 "query": "1247060284",
                 "from": None,
-                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"
-                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"
-                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"
-                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"
-                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",
+                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
                 "num": 1,
             }
         ]
@@ -396,11 +396,11 @@ class TestGetAlertsAction(unittest.TestCase):
                 "lists": None,
                 "query": "1247060284",
                 "from": None,
-                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"
-                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"
-                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"
-                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"
-                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",
+                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
                 "num": 40,
                 "application": "splunk_soar",
                 "application_version": dataminrpulse_config.APPLICATION_VERSION,
@@ -500,16 +500,16 @@ class TestGetAlertsAction(unittest.TestCase):
             {
                 "list_id": "3343815",
                 "query": None,
-                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"
-                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"
-                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"
-                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"
-                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",
-                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"
-                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"
-                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"
-                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"
-                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",
+                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
                 "num": 1,
             }
         ]
