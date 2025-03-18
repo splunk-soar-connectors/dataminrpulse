@@ -93,7 +93,7 @@ FILE_DATA = {
         "cyber": {
             "URLs": ["test[.]com", "test2[.]edu"],
             "addresses": [{"ip": "0.0.0[.]0", "port": "1977"}],
-            "hashes": ["012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],
+            "hashes": ["012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],  # pragma: allowlist secret
         }
     }
 }
@@ -105,7 +105,7 @@ ALERT_DATA = {
     "metadata": {
         "cyber": {
             "addresses": [{"ip": "77.73.133[.]62"}],
-            "hashes": ["5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],
+            "hashes": ["5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],  # pragma: allowlist secret
             "malwares": ["Redline stealer"],
         }
     },

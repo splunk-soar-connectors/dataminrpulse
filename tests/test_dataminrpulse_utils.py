@@ -529,7 +529,7 @@ class TestExtractCyberValues(unittest.TestCase):
                 "extract_hashes",
                 dataminrpulse_config.FILE_DATA,
                 "hashes",
-                [{"fileHash": "012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"}],
+                [{"fileHash": "012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"}],  # pragma: allowlist secret
             ],
             ["extract_hashes", {}, "hashes", []],
         ]
