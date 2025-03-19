@@ -1,6 +1,6 @@
 # File: dataminrpulse_view.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -22,23 +22,21 @@
 
 
 def _get_alerts_result(result):
-
     ctx_result = {}
     param = result.get_param()
     data = result.get_data()
     status = result.get_status()
 
-    ctx_result['status'] = status
-    ctx_result['param'] = param
-    if (data):
-        ctx_result['data'] = data
+    ctx_result["status"] = status
+    ctx_result["param"] = param
+    if data:
+        ctx_result["data"] = data
 
     return ctx_result
 
 
 def display_alerts(provides, all_app_runs, context):
-
-    context['results'] = results = []
+    context["results"] = results = []
 
     for summary, action_results in all_app_runs:
         for result in action_results:
@@ -47,11 +45,11 @@ def display_alerts(provides, all_app_runs, context):
                 continue
             results.append(get_alerts_result)
 
-    if provides == 'get alerts':
-        return 'dataminrpulse_get_alerts.html'
+    if provides == "get alerts":
+        return "dataminrpulse_get_alerts.html"
 
-    if provides == 'get lists':
-        return 'dataminrpulse_get_lists.html'
+    if provides == "get lists":
+        return "dataminrpulse_get_lists.html"
 
-    if provides == 'get related alerts':
-        return 'dataminrpulse_get_related_alerts.html'
+    if provides == "get related alerts":
+        return "dataminrpulse_get_related_alerts.html"

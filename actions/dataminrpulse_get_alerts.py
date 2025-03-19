@@ -1,6 +1,6 @@
 # File: dataminrpulse_get_alerts.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -46,15 +46,14 @@ class GetAlertsAction(BaseAction):
                 if not (list_id or query):
                     return self._action_result.set_status(
                         phantom.APP_ERROR,
-                        "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter"
+                        "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter",
                     )
 
         elif use_asset_configured_lists:
             list_id = self._connector.util._get_list_id(self._action_result)
             if not (list_id or query):
                 return self._action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter"
+                    phantom.APP_ERROR, "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter"
                 )
 
         from_value = self._param.get("from", None)
@@ -77,13 +76,11 @@ class GetAlertsAction(BaseAction):
             "num": num,
             "application": "splunk_soar",
             "application_version": f"{self._connector.get_product_version()}",
-            "integration_version": f"{self._connector.get_app_json().get('app_version')}"
+            "integration_version": f"{self._connector.get_app_json().get('app_version')}",
         }
 
         # Make rest call to fetch the alerts
-        ret_val, response = self._connector.util._make_rest_call_helper(
-            consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params
-        )
+        ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params)
 
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()

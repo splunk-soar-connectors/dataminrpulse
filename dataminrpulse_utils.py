@@ -1,6 +1,6 @@
 # File: dataminrpulse_utils.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -40,7 +40,7 @@ class RetVal(tuple):
         return tuple.__new__(RetVal, (val1, val2))
 
 
-class DataminrPulseUtils(object):
+class DataminrPulseUtils:
     """This class holds all the util methods."""
 
     def __init__(self, connector=None):
@@ -75,7 +75,7 @@ class DataminrPulseUtils(object):
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
         except Exception as e:
-            self._connector.error_print(f"Error occurred while fetching exception information. Details: {str(e)}")
+            self._connector.error_print(f"Error occurred while fetching exception information. Details: {e!s}")
 
         if not error_code:
             error_text = f"Error message: {error_msg}"
@@ -120,11 +120,7 @@ class DataminrPulseUtils(object):
         if response.status_code in consts.DATAMINRPULSE_EMPTY_RESPONSE_STATUS_CODE:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(
-            action_result.set_status(
-                phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_EMPTY_RESPONSE.format(response.status_code)
-            )
-        )
+        return RetVal(action_result.set_status(phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_EMPTY_RESPONSE.format(response.status_code)))
 
     def _process_html_response(self, response, action_result):
         """Process the html response returned from the server.
@@ -164,29 +160,25 @@ class DataminrPulseUtils(object):
             resp_json = response.json()
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_JSON_RESPONSE.format(error_message)
-                )
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_JSON_RESPONSE.format(error_message)))
         # Please specify the status codes here
         if 200 <= response.status_code < 399:
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # You should process the error returned in the json
-        if 'errors' in resp_json:
+        if "errors" in resp_json:
             error_messages = []
-            for err in resp_json.get('errors', {}):
-                error_code = err.get('code', "")
-                error_message = err.get('message', "")
+            for err in resp_json.get("errors", {}):
+                error_code = err.get("code", "")
+                error_message = err.get("message", "")
                 error_messages.append(f"Error code: {error_code}. Error message: {error_message}")
 
             message = "Error from server. {}".format(", ".join(error_messages))
 
             return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
-        if 'error' in resp_json:
-            error_message = resp_json.get('error', "")
+        if "error" in resp_json:
+            error_message = resp_json.get("error", "")
             message = f"Error from server. Error message: {error_message}"
             return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
@@ -224,10 +216,7 @@ class DataminrPulseUtils(object):
             return self._process_empty_response(response, action_result)
 
         # everything else is actually an error at this point
-        message = consts.DATAMINRPULSE_ERROR_GENERAL_MSG.format(
-            response.status_code,
-            response.text.replace("{", "{{").replace("}", "}}")
-        )
+        message = consts.DATAMINRPULSE_ERROR_GENERAL_MSG.format(response.status_code, response.text.replace("{", "{{").replace("}", "}}"))
 
         # Large HTML pages may be returned incase of 500 error from server.
         # Use default error message in place of large HTML page.
@@ -269,15 +258,11 @@ class DataminrPulseUtils(object):
                     headers=headers,
                     params=params,
                     verify=self._connector.config.get("verify_server_cert", False),
-                    **kwargs
+                    **kwargs,
                 )
             except Exception as e:
                 error_message = self._get_error_message_from_exception(e)
-                return RetVal(
-                    action_result.set_status(
-                        phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_REST_CALL.format(error_message)
-                    )
-                )
+                return RetVal(action_result.set_status(phantom.APP_ERROR, consts.DATAMINRPULSE_ERROR_REST_CALL.format(error_message)))
 
             if response.status_code not in [429, 500]:
                 break
@@ -288,7 +273,7 @@ class DataminrPulseUtils(object):
                 self._connector.save_progress("Received 500 status code from the server")
                 if not no_of_retries_500:
                     return self._process_response(response, action_result)
-                self._connector.save_progress("Retrying after {} second(s)...".format(time_in_seconds_500))
+                self._connector.save_progress(f"Retrying after {time_in_seconds_500} second(s)...")
                 time.sleep(time_in_seconds_500)
 
             # Retry wait mechanism for the rate limit exceeded error
@@ -297,7 +282,7 @@ class DataminrPulseUtils(object):
                 self._connector.save_progress("Received 429 status code from the server")
                 if not no_of_retries_429:
                     return self._process_response(response, action_result)
-                self._connector.save_progress("Retrying after {} second(s)...".format(time_in_seconds_429))
+                self._connector.save_progress(f"Retrying after {time_in_seconds_429} second(s)...")
                 time.sleep(time_in_seconds_429)
 
         return self._process_response(response, action_result)
@@ -311,35 +296,30 @@ class DataminrPulseUtils(object):
         """
         self._connector.is_state_updated = True
 
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-        data = {
-            "client_id": self._connector.config["client_id"],
-            "client_secret": self._connector.config["client_secret"]
-        }
+        data = {"client_id": self._connector.config["client_id"], "client_secret": self._connector.config["client_secret"]}
         if refresh_token:
             data.update({"refresh_token": self._refresh_token, "grant_type": "refresh_token"})
         else:
             data.update({"grant_type": "api_key"})
 
-        ret_val, resp_json = self._make_rest_call(
-            consts.DATAMINRPULSE_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers)
+        ret_val, resp_json = self._make_rest_call(consts.DATAMINRPULSE_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers)
 
         if refresh_token:
             # If refresh token is expired, generate a new token
             msg = action_result.get_message()
 
-            if msg and ('Invalid refresh token' in msg):
+            if msg and ("Invalid refresh token" in msg):
                 data.clear()
                 data = {
                     "client_id": self._connector.config["client_id"],
                     "client_secret": self._connector.config["client_secret"],
-                    "grant_type": "api_key"
+                    "grant_type": "api_key",
                 }
                 ret_val, resp_json = self._make_rest_call(
-                    consts.DATAMINRPULSE_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers)
+                    consts.DATAMINRPULSE_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers
+                )
 
         if phantom.is_fail(ret_val):
             self._connector.state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)
@@ -366,7 +346,6 @@ class DataminrPulseUtils(object):
         current_epoch = int(current_datetime.timestamp() * 1000)
 
         if self._connector.state.get(consts.DATAMINRPULSE_STATE_TOKEN) and self._expiration_time:
-
             # We want to expire the token 30 seconds before it's expiration time to avoid rare corner cases when the token is expired,
             # but an action was just started. This 30 second buffer will help us avoid such issues.
             if (self._expiration_time - 30000) < current_epoch:  # 30s
@@ -397,13 +376,12 @@ class DataminrPulseUtils(object):
         # If token is expired, generate a new token
         msg = action_result.get_message()
 
-        if msg and ('Invalid refresh token' in msg or 'Invalid token' in msg):
-
+        if msg and ("Invalid refresh token" in msg or "Invalid token" in msg):
             ret_val = self._generate_token(action_result, self._use_refresh_token())
             if phantom.is_fail(ret_val):
                 return RetVal(action_result.get_status())
 
-            headers.update({'Authorization': 'Dmauth {0}'.format(self._dma_token)})
+            headers.update({"Authorization": f"Dmauth {self._dma_token}"})
 
             ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, headers=headers, params=params, **kwargs)
         if phantom.is_fail(ret_val):
@@ -417,19 +395,19 @@ class DataminrPulseUtils(object):
         valid_list = []
 
         if list_names:
-            list_names = list_names.split(',')
+            list_names = list_names.split(",")
 
             ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_LISTS, action_result)
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
 
-            watchlists = response.get('watchlists', {})
+            watchlists = response.get("watchlists", {})
 
             for list_name in list_names:
                 for _, watchlist_type in watchlists.items():
                     for list_dict in watchlist_type:
-                        if list_name == list_dict['name']:
-                            valid_list.append(str(list_dict['id']))
+                        if list_name == list_dict["name"]:
+                            valid_list.append(str(list_dict["id"]))
 
             list_id = ",".join(valid_list)
             if list_id:
@@ -446,9 +424,9 @@ class DataminrPulseUtils(object):
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS with status message
         """
         container = {}
-        container['name'] = alert.get('caption') or alert['alertId']
-        container['severity'] = alert.get('alertType', {}).get('name', 'Alert')
-        container['source_data_identifier'] = alert.get('parentAlertId') or alert['alertId']
+        container["name"] = alert.get("caption") or alert["alertId"]
+        container["severity"] = alert.get("alertType", {}).get("name", "Alert")
+        container["source_data_identifier"] = alert.get("parentAlertId") or alert["alertId"]
 
         ret_val, message, container_id = self._connector.save_container(container)
 
@@ -479,37 +457,37 @@ class DataminrPulseUtils(object):
         artifacts = []
 
         alert_artifact = {}
-        alert_artifact['severity'] = alert.get('alertType', {}).get('name', 'Alert')
-        alert_artifact['label'] = 'alert'
-        alert_artifact['name'] = 'Alert Artifact'
-        alert_artifact['container_id'] = container_id
+        alert_artifact["severity"] = alert.get("alertType", {}).get("name", "Alert")
+        alert_artifact["label"] = "alert"
+        alert_artifact["name"] = "Alert Artifact"
+        alert_artifact["container_id"] = container_id
 
-        if alert.get('alertId'):
-            artifact_id = alert['alertId']
+        if alert.get("alertId"):
+            artifact_id = alert["alertId"]
 
             # Set alert artifact contains
-            alert_artifact['cef_types'] = {
-                'alertId': ["dataminrpulse alert id"],
-                'parentAlertId': ["dataminrpulse alert id"],
-                'eventMapLargeURL': ["url"],
-                'eventMapSmallURL': ["url"],
-                'url': ["url"],
-                'relatedTermsQueryURL': ["url"],
-                'expandAlertURL': ["url"],
-                'expandMapURL': ["url"]
+            alert_artifact["cef_types"] = {
+                "alertId": ["dataminrpulse alert id"],
+                "parentAlertId": ["dataminrpulse alert id"],
+                "eventMapLargeURL": ["url"],
+                "eventMapSmallURL": ["url"],
+                "url": ["url"],
+                "relatedTermsQueryURL": ["url"],
+                "expandAlertURL": ["url"],
+                "expandMapURL": ["url"],
             }
 
-        alert_artifact['source_data_identifier'] = artifact_id
-        alert_artifact['data'] = alert.get("metadata", {})
-        alert_artifact['cef'] = self._add_cef(alert)
+        alert_artifact["source_data_identifier"] = artifact_id
+        alert_artifact["data"] = alert.get("metadata", {})
+        alert_artifact["cef"] = self._add_cef(alert)
 
-        if alert_artifact['cef'].get('eventTime'):
-            event_time = alert_artifact['cef']['eventTime']
-            alert_artifact['cef']['eventTime'] = self._epoch_to_utc(event_time)
+        if alert_artifact["cef"].get("eventTime"):
+            event_time = alert_artifact["cef"]["eventTime"]
+            alert_artifact["cef"]["eventTime"] = self._epoch_to_utc(event_time)
 
-        if alert_artifact['cef'].get('post', {}).get('timestamp'):
-            timestamp = alert_artifact['cef']['post']['timestamp']
-            alert_artifact['cef']['post']['timestamp'] = self._epoch_to_utc(timestamp)
+        if alert_artifact["cef"].get("post", {}).get("timestamp"):
+            timestamp = alert_artifact["cef"]["post"]["timestamp"]
+            alert_artifact["cef"]["post"]["timestamp"] = self._epoch_to_utc(timestamp)
 
         # Create artifacts for all cyber values
         cyber_dict = alert.get("metadata", {}).get("cyber", {})
@@ -519,23 +497,14 @@ class DataminrPulseUtils(object):
                 for cyber_value in cyber_values:
                     cyber_artifact = {}
 
-                    cyber_artifact['name'] = '{} Artifact'.format(cyber_key.capitalize())
-                    cyber_artifact['label'] = 'artifact'
-                    cyber_artifact['cef'] = cyber_value
-                    cyber_artifact['container_id'] = container_id
-                    cyber_artifact['severity'] = alert.get('alertType', {}).get('name', 'Alert')
-                    cyber_artifact['source_data_identifier'] = artifact_id
+                    cyber_artifact["name"] = f"{cyber_key.capitalize()} Artifact"
+                    cyber_artifact["label"] = "artifact"
+                    cyber_artifact["cef"] = cyber_value
+                    cyber_artifact["container_id"] = container_id
+                    cyber_artifact["severity"] = alert.get("alertType", {}).get("name", "Alert")
+                    cyber_artifact["source_data_identifier"] = artifact_id
                     # Set the contains
-                    cyber_artifact['cef_types'] = {
-                        'ip': ["ip"],
-                        'value': [
-                            "hash",
-                            "md5",
-                            "sha1",
-                            "sha256"
-                        ],
-                        'asn': ["asn"]
-                    }
+                    cyber_artifact["cef_types"] = {"ip": ["ip"], "value": ["hash", "md5", "sha1", "sha256"], "asn": ["asn"]}
                     artifacts.append(cyber_artifact)
 
         artifacts.append(alert_artifact)
@@ -544,7 +513,7 @@ class DataminrPulseUtils(object):
 
     def _epoch_to_utc(self, parameter):
         """Convert epoch to datetime in UTC format"""
-        parameter = datetime.datetime.utcfromtimestamp(int(parameter) / 1000).strftime('%Y-%m-%d %H:%M:%S')
+        parameter = datetime.datetime.utcfromtimestamp(int(parameter) / 1000).strftime("%Y-%m-%d %H:%M:%S")
         parameter = "{} {}".format(parameter, "UTC")
         return parameter
 
@@ -586,22 +555,21 @@ class DataminrPulseUtils(object):
         index_company = 0
         for value_dict in value:
             if isinstance(value_dict, dict):
-
                 if key == "watchlistsMatchedByType":
                     index_watchlist = index_watchlist + 1
-                    cef[key]["watchlist name {}".format(index_watchlist)] = value_dict["name"]
+                    cef[key][f"watchlist name {index_watchlist}"] = value_dict["name"]
 
                 elif key == "categories":
                     index_category = index_category + 1
-                    cef[key]["category {}".format(index_category)] = value_dict["name"]
+                    cef[key][f"category {index_category}"] = value_dict["name"]
 
                 elif key == "sectors":
                     index_sector = index_sector + 1
-                    cef[key]["sector {}".format(index_sector)] = value_dict["name"]
+                    cef[key][f"sector {index_sector}"] = value_dict["name"]
 
                 elif key == "companies":
                     index_company = index_company + 1
-                    cef[key]["company {}".format(index_company)] = value_dict["name"]
+                    cef[key][f"company {index_company}"] = value_dict["name"]
 
                 elif key == "relatedTerms":
                     cef[key][value_dict["text"]] = value_dict["url"]
@@ -616,17 +584,17 @@ class DataminrPulseUtils(object):
     def _extract_cyber_values(self, file_data, cyber_key):
         """Extract values from each key of cyber dictionary to create artifacts."""
         cyber_values = []
-        file_data = file_data.get('metadata', {}).get('cyber', {}).get(cyber_key, [])
+        file_data = file_data.get("metadata", {}).get("cyber", {}).get(cyber_key, [])
         for data in file_data:
             if data and isinstance(data, dict):
                 cyber_values.append(data)
             elif data and isinstance(data, str):
                 if cyber_key == "URLs":
-                    cyber_values.append({'requestURL': data})
+                    cyber_values.append({"requestURL": data})
                 elif cyber_key == "hashes":
-                    cyber_values.append({'fileHash': data})
+                    cyber_values.append({"fileHash": data})
                 elif cyber_key == "asns":
-                    cyber_values.append({'asn': data})
+                    cyber_values.append({"asn": data})
                 else:
                     cyber_values.append({cyber_key: data})
 
@@ -642,11 +610,13 @@ class DataminrPulseUtils(object):
         refresh_token = state.get(consts.DATAMINRPULSE_STATE_TOKEN, {}).get(consts.DATAMINRPULSE_STATE_REFRESH_TOKEN)
         try:
             if dma_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = \
-                    encryption_helper.encrypt(dma_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = encryption_helper.encrypt(
+                    dma_token, self._connector.get_asset_id()
+                )
             if refresh_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = \
-                    encryption_helper.encrypt(refresh_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = encryption_helper.encrypt(
+                    refresh_token, self._connector.get_asset_id()
+                )
         except Exception as e:
             self._connector.debug_print("Error occurred while encrypting the state file.", e)
             state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)
@@ -662,11 +632,13 @@ class DataminrPulseUtils(object):
         refresh_token = state.get(consts.DATAMINRPULSE_STATE_TOKEN, {}).get(consts.DATAMINRPULSE_STATE_REFRESH_TOKEN)
         try:
             if dma_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = \
-                    encryption_helper.decrypt(dma_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_DMA_TOKEN] = encryption_helper.decrypt(
+                    dma_token, self._connector.get_asset_id()
+                )
             if refresh_token:
-                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = \
-                    encryption_helper.decrypt(refresh_token, self._connector.get_asset_id())
+                state[consts.DATAMINRPULSE_STATE_TOKEN][consts.DATAMINRPULSE_STATE_REFRESH_TOKEN] = encryption_helper.decrypt(
+                    refresh_token, self._connector.get_asset_id()
+                )
         except Exception as e:
             self._connector.debug_print("Error occurred while decrypting the state file.", e)
             state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)

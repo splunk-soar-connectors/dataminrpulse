@@ -1,6 +1,6 @@
 # File: dataminrpulse_consts.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -30,8 +30,7 @@ DATAMINRPULSE_STATE_TOKEN = "token"
 DATAMINRPULSE_STATE_DMA_TOKEN = "dmaToken"
 DATAMINRPULSE_STATE_REFRESH_TOKEN = "refreshToken"
 DATAMINRPULSE_STATE_EXPIRE = "expire"
-DATAMINRPULSE_ERROR_STATE_FILE_CORRUPT = "Error occurred while loading the state file. " \
-                                         "Resetting the state file with the default format"
+DATAMINRPULSE_ERROR_STATE_FILE_CORRUPT = "Error occurred while loading the state file. Resetting the state file with the default format"
 DATAMINRPULSE_REQUEST_TIMEOUT = 240
 DATAMINRPULSE_ENDPOINT_TEST_CONNECTIVITY = "/auth/2/token"
 DATAMINRPULSE_ERROR_SYSTEM_HEALTH = "Failed to get the system health status"
@@ -45,33 +44,20 @@ DATAMINRPULSE_ERROR_GENERAL_MSG = "Status code: {0}, Data from server: {1}"
 DATAMINRPULSE_ERROR_INVALID_INT_PARAM = "Please provide a valid integer value in the '{key}' parameter"
 DATAMINRPULSE_ERROR_NEGATIVE_INT_PARAM = "Please provide a valid non-negative integer value in the '{key}' parameter"
 DATAMINRPULSE_ERROR_ZERO_INT_PARAM = "Please provide a non-zero positive integer value in the '{key}' parameter"
-DATAMINRPULSE_STATE_FROM_VALUE = 'from'
-DATAMINRPULSE_STATE_TO_VALUE = 'to'
-DATAMINRPULSE_STATE_LIST_ID_VALUE = 'list_id'
-DATAMINRPULSE_STATE_QUERY_VALUE = 'query'
+DATAMINRPULSE_STATE_FROM_VALUE = "from"
+DATAMINRPULSE_STATE_TO_VALUE = "to"
+DATAMINRPULSE_STATE_LIST_ID_VALUE = "list_id"
+DATAMINRPULSE_STATE_QUERY_VALUE = "query"
 DATAMINRPULSE_ERROR_JSON_RESPONSE = "Unable to parse JSON response. Error: {0}"
 DATAMINRPULSE_ERROR_REST_CALL = "Error connecting to server. Details: {0}"
 DATAMINRPULSE_ERROR_EMPTY_RESPONSE = "Status code: {}. Empty response and no information available"
 DATAMINRPULSE_ERROR_HTML_RESPONSE = "Error parsing html response"
 DATAMINRPULSE_DUPLICATE_CONTAINER_FOUND_MSG = "duplicate container found"
-DATAMINRPULSE_ACTION_EMPTY_ALERTS = 'No alerts found'
-DATAMINRPULSE_ALERT_TYPE_VALUE = ['All', 'Alert', 'Urgent', 'Flash']
+DATAMINRPULSE_ACTION_EMPTY_ALERTS = "No alerts found"
+DATAMINRPULSE_ALERT_TYPE_VALUE = ["All", "Alert", "Urgent", "Flash"]
 DATAMINRPULSE_ERROR_INVALID_PARAMETER_VALUE = "Please provide valid value in the 'Alert Type' asset parameter"
-DATAMINRPULSE_APP_ID = '8630b723-b317-4765-b923-5be5229c71d1'
+DATAMINRPULSE_APP_ID = "8630b723-b317-4765-b923-5be5229c71d1"
 DATAMINRPULSE_EMPTY_RESPONSE_STATUS_CODE = [200, 201, 204]
 DATAMINRPULSE_DECODE_FROM_ERROR = 'Error from server. Error message: Unable to decode "from" cursor, invalid format'
-DATAMINRPULSE_SEVERITY_ENDPOINT = 'rest/severity'
-DATAMINRPULSE_SEVERITY_PAYLOAD = [
-    {
-        "color": "red",
-        "name": "Flash"
-    },
-    {
-        "color": "orange",
-        "name": "Urgent"
-    },
-    {
-        "color": "yellow",
-        "name": "Alert"
-    }
-]
+DATAMINRPULSE_SEVERITY_ENDPOINT = "rest/severity"
+DATAMINRPULSE_SEVERITY_PAYLOAD = [{"color": "red", "name": "Flash"}, {"color": "orange", "name": "Urgent"}, {"color": "yellow", "name": "Alert"}]

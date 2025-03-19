@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_get_lists.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -50,28 +50,12 @@ class TestGetListsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{}]
+        self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {
-            "watchlists": {
-                "TOPIC": [
-                    {
-                        "data": "dummy_data"
-                    }
-                ],
-                "CUSTOM": [
-                    {
-                        "data": "dummy_data"
-                    }
-                ],
-                "COMPANY": [
-                    {
-                        "data": "dummy_data"
-                    }
-                ]
-            }
+            "watchlists": {"TOPIC": [{"data": "dummy_data"}], "CUSTOM": [{"data": "dummy_data"}], "COMPANY": [{"data": "dummy_data"}]}
         }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -81,7 +65,7 @@ class TestGetListsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,
@@ -96,7 +80,7 @@ class TestGetListsAction(unittest.TestCase):
         Patch the get() to return the unauthorized response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{}]
+        self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
@@ -113,7 +97,7 @@ class TestGetListsAction(unittest.TestCase):
         )
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,

@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_on_poll.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -58,29 +58,23 @@ class TestOnPollAction(unittest.TestCase):
         dataminrpulse_config.set_state_file(dmaToken=True)
 
         self.test_json.update({"user_session_token": dataminrpulse_config.get_session_id(self.connector)})
-        self.test_json.get('config').update({"query": "query", "list_names": None, "alert_type": 'All', "page_size_for_polling": 40})
+        self.test_json.get("config").update({"query": "query", "list_names": None, "alert_type": "All", "page_size_for_polling": 40})
 
         dataminrpulse_config.ALERT_DATA.update({"alertId": str(uuid.uuid4())})
 
         mock_get.get(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             status_code=200,
             headers=dataminrpulse_config.DEFAULT_HEADERS,
-            json={
-                "data": {
-                    "alerts": [dataminrpulse_config.ALERT_DATA],
-                    "from": "from",
-                    "to": "to"
-                }
-            }
+            json={"data": {"alerts": [dataminrpulse_config.ALERT_DATA], "from": "from", "to": "to"}},
         )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
 
-        self.assertEqual(ret_val['result_data'][0]['status'], 'success')
-        self.assertEqual(ret_val['result_summary']['containers_successful'], 1)
-        self.assertEqual(ret_val['result_summary']['artifacts_successful'], 4)
+        self.assertEqual(ret_val["result_data"][0]["status"], "success")
+        self.assertEqual(ret_val["result_summary"]["containers_successful"], 1)
+        self.assertEqual(ret_val["result_summary"]["artifacts_successful"], 4)
 
     @requests_mock.Mocker(real_http=True)
     def test_on_poll_query_pass(self, mock_get):
@@ -93,27 +87,21 @@ class TestOnPollAction(unittest.TestCase):
 
         self.test_json.update({"user_session_token": dataminrpulse_config.get_session_id(self.connector)})
         dataminrpulse_config.ALERT_DATA.update({"alertId": str(uuid.uuid4())})
-        self.test_json.update({"query": dataminrpulse_config.ALERT_DATA.get('alertId'), "list_names": None})
+        self.test_json.update({"query": dataminrpulse_config.ALERT_DATA.get("alertId"), "list_names": None})
 
         mock_get.get(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             status_code=200,
             headers=dataminrpulse_config.DEFAULT_HEADERS,
-            json={
-                "data": {
-                    "alerts": [dataminrpulse_config.ALERT_DATA],
-                    "from": "from",
-                    "to": "to"
-                }
-            }
+            json={"data": {"alerts": [dataminrpulse_config.ALERT_DATA], "from": "from", "to": "to"}},
         )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
 
-        self.assertEqual(ret_val['result_data'][0]['status'], 'success')
-        self.assertEqual(ret_val['result_summary']['containers_successful'], 1)
-        self.assertEqual(ret_val['result_summary']['artifacts_successful'], 4)
+        self.assertEqual(ret_val["result_data"][0]["status"], "success")
+        self.assertEqual(ret_val["result_summary"]["containers_successful"], 1)
+        self.assertEqual(ret_val["result_summary"]["artifacts_successful"], 4)
 
     @requests_mock.Mocker(real_http=True)
     def test_on_poll_listnames_pass(self, mock_get):
@@ -126,27 +114,21 @@ class TestOnPollAction(unittest.TestCase):
 
         self.test_json.update({"user_session_token": dataminrpulse_config.get_session_id(self.connector)})
         dataminrpulse_config.ALERT_DATA.update({"alertId": str(uuid.uuid4())})
-        self.test_json.update({"query": dataminrpulse_config.ALERT_DATA.get('alertId'), "list_names": "3342659"})
+        self.test_json.update({"query": dataminrpulse_config.ALERT_DATA.get("alertId"), "list_names": "3342659"})
 
         mock_get.get(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             status_code=200,
             headers=dataminrpulse_config.DEFAULT_HEADERS,
-            json={
-                "data": {
-                    "alerts": [],
-                    "from": "from",
-                    "to": "to"
-                }
-            }
+            json={"data": {"alerts": [], "from": "from", "to": "to"}},
         )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
 
-        self.assertEqual(ret_val['result_data'][0]['status'], 'success')
-        self.assertEqual(ret_val['result_summary']['containers_successful'], 0)
-        self.assertEqual(ret_val['result_summary']['artifacts_successful'], 0)
+        self.assertEqual(ret_val["result_data"][0]["status"], "success")
+        self.assertEqual(ret_val["result_summary"]["containers_successful"], 0)
+        self.assertEqual(ret_val["result_summary"]["artifacts_successful"], 0)
 
     @patch("dataminrpulse_utils.requests.get")
     def test_on_poll_fail(self, mock_get):
@@ -156,16 +138,11 @@ class TestOnPollAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json.get('config').update({"query": "query", "list_names": None, "alert_type": 'All', "page_size_for_polling": 40})
+        self.test_json.get("config").update({"query": "query", "list_names": None, "alert_type": "All", "page_size_for_polling": 40})
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"errors": [
-            {
-                "code": 102,
-                "message": "Invalid client Id or client secret"
-            }
-        ]}
+        mock_get.return_value.json.return_value = {"errors": [{"code": 102, "message": "Invalid client Id or client secret"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -173,13 +150,18 @@ class TestOnPollAction(unittest.TestCase):
         self.assertIn("Error code: 102", ret_val["result_data"][0]["message"])
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
-                'lists': None, 'query': 'query', 'from': None, 'to': None,
-                'num': 40, "application": "splunk_soar", "application_version": dataminrpulse_config.APPLICATION_VERSION,
-                "integration_version": dataminrpulse_config.INTEGRATION_VERSION
+                "lists": None,
+                "query": "query",
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
             },
             verify=False,
         )
@@ -192,7 +174,7 @@ class TestOnPollAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json.get('config').update({"query": None, "list_names": None})
+        self.test_json.get("config").update({"query": None, "list_names": None})
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
@@ -211,7 +193,7 @@ class TestOnPollAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json.get('config').update({"list_names": None, "query": 'query', "alert_type": 'TEST', "page_size_for_polling": 40})
+        self.test_json.get("config").update({"list_names": None, "query": "query", "alert_type": "TEST", "page_size_for_polling": 40})
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
@@ -230,7 +212,7 @@ class TestOnPollAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json.get('config').update({"list_names": None, "query": 'query', "alert_type": 'All', "page_size_for_polling": -1})
+        self.test_json.get("config").update({"list_names": None, "query": "query", "alert_type": "All", "page_size_for_polling": -1})
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS

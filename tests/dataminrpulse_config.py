@@ -1,6 +1,6 @@
 # File: dataminrpulse_config.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -28,6 +28,7 @@ import encryption_helper
 import requests
 from dotenv import load_dotenv
 
+
 # Load '.env' file to the environment variables.
 load_dotenv()
 
@@ -38,7 +39,7 @@ DEFAULT_ASSET_ID = "10"
 DEFAULT_HEADERS = {"Content-Type": CONTENT_TYPE}
 STATE_FILE_PATH = f"/opt/phantom/local_data/app_states/8630b723-b317-4765-b923-5be5229c71d1/{DEFAULT_ASSET_ID}_state.json"
 
-ACTION_HEADER = {'Authorization': 'Dmauth <dummy_token>'}
+ACTION_HEADER = {"Authorization": "Dmauth <dummy_token>"}
 TOKEN_HEADER = {"Content-Type": "application/x-www-form-urlencoded"}
 TOKEN_DATA = {"client_id": "<client_id>", "client_secret": "<dummy_client_secret>", "grant_type": "api_key"}
 
@@ -66,105 +67,54 @@ TEST_JSON = {
         "alert_type": ALERT_TYPE,
         "list_names": LIST_NAMES,
     },
-    "ingest": {
-        "container_label": "test",
-        "interval_mins": "1",
-        "poll": False,
-        "polling_strategy": "off"
-    },
+    "ingest": {"container_label": "test", "interval_mins": "1", "poll": False, "polling_strategy": "off"},
     "main_module": "dataminrpulse_connector.py",
     "debug_level": 3,
     "dec_key": DEFAULT_ASSET_ID,
-    "parameters": [{}]
+    "parameters": [{}],
 }
 
-JSON_DATA = {"watchlists": {
-    "TOPIC": [
-        {
-            "id": 3342659,
-            "type": "TOPIC",
-            "name": "test1",
-            "description": "",
-            "properties": {
-                "watchlistColor": "red"
-            }
-        },
-    ],
-    "CUSTOM": [
-        {
-            "id": 3342660,
-            "type": "CUSTOM",
-            "name": "test2",
-            "description": "",
-            "properties": {
-                "watchlistColor": "red"
-            }
-        },
-    ],
-    "COMPANY": [
-        {
-            "id": 3342661,
-            "type": "COMPANY",
-            "name": "test3",
-            "description": "",
-            "properties": {
-                "watchlistColor": "red"
-            }
-        },
-    ]
-}}
-
-FILE_DATA = {"metadata": {
-    "cyber": {
-        "URLs": [
-            "test[.]com",
-            "test2[.]edu"
+JSON_DATA = {
+    "watchlists": {
+        "TOPIC": [
+            {"id": 3342659, "type": "TOPIC", "name": "test1", "description": "", "properties": {"watchlistColor": "red"}},
         ],
-        "addresses": [
-            {
-                "ip": "0.0.0[.]0",
-                "port": "1977"
-            }
+        "CUSTOM": [
+            {"id": 3342660, "type": "CUSTOM", "name": "test2", "description": "", "properties": {"watchlistColor": "red"}},
         ],
-        "hashes": [
-            "012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"
-        ]
+        "COMPANY": [
+            {"id": 3342661, "type": "COMPANY", "name": "test3", "description": "", "properties": {"watchlistColor": "red"}},
+        ],
     }
-}}
+}
 
-ALERT_DATA = {
-    "alertId": "85992181617703100451674976448185-1674976448217-1",
-    "availableRelatedAlerts": 0,
-    "alertType": {
-        "id": "alert",
-        "name": "Alert",
-        "color": "FFBB05"
-    },
+FILE_DATA = {
     "metadata": {
         "cyber": {
-            "addresses": [
-                {
-                    "ip": "77.73.133[.]62"
-                }
-            ],
-            "hashes": [
-                "5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"
-            ],
-            "malwares": [
-                "Redline stealer"
-            ]
+            "URLs": ["test[.]com", "test2[.]edu"],
+            "addresses": [{"ip": "0.0.0[.]0", "port": "1977"}],
+            "hashes": ["012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],  # pragma: allowlist secret
         }
     }
 }
 
+ALERT_DATA = {
+    "alertId": "85992181617703100451674976448185-1674976448217-1",
+    "availableRelatedAlerts": 0,
+    "alertType": {"id": "alert", "name": "Alert", "color": "FFBB05"},
+    "metadata": {
+        "cyber": {
+            "addresses": [{"ip": "77.73.133[.]62"}],
+            "hashes": ["5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],  # pragma: allowlist secret
+            "malwares": ["Redline stealer"],
+        }
+    },
+}
+
 ALERT_DATA_CEF = {
-    'alertId': '85992181617703100451674976448185-1674976448217-1',
-    'availableRelatedAlerts': 0,
-    'alertType': {
-        'id': 'alert',
-        'name': 'Alert',
-        'color': 'FFBB05'
-    }
+    "alertId": "85992181617703100451674976448185-1674976448217-1",
+    "availableRelatedAlerts": 0,
+    "alertType": {"id": "alert", "name": "Alert", "color": "FFBB05"},
 }
 
 TOKEN_DUMMY_DMA_TOKEN_1 = "dummy value 1"
@@ -193,7 +143,7 @@ def set_state_file(dmaToken=False):
         state_file["token"] = {
             "dmaToken": encryption_helper.encrypt("<dummy_token>", DEFAULT_ASSET_ID),
             "refreshToken": encryption_helper.encrypt("<dummy_refresh_token>", DEFAULT_ASSET_ID),
-            "expire": 33333333
+            "expire": 33333333,
         }
     state_file = json.dumps(state_file)
 
@@ -217,16 +167,9 @@ def get_session_id(connector, verify=False):
     r = requests.get(login_url, verify=verify)
     csrftoken = r.cookies["csrftoken"]
 
-    data = {
-        "username": os.environ.get("USERNAME"),
-        "password": os.environ.get("PASSWORD"),
-        "csrfmiddlewaretoken": csrftoken
-    }
+    data = {"username": os.environ.get("USERNAME"), "password": os.environ.get("PASSWORD"), "csrfmiddlewaretoken": csrftoken}
 
-    headers = {
-        "Cookie": f"csrftoken={csrftoken}",
-        "Referer": login_url
-    }
+    headers = {"Cookie": f"csrftoken={csrftoken}", "Referer": login_url}
 
     # Logging into the Platform to get the session id
     r2 = requests.post(login_url, verify=verify, data=data, headers=headers)

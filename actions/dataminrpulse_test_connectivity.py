@@ -1,6 +1,6 @@
 # File: dataminrpulse_test_connectivity.py
 #
-# Copyright (c) 2023-2024 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -35,9 +35,9 @@ class TestConnectivityAction(BaseAction):
         """Execute the test connectivity action."""
         # Add severity
         base_url = self._connector._get_phantom_base_url()
-        url = "{}{}".format(base_url, consts.DATAMINRPULSE_SEVERITY_ENDPOINT)
+        url = f"{base_url}{consts.DATAMINRPULSE_SEVERITY_ENDPOINT}"
 
-        _ = requests.request("POST", url, data=json.dumps(consts.DATAMINRPULSE_SEVERITY_PAYLOAD), verify=False)   # nosemgrep
+        _ = requests.request("POST", url, data=json.dumps(consts.DATAMINRPULSE_SEVERITY_PAYLOAD), verify=False)  # nosemgrep
 
         self._connector.save_progress("Connecting to the endpoint")
 
