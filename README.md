@@ -1,7 +1,7 @@
 # Dataminr Pulse for Splunk SOAR
 
 Publisher: Dataminr \
-Connector Version: 1.2.0 \
+Connector Version: 1.2.1 \
 Product Vendor: Dataminr \
 Product Name: Dataminr Pulse \
 Minimum Product Version: 5.5.0
