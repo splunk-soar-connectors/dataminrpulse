@@ -1,3 +1,15 @@
+## Backward Compatibility
+
+**Important Changes in This Version:**
+
+This version of the app includes the following breaking changes that may require updates to existing playbooks:
+
+- **Removed Action:** The "get related alerts" action has been removed from this version.
+- **Alert Artifacts Enhancement:** Alert artifacts now include all available values from the Alert API response.
+- **Updated CEF Types:** The CEF types for URL artifacts and IP artifacts have been updated.
+
+**Action Required:** Users must update their existing playbooks accordingly to maintain backward compatibility with these changes.
+
 ## Explanation of the Asset Configuration Parameters
 
 The asset configuration parameters affect 'test connectivity' and some other actions of the
