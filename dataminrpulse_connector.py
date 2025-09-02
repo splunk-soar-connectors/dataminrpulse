@@ -1,6 +1,6 @@
 # File: dataminrpulse_connector.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -38,7 +38,7 @@ class DataminrPulseConnector(BaseConnector):
     def __init__(self):
         """Prepare constructor for Dataminr Pulse."""
         # Call the BaseConnectors init first
-        super(DataminrPulseConnector, self).__init__()
+        super().__init__()
 
         self.state = None
         self.util = None
@@ -53,11 +53,19 @@ class DataminrPulseConnector(BaseConnector):
         if not self.state or not isinstance(self.state, dict):
             self.debug_print(consts.DATAMINRPULSE_ERROR_STATE_FILE_CORRUPT)
             self.state = {"app_version": self.get_app_json().get("app_version")}
+            self.is_state_updated = True
 
         self.config = self.get_config()
 
         # Create the util object and use it throughout the action lifecycle
         self.util = DataminrPulseUtils(self)
+        api_version = self.state.get(consts.DATAMINRPULSE_STATE_API_VERSION, None)
+        if api_version and api_version != self.util._api_version:
+            self.debug_print("API version is changed from {} to {} hence resetting state file".format(api_version, self.util._api_version))
+            self.state = {"app_version": self.get_app_json().get("app_version")}
+            self.is_state_updated = True
+
+        self.state[consts.DATAMINRPULSE_STATE_API_VERSION] = self.util._api_version
 
         return phantom.APP_SUCCESS
 

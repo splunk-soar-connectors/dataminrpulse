@@ -1,0 +1,84 @@
+# File: dataminrpulse_get_alert_details.py
+#
+# Copyright (c) 2023-2025 Dataminr
+#
+# This unpublished material is proprietary to Dataminr.
+# All rights reserved. The methods and
+# techniques described herein are considered trade secrets
+# and/or confidential. Reproduction or distribution, in whole
+# or in part, is forbidden except by express written permission
+# of Dataminr.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+
+
+import phantom.app as phantom
+import phantom.rules as phantom_rules
+
+import dataminrpulse_consts as consts
+from actions import BaseAction
+
+
+class GetAlertDetailsAction(BaseAction):
+    """Class to handle get alert details action."""
+
+    def execute(self):
+        """Execute the get alert details action."""
+        alert_id = self._param.get("alert_id")
+        artifact_id = self._param.get("artifact_id")
+        self._action_result.update_summary({"api_version_used": self._connector.util._api_version})
+        if self._connector.util._api_version == "v3":
+            return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action") 
+
+        if alert_id:
+            params = {
+                "query": f"{alert_id.split('-')[0]}"
+            }
+            ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS_V4, self._action_result, params=params)
+            if phantom.is_fail(ret_val):
+                return self._action_result.get_status()  
+        elif artifact_id:
+            base_url = self._connector._get_phantom_base_url()
+
+            url = consts.DATAMINRPULSE_GET_ARTIFACT_DETAILS.format(instance=base_url, artifact_id=artifact_id)
+            ret_val, response = self._connector.util._make_rest_call(url, self._action_result)
+            if phantom.is_fail(ret_val):
+                return self._action_result.get_status()
+            response = response.get("cef", {})
+        else:
+            return self._action_result.set_status(phantom.APP_ERROR, "Please provide either artifact_id or alert_id") 
+        
+        # Handle both single alert and alerts array response
+        if isinstance(response, dict):
+            if "alerts" in response:
+                alert_details = response["alerts"]
+            else:
+                alert_details = response  # Single alert response
+        elif isinstance(response, list):
+            alert_details = response
+        else:
+            alert_details = []
+
+        
+        # Add each alert as separate data item
+        if alert_details:
+            if isinstance(alert_details, list):
+                for alert in alert_details:
+                    if alert.get("metadata"):
+                        alert["metadata"] = [alert["metadata"]]
+                    self._action_result.add_data(alert)
+            else:
+                self._action_result.add_data(alert_details)
+        else:
+            return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
+        
+        return self._action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched alert details")

@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_get_alerts.py
 #
-# Copyright (c) 2023 Dataminr
+# Copyright (c) 2023-2025 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
@@ -51,14 +51,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": "3343815", "query": "1247060284", "from": None, "to": None, "num": 1}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"data": {
-            "alerts": ['dummy_data'],
-            "from": "dummy_from",
-            "to": "dummy_to"}}
+        mock_get.return_value.json.return_value = {"data": {"alerts": ["dummy_data"], "from": "dummy_from", "to": "dummy_to"}}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -66,11 +63,20 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 1")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 40},
-            verify=False
+            params={
+                "lists": "3343815",
+                "query": "1247060284",
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
+            verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -81,16 +87,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the unauthorized response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": "3343815", "query": "1247060284", "from": None, "to": None, "num": 1}]
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"errors": [
-            {
-                "code": 102,
-                "message": "Invalid client Id or client secret"
-            }
-        ]}
+        mock_get.return_value.json.return_value = {"errors": [{"code": 102, "message": "Invalid client Id or client secret"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -98,10 +99,19 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertIn("Error code: 102", ret_val["result_data"][0]["message"])
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3343815', 'query': '1247060284', 'from': None, 'to': None, 'num': 40},
+            params={
+                "lists": "3343815",
+                "query": "1247060284",
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
             verify=False,
         )
 
@@ -113,14 +123,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '3343815', 'query': None, 'from': None, 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": "3343815", "query": None, "from": None, "to": None, "num": 1}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"data": {
-            "alerts": ['dummy_data'],
-            "from": "dummy_from",
-            "to": "dummy_to"}}
+        mock_get.return_value.json.return_value = {"data": {"alerts": ["dummy_data"], "from": "dummy_from", "to": "dummy_to"}}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -128,10 +135,19 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 1")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3343815', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                "lists": "3343815",
+                "query": None,
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
             verify=False,
         )
 
@@ -144,14 +160,11 @@ class TestGetAlertsAction(unittest.TestCase):
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
 
-        self.test_json['parameters'] = [{'list_id': None, 'query': None, 'from': None, 'to': None, 'num': 1, 'use_asset_configured_lists': True}]
+        self.test_json["parameters"] = [{"list_id": None, "query": None, "from": None, "to": None, "num": 1, "use_asset_configured_lists": True}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"data": {
-            "alerts": ['dummy_data'],
-            "from": "dummy_from",
-            "to": "dummy_to"}}
+        mock_get.return_value.json.return_value = {"data": {"alerts": ["dummy_data"], "from": "dummy_from", "to": "dummy_to"}}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -159,7 +172,7 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(
             ret_val["result_data"][0]["message"],
-            "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter"
+            "Please provide either valid 'list names' in asset configuration parameter or 'query' in action parameter",
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -170,8 +183,8 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['config']['list_names'] = "test1"
-        self.test_json['parameters'] = [{'list_id': None, 'query': None, 'from': None, 'to': None, 'num': 1, 'use_asset_configured_lists': True}]
+        self.test_json["config"]["list_names"] = "test1"
+        self.test_json["parameters"] = [{"list_id": None, "query": None, "from": None, "to": None, "num": 1, "use_asset_configured_lists": True}]
 
         get_response_1 = requests.Response()
         get_response_1._content = json.dumps(dataminrpulse_config.JSON_DATA).encode()
@@ -192,10 +205,19 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 0")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3342659', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                "lists": "3342659",
+                "query": None,
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
             verify=False,
         )
 
@@ -207,16 +229,10 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['config']['list_names'] = "test1"
-        self.test_json['parameters'] = [
-            {
-                'list_id': ',,,',
-                'query': None,
-                'from': None,
-                'to': None,
-                'num': 1,
-                'use_asset_configured_lists': True
-            }]
+        self.test_json["config"]["list_names"] = "test1"
+        self.test_json["parameters"] = [
+            {"list_id": ",,,", "query": None, "from": None, "to": None, "num": 1, "use_asset_configured_lists": True}
+        ]
 
         get_response_1 = requests.Response()
         get_response_1._content = json.dumps(dataminrpulse_config.JSON_DATA).encode()
@@ -237,10 +253,19 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 0")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '3342659', 'query': None, 'from': None, 'to': None, 'num': 40},
+            params={
+                "lists": "3342659",
+                "query": None,
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
             verify=False,
         )
 
@@ -252,14 +277,11 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': None, 'query': '1247060284', 'from': None, 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": None, "query": "1247060284", "from": None, "to": None, "num": 1}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"data": {
-            "alerts": ['dummy_data'],
-            "from": "dummy_from",
-            "to": "dummy_to"}}
+        mock_get.return_value.json.return_value = {"data": {"alerts": ["dummy_data"], "from": "dummy_from", "to": "dummy_to"}}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -267,10 +289,19 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 1")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': None, 'query': '1247060284', 'from': None, 'to': None, 'num': 40},  # doubt
+            params={
+                "lists": None,
+                "query": "1247060284",
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
             verify=False,
         )
 
@@ -282,22 +313,23 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{
-            'list_id': None, 'query': '1247060284',
-            'from': 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
-                    'NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI'
-                    '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
-                    'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
-                    'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-            'to': None, 'num': 1
-        }]
+        self.test_json["parameters"] = [
+            {
+                "list_id": None,
+                "query": "1247060284",
+                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "to": None,
+                "num": 1,
+            }
+        ]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"data": {
-            "alerts": ['dummy_data'],
-            "from": "dummy_from",
-            "to": "dummy_to"}}
+        mock_get.return_value.json.return_value = {"data": {"alerts": ["dummy_data"], "from": "dummy_from", "to": "dummy_to"}}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -305,17 +337,22 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 1")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
-                'lists': None, 'query': '1247060284',
-                'from': 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
-                        'NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI'
-                        '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
-                        'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
-                        'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                'to': None, 'num': 40
+                "lists": None,
+                "query": "1247060284",
+                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
             },
             verify=False,
         )
@@ -328,26 +365,23 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [
+        self.test_json["parameters"] = [
             {
-                'list_id': None,
-                'query': '1247060284',
-                'from': None,
-                'to': 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
-                      'NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI'
-                      '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
-                      'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
-                      'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                'num': 1,
+                "list_id": None,
+                "query": "1247060284",
+                "from": None,
+                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "num": 1,
             }
         ]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {"data": {
-            "alerts": ['dummy_data'],
-            "from": "dummy_from",
-            "to": "dummy_to"}}
+        mock_get.return_value.json.return_value = {"data": {"alerts": ["dummy_data"], "from": "dummy_from", "to": "dummy_to"}}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -355,19 +389,22 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 1")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
-                'lists': None,
-                'query': '1247060284',
-                'from': None,
-                'to': 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
-                      'NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI'
-                      '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
-                      'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
-                      'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                'num': 40,
+                "lists": None,
+                "query": "1247060284",
+                "from": None,
+                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
             },
             verify=False,
         )
@@ -380,15 +417,15 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '123', 'query': None, 'from': None, 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": "123", "query": None, "from": None, "to": None, "num": 1}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {
             "data": {
                 "alerts": [],
-                "from": 'dummy_from',
-                "to": 'dummy_to',
+                "from": "dummy_from",
+                "to": "dummy_to",
             }
         }
 
@@ -398,11 +435,20 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Total alerts: 0")
 
         mock_get.assert_called_with(
-            f'https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}',
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={'lists': '123', 'query': None, 'from': None, 'to': None, 'num': 40},
-            verify=False
+            params={
+                "lists": "123",
+                "query": None,
+                "from": None,
+                "to": None,
+                "num": 40,
+                "application": "splunk_soar",
+                "application_version": dataminrpulse_config.APPLICATION_VERSION,
+                "integration_version": dataminrpulse_config.INTEGRATION_VERSION,
+            },
+            verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -413,7 +459,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '123', 'query': None, 'from': None, 'to': None, 'num': -1}]
+        self.test_json["parameters"] = [{"list_id": "123", "query": None, "from": None, "to": None, "num": -1}]
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
@@ -424,7 +470,7 @@ class TestGetAlertsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(
             ret_val["result_data"][0]["message"],
-            "Error from server. Please provide a valid non-negative integer value in the 'Max Alerts' parameter"
+            "Error from server. Please provide a valid non-negative integer value in the 'Max Alerts' parameter",
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -435,7 +481,7 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': None, 'query': None, 'from': None, 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": None, "query": None, "from": None, "to": None, "num": 1}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -450,21 +496,21 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [
+        self.test_json["parameters"] = [
             {
-                'list_id': '3343815',
-                'query': None,
-                "from": 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
-                        'NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI'
-                        '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
-                        'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
-                        'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                "to": 'H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++'
-                      'NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI'
-                      '+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq'
-                      'JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0'
-                      'v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==',
-                'num': 1,
+                "list_id": "3343815",
+                "query": None,
+                "from": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "to": "H4sIAAAAAAAAAFXQ3StDcQDG8fOsX5IkSZIkSZLQWpIkIU6SJEmSZLWl1do05x+glYlWxCwkSWueiZCXyKJ2RdmSK++"  # pragma: allowlist secret
+                "NpIXOrhw1i1t336vPxVcn9IpxaMhsarSaHcpIxbDRoVgUi91mNg2+jhLN/kWiPzRPNHkjxMDKtIos1wbRFzkhSqI"  # pragma: allowlist secret
+                "+ov5ql2jQ7lRkr015hM61RXQ7tTmRcrQdQKu2TrTziih1h4jy4DGRv3xPlLmO4kjfCHtEajCuInP5j+9ZvSC6xq"  # pragma: allowlist secret
+                "JE59OKihx1h6jZPyTk6wOiyOf0COE/Iyo/H4i62DNRnUzOijRta05Ilx9E8dsPkbepErkvl4TBtUAULoWJgpvJODK0"  # pragma: allowlist secret
+                "v9LzkaidiREdpxNE790XUXUeINokw78VNrutxWRR7A6L0Zru/fDKaYnxaVmE/DNyavD2ewFSIuyRU9yn87JOktTd99ie8ReGnElETwEAAA==",  # pragma: allowlist secret
+                "num": 1,
             }
         ]
 
@@ -485,18 +531,17 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '3343815', 'query': None, 'from': 'abc', 'to': None, 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": "3343815", "query": None, "from": "abc", "to": None, "num": 1}]
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = "Error message: Unable to decode \"from\" cursor, invalid format"
+        mock_get.return_value.json.return_value = 'Error message: Unable to decode "from" cursor, invalid format'
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(
-            ret_val["result_data"][0]["message"],
-            "Error from server. Error message: Unable to decode \"from\" cursor, invalid format"
+            ret_val["result_data"][0]["message"], 'Error from server. Error message: Unable to decode "from" cursor, invalid format'
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -507,16 +552,13 @@ class TestGetAlertsAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json['parameters'] = [{'list_id': '3343815', 'query': None, 'from': None, 'to': 'abc', 'num': 1}]
+        self.test_json["parameters"] = [{"list_id": "3343815", "query": None, "from": None, "to": "abc", "num": 1}]
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = "Error message: Unable to decode \"to\" cursor, invalid format"
+        mock_get.return_value.json.return_value = 'Error message: Unable to decode "to" cursor, invalid format'
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(
-            ret_val["result_data"][0]["message"],
-            "Error from server. Error message: Unable to decode \"to\" cursor, invalid format"
-        )
+        self.assertEqual(ret_val["result_data"][0]["message"], 'Error from server. Error message: Unable to decode "to" cursor, invalid format')

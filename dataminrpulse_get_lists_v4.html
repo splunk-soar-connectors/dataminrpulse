@@ -110,7 +110,7 @@ and limitations under the License. -->
             <th>ID</th>
             <th>Name</th>
             <th>Type</th>
-            <th>Watchlist color</th>
+            <th>Sub Type</th>
           </thead>
           {% for list in result.data %}
             <tr>
@@ -124,7 +124,7 @@ and limitations under the License. -->
               </td>
               <td>{{ list.name }}</td>
               <td>{{ list.type }}</td>
-              <td>{{ list.properties.watchlistColor }}</td>
+              <td>{{ list.subType }}</td>
             </tr>
           {% endfor %}
         </table>

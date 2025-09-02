@@ -105,8 +105,9 @@ and limitations under the License. -->
   {% if not result.data %}
   <h4 class="nm-h4-style">No data found</h4>
   {% else %}
+  <!-- Debug info -->
   {% for result in result.data %}
-  {% if not result.alerts %}
+  {% if not result %}
   <h4 class="nm-h4-style">No alerts found</h4>
   <br>
   {% else %}
@@ -114,11 +115,11 @@ and limitations under the License. -->
   <table class="nm-table-horizontal">
     <thead>
       <th>Alert ID</th>
-      <th>Caption</th>
+      <th>Headline</th>
       <th>Alert Type</th>
       <th>Watchlist ID</th>
       <th>Watchlist Name</th>
-      <th>Available Related Alerts</th>
+      <th>Is ReGenAI Available</th>
     </thead>
     {% for alert in result.alerts %}
     <tr>
@@ -130,11 +131,11 @@ and limitations under the License. -->
           <span class="fa fa-caret-down" style="font-size: smaller;"></span>
         </a>
       </td>
-      <td>{{ alert.caption }}</td>
+      <td>{{ alert.headline }}</td>
       <td>{{ alert.alertType.name }}</td>
       <td>
         <table style="border:0px;">
-          {% for watchlist in alert.watchlistsMatchedByType %}
+          {% for watchlist in alert.listsMatched %}
           <tr>
             <a href="javascript:;"
               onclick="context_menu(this, [{'contains': ['dataminrpulse list id'], 'value': '{{ watchlist.id }}' }], 0, {{ container.id }}, null, false);">
@@ -149,14 +150,20 @@ and limitations under the License. -->
       </td>
       <td>
         <table>
-          {% for watchlist in alert.watchlistsMatchedByType %}
+          {% for watchlist in alert.listsMatched %}
           <tr>
             <td>{{ watchlist.name }}</td>
           </tr>
           {% endfor %}
         </table>
       </td>
-      <td>{{ alert.availableRelatedAlerts }}</td>
+      <td>
+        {% if alert.intelAgents %}
+        <p> True </p>
+        {% else %}
+        <p> False</p>
+        {% endif %}
+      </td>
       {% endfor %}
     </tr>
   </table>
@@ -172,16 +179,16 @@ and limitations under the License. -->
     <tr>
       <td>
         <a href="javascript:;"
-          onclick="context_menu(this, [{'contains': ['dataminrpulse from cursor value'], 'value': '{{ result.from }}' }], 0, {{ container.id }}, null, false);">
-          {{ result.from }}
+          onclick="context_menu(this, [{'contains': ['dataminrpulse from cursor value'], 'value': '{{ result.nextPage }}' }], 0, {{ container.id }}, null, false);">
+          {{ result.nextPage }}
           &nbsp;
           <span class="fa fa-caret-down" style="font-size: smaller;"></span>
         </a>
       </td>
       <td>
         <a href="javascript:;"
-          onclick="context_menu(this, [{'contains': ['dataminrpulse to cursor value'], 'value': '{{ result.to }}' }], 0, {{ container.id }}, null, false);">
-          {{ result.to }}
+          onclick="context_menu(this, [{'contains': ['dataminrpulse to cursor value'], 'value': '{{ result.previousPage }}' }], 0, {{ container.id }}, null, false);">
+          {{ result.previousPage }}
           &nbsp;
           <span class="fa fa-caret-down" style="font-size: smaller;"></span>
         </a>
