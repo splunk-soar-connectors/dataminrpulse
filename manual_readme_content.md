@@ -5,6 +5,7 @@ application. The parameters related to test connectivity action are Client ID an
 
 - **Client ID:** Client ID.
 - **Client Secret:** Client Secret.
+- **API Version:** API Version [v3 or v4].
 
 ## Explanation of the Actions' Parameters
 
@@ -69,7 +70,7 @@ application. The parameters related to test connectivity action are Client ID an
 
     - This parameter allows the user to limit the number of alerts in the response. It expects
       a numeric value as an input.
-    - The default value is 40 for this parameter.
+    - The default value is 40 for this parameter. The maximum 100 alerts can be fetched at a time. If the user provides a value greater than 100, then the on poll ingest 100 alerts only in single cycle.
 
   - **Action Parameter: Alert type**
 
@@ -209,28 +210,3 @@ application. The parameters related to test connectivity action are Client ID an
       - List ID = 1234567,1234568
       - Query = ("Test" AND "Application") OR ("text" AND "json")
       - Max Alerts = 10
-
-- ### Get Related Alerts
-
-  Fetch the details of the asset from the Dataminr platform for the given Alert ID.
-
-  - **Action Parameter: Alert ID**
-
-    - This parameter is the unique key for any particular alert and it is a required
-      parameter.
-    - If the Alert ID provided is invalid, the action will return an empty response.
-    - Users can get the alert ID by executing the "get alerts" action.
-
-  - **Action Parameter: Include Root**
-
-    - This parameter accepts a boolean value and it is optional.
-    - This parameter is used if the user wants the root alert (provided alert) in the get
-      related alerts response.
-
-  - **Examples:**
-
-    - List the alerts detail with the Alert ID '01234567-1672385801826-3' with includeRoot as
-      True.
-
-      - Alert ID = 01234567-1672385801826-3
-      - includeRoot = True

@@ -53,11 +53,19 @@ class DataminrPulseConnector(BaseConnector):
         if not self.state or not isinstance(self.state, dict):
             self.debug_print(consts.DATAMINRPULSE_ERROR_STATE_FILE_CORRUPT)
             self.state = {"app_version": self.get_app_json().get("app_version")}
+            self.is_state_updated = True
 
         self.config = self.get_config()
 
         # Create the util object and use it throughout the action lifecycle
         self.util = DataminrPulseUtils(self)
+        api_version = self.state.get(consts.DATAMINRPULSE_STATE_API_VERSION, None)
+        if api_version and api_version != self.util._api_version:
+            self.debug_print("API version is changed from {} to {} hence resetting state file".format(api_version, self.util._api_version))
+            self.state = {"app_version": self.get_app_json().get("app_version")}
+            self.is_state_updated = True
+
+        self.state[consts.DATAMINRPULSE_STATE_API_VERSION] = self.util._api_version
 
         return phantom.APP_SUCCESS
 
@@ -108,9 +116,9 @@ def main():  # pragma: no cover
     verify = args.verify
 
     if username is not None and password is None:
+
         # User specified a username but not a password, so ask
         import getpass
-
         password = getpass.getpass("Password: ")
 
     if username and password:

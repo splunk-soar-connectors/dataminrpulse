@@ -32,15 +32,25 @@ class GetListsAction(BaseAction):
 
     def execute(self):
         """Execute the get lists action."""
-        ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_LISTS, self._action_result)
+        self._action_result.update_summary({"api_version_used": self._connector.util._api_version})
+
+        if self._connector.util._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
+        elif self._connector.util._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS
+
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, self._action_result)
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
-        watchlists = response.get("watchlists", {})
+        if self._connector.util._api_version == "v4":
+            resp_data = response.get("lists", {})
+        elif self._connector.util._api_version == "v3":
+            resp_data = response.get("watchlists", {})
 
-        for _, watchlist_type in watchlists.items():
-            for list in watchlist_type:
-                self._action_result.add_data(list)
+        for _, watchlist_type in resp_data.items():
+            for list_data in watchlist_type:
+                self._action_result.add_data(list_data)
 
         self._action_result.update_summary({"total_watchlists": self._action_result.get_data_size()})
 
