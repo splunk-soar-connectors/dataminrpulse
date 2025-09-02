@@ -21,8 +21,9 @@
 # and limitations under the License.
 
 
-import phantom.app as phantom
 import urllib.parse as urlparse
+
+import phantom.app as phantom
 
 import dataminrpulse_consts as consts
 from actions import BaseAction
@@ -70,21 +71,25 @@ class OnPollAction(BaseAction):
         params = {
             "lists": list_id,
             "query": query,
-            }
+        }
 
         if self._connector.util._api_version == "v4":
             endpoint = consts.DATAMINRPULSE_GET_ALERTS_V4
-            params.update({
-                "pageSize": num,
-            })
+            params.update(
+                {
+                    "pageSize": num,
+                }
+            )
         elif self._connector.util._api_version == "v3":
             endpoint = consts.DATAMINRPULSE_GET_ALERTS
-            params.update({
-                "num": num,
-                "application": "splunk_soar",
-                "application_version": f"{self._connector.get_product_version()}",
-                "integration_version": f"{self._connector.get_app_json().get('app_version')}",
-            })
+            params.update(
+                {
+                    "num": num,
+                    "application": "splunk_soar",
+                    "application_version": f"{self._connector.get_product_version()}",
+                    "integration_version": f"{self._connector.get_app_json().get('app_version')}",
+                }
+            )
 
         if not self._connector.is_poll_now() and self._connector.state.get(consts.DATAMINRPULSE_STATE_TO_VALUE, None):
             # To fetch new alerts, we assign to's value in from
@@ -128,16 +133,15 @@ class OnPollAction(BaseAction):
                 if response.get("previousPage"):
                     parsed_url = urlparse.urlparse(response.get("previousPage"))
                     query_params = urlparse.parse_qs(parsed_url.query)
-                    
-                    if 'to' in query_params:
-                        to_value = urlparse.unquote(query_params['to'][0])
+
+                    if "to" in query_params:
+                        to_value = urlparse.unquote(query_params["to"][0])
                 if response.get("nextPage"):
                     parsed_url = urlparse.urlparse(response.get("nextPage"))
                     query_params = urlparse.parse_qs(parsed_url.query)
-                    
-                    if 'from' in query_params:
-                        from_value = urlparse.unquote(query_params['from'][0])
-                
+
+                    if "from" in query_params:
+                        from_value = urlparse.unquote(query_params["from"][0])
 
             if to_value:
                 self._connector.state[consts.DATAMINRPULSE_STATE_TO_VALUE] = to_value

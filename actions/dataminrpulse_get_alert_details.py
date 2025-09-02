@@ -22,7 +22,6 @@
 
 
 import phantom.app as phantom
-import phantom.rules as phantom_rules
 
 import dataminrpulse_consts as consts
 from actions import BaseAction
@@ -37,15 +36,15 @@ class GetAlertDetailsAction(BaseAction):
         artifact_id = self._param.get("artifact_id")
         self._action_result.update_summary({"api_version_used": self._connector.util._api_version})
         if self._connector.util._api_version == "v3":
-            return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action") 
+            return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action")
 
         if alert_id:
-            params = {
-                "query": f"{alert_id.split('-')[0]}"
-            }
-            ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS_V4, self._action_result, params=params)
+            params = {"query": f"{alert_id.split('-')[0]}"}
+            ret_val, response = self._connector.util._make_rest_call_helper(
+                consts.DATAMINRPULSE_GET_ALERTS_V4, self._action_result, params=params
+            )
             if phantom.is_fail(ret_val):
-                return self._action_result.get_status()  
+                return self._action_result.get_status()
         elif artifact_id:
             base_url = self._connector._get_phantom_base_url()
 
@@ -55,8 +54,8 @@ class GetAlertDetailsAction(BaseAction):
                 return self._action_result.get_status()
             response = response.get("cef", {})
         else:
-            return self._action_result.set_status(phantom.APP_ERROR, "Please provide either artifact_id or alert_id") 
-        
+            return self._action_result.set_status(phantom.APP_ERROR, "Please provide either artifact_id or alert_id")
+
         # Handle both single alert and alerts array response
         if isinstance(response, dict):
             if "alerts" in response:
@@ -68,7 +67,6 @@ class GetAlertDetailsAction(BaseAction):
         else:
             alert_details = []
 
-        
         # Add each alert as separate data item
         if alert_details:
             if isinstance(alert_details, list):
@@ -80,5 +78,5 @@ class GetAlertDetailsAction(BaseAction):
                 self._action_result.add_data(alert_details)
         else:
             return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
-        
+
         return self._action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched alert details")

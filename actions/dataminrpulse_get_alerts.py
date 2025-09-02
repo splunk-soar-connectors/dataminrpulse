@@ -21,8 +21,10 @@
 # and limitations under the License.
 
 
-import phantom.app as phantom
 import urllib.parse as urlparse
+
+import phantom.app as phantom
+
 import dataminrpulse_consts as consts
 from actions import BaseAction
 
@@ -69,26 +71,25 @@ class GetAlertsAction(BaseAction):
             return self._action_result.get_status()
 
         # Prepare query parameters
-        params = {
-            "lists": list_id,
-            "query": query,
-            "from": from_value,
-            "to": to_value
-            }
+        params = {"lists": list_id, "query": query, "from": from_value, "to": to_value}
 
         if self._connector.util._api_version == "v4":
             endpoint = consts.DATAMINRPULSE_GET_ALERTS_V4
-            params.update({
-                "pageSize": num,
-            })
+            params.update(
+                {
+                    "pageSize": num,
+                }
+            )
         elif self._connector.util._api_version == "v3":
             endpoint = consts.DATAMINRPULSE_GET_ALERTS
-            params.update({
-                "num": num,
-                "application": "splunk_soar",
-                "application_version": f"{self._connector.get_product_version()}",
-                "integration_version": f"{self._connector.get_app_json().get('app_version')}",
-            })
+            params.update(
+                {
+                    "num": num,
+                    "application": "splunk_soar",
+                    "application_version": f"{self._connector.get_product_version()}",
+                    "integration_version": f"{self._connector.get_app_json().get('app_version')}",
+                }
+            )
         # Make rest call to fetch the alerts
         ret_val, response = self._connector.util._make_rest_call_helper(endpoint, self._action_result, params=params)
 
@@ -100,16 +101,16 @@ class GetAlertsAction(BaseAction):
             if data.get("nextPage"):
                 parsed_url = urlparse.urlparse(data.get("nextPage"))
                 query_params = urlparse.parse_qs(parsed_url.query)
-                
-                if 'from' in query_params:
-                    data.update({"nextPage": urlparse.unquote(query_params['from'][0])})
-                    
+
+                if "from" in query_params:
+                    data.update({"nextPage": urlparse.unquote(query_params["from"][0])})
+
             if data.get("previousPage"):
                 parsed_url = urlparse.urlparse(data.get("previousPage"))
                 query_params = urlparse.parse_qs(parsed_url.query)
-                
-                if 'to' in query_params:
-                    data.update({"previousPage": urlparse.unquote(query_params['to'][0])})
+
+                if "to" in query_params:
+                    data.update({"previousPage": urlparse.unquote(query_params["to"][0])})
 
         elif self._connector.util._api_version == "v3":
             data = response.get("data", {})

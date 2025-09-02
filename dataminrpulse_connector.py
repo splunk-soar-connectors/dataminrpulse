@@ -61,7 +61,7 @@ class DataminrPulseConnector(BaseConnector):
         self.util = DataminrPulseUtils(self)
         api_version = self.state.get(consts.DATAMINRPULSE_STATE_API_VERSION, None)
         if api_version and api_version != self.util._api_version:
-            self.debug_print("API version is changed from {} to {} hence resetting state file".format(api_version, self.util._api_version))
+            self.debug_print(f"API version is changed from {api_version} to {self.util._api_version} hence resetting state file")
             self.state = {"app_version": self.get_app_json().get("app_version")}
             self.is_state_updated = True
 
@@ -116,9 +116,9 @@ def main():  # pragma: no cover
     verify = args.verify
 
     if username is not None and password is None:
-
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
     if username and password:

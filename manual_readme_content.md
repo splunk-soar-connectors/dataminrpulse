@@ -8,9 +8,11 @@ This version of the app includes the following breaking changes that may require
 - **Alert Artifacts Enhancement:** Alert artifacts now include all available values from the Alert API response.
 - **Updated CEF Types:** The CEF types for URL artifacts and IP artifacts have been updated.
 
-**Action Required:** 
-* Users must update their existing playbooks accordingly to maintain backward compatibility with these changes.
-* **NOTE:** If a user is upgrading the API version from v3 to v4, they must run test connectivity before executing any actions, otherwise the actions will fail.
+**Action Required:**
+
+- Users must update their existing playbooks accordingly to maintain backward compatibility with these changes.
+
+**NOTE:** If a user is upgrading the API version from v3 to v4, they must run test connectivity before executing any actions, otherwise the actions will fail.
 
 ## Explanation of the Asset Configuration Parameters
 

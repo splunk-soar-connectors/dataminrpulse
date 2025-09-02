@@ -300,7 +300,7 @@ class DataminrPulseUtils:
             data.update({"refresh_token": self._refresh_token, "grant_type": "refresh_token"})
         else:
             data.update({"grant_type": "api_key"})
-        
+
         # Get the API version from the asset configuration and replace the {api_version} with the actual version
         if self._api_version == "v3":
             endpoint = consts.DATAMINRPULSE_ENDPOINT_TOKEN.format(api_version=2)
@@ -325,13 +325,11 @@ class DataminrPulseUtils:
                     "client_secret": self._connector.config["client_secret"],
                     "grant_type": "api_key",
                 }
-                
+
                 endpoint_ref = consts.DATAMINRPULSE_ENDPOINT_TOKEN.format(api_version=2)
                 base_url_ref = consts.DATAMINRPULSE_BASE_URL.format(api_version="gateway")
                 url_ref = f"{base_url_ref}{endpoint_ref}"
-                ret_val, resp_json = self._make_rest_call(
-                    url_ref, action_result, data=data, method="post", headers=headers
-                )
+                ret_val, resp_json = self._make_rest_call(url_ref, action_result, data=data, method="post", headers=headers)
 
         if phantom.is_fail(ret_val):
             self._connector.state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)
@@ -398,7 +396,13 @@ class DataminrPulseUtils:
         # If token is expired, generate a new token
         msg = action_result.get_message()
 
-        if msg and ("Invalid refresh token" in msg or "Invalid token" in msg or "Token has expired" in msg or "Token has been revoked" in msg or "Access token was not provided" in msg):
+        if msg and (
+            "Invalid refresh token" in msg
+            or "Invalid token" in msg
+            or "Token has expired" in msg
+            or "Token has been revoked" in msg
+            or "Access token was not provided" in msg
+        ):
             ret_val = self._generate_token(action_result, self._use_refresh_token())
             if phantom.is_fail(ret_val):
                 return RetVal(action_result.get_status())
@@ -430,7 +434,6 @@ class DataminrPulseUtils:
             ret_val, response = self._connector.util._make_rest_call_helper(endpoint, action_result)
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
-
 
             if self._api_version == "v4":
                 resp_data = response.get("lists", {})
@@ -563,7 +566,7 @@ class DataminrPulseUtils:
     def _add_cef(self, alert):
         """Add cef data to alert artifact preserving original structure."""
         cef = {}
-        
+
         for key, value in alert.items():
             self._connector.debug_print(f"Adding CEF data to alert artifact for key: {key}")
             try:
@@ -577,7 +580,6 @@ class DataminrPulseUtils:
                 cef[key] = value
 
         return cef
-
 
     def _add_list_value_to_cef(self, cef, key, value):
         """Add values to CEF if it is list of dictionaries."""
