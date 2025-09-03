@@ -94,7 +94,7 @@ url('/app_resource/{{ title_logo }}');"
 
 .entity-alias-item {
     position: relative;
-    padding-left: 20px;
+    padding-left: 24px;
     margin-bottom: 8px;
     color: var(--dataminr-white);
     font-size: 14px;
@@ -104,7 +104,7 @@ url('/app_resource/{{ title_logo }}');"
 .entity-alias-item:before {
     content: "•";
     position: absolute;
-    left: 0;
+    left: 8px;
     top: 0;
     color: var(--dataminr-white);
     font-weight: bold;
@@ -158,7 +158,6 @@ url('/app_resource/{{ title_logo }}');"
 
 .dataminr-alert-widget * {
     margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
@@ -182,10 +181,33 @@ url('/app_resource/{{ title_logo }}');"
     z-index: 100;
 }
 
+.dataminr-alert-widget .dataminr-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--dataminr-primary);
+    font-size: 14px;
+    text-decoration: none;
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: var(--dataminr-border-radius-sm);
+    transition: background-color 0.2s ease;
+}
+
+.dataminr-alert-widget .dataminr-link:hover {
+    background-color: rgba(47, 208, 187, 0.1);
+}
+
+.dataminr-alert-widget .dataminr-link svg {
+    color: var(--dataminr-primary);
+}
+
+/* Ensure the header content is properly aligned */
 .dataminr-alert-widget .header-content {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .dataminr-alert-widget .alert-badge {
@@ -273,6 +295,7 @@ url('/app_resource/{{ title_logo }}');"
     font-size: 22px;
     font-weight: 600;
     color: var(--dataminr-white);
+    margin-top: 18px;
     margin-bottom: 24px;
     line-height: 1.3;
 }
@@ -281,11 +304,11 @@ url('/app_resource/{{ title_logo }}');"
    REGEN AI SECTION
    ==================================================================== */
 .dataminr-alert-widget .regen-section {
-    background-color: #2C3240;
+    /* background-color: #2C3240; */
     border-radius: var(--dataminr-border-radius-lg);
     margin-bottom: 24px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
 }
 
 .dataminr-alert-widget .regen-header {
@@ -1393,6 +1416,26 @@ url('/app_resource/{{ title_logo }}');"
     text-align: center;
 }
 
+/* Country display styling */
+.country-flag {
+    display: inline-block;
+    width: 20px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Add fallback for when flag doesn't load */
+.country-flag[src$=".png"]:not([src*="undefined"]):not([src*="null"]) {
+    background-color: #f0f0f0;
+}
+
+/* Country code styling */
+.country-code {
+    font-weight: 500;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header {
@@ -1598,22 +1641,16 @@ url('/app_resource/{{ title_logo }}');"
 <!-- SVG Symbol Definitions -->
 <svg style="display: none;">
     <symbol id="alert-star-icon" viewBox="0 0 16 16">
-        <path
-            d="M12.666 5.99984L13.4993 4.1665L15.3327 3.33317L13.4993 2.49984L12.666 0.666504L11.8327 2.49984L9.99935 3.33317L11.8327 4.1665L12.666 5.99984ZM7.66602 6.33317L5.99935 2.6665L4.33268 6.33317L0.666016 7.99984L4.33268 9.6665L5.99935 13.3332L7.66602 9.6665L11.3327 7.99984L7.66602 6.33317ZM12.666 9.99984L11.8327 11.8332L9.99935 12.6665L11.8327 13.4998L12.666 15.3332L13.4993 13.4998L15.3327 12.6665L13.4993 11.8332L12.666 9.99984Z"
-            fill="#53DFCD" />
+        <path d="M12.666 5.99984L13.4993 4.1665L15.3327 3.33317L13.4993 2.49984L12.666 0.666504L11.8327 2.49984L9.99935 3.33317L11.8327 4.1665L12.666 5.99984ZM7.66602 6.33317L5.99935 2.6665L4.33268 6.33317L0.666016 7.99984L4.33268 9.6665L5.99935 13.3332L7.66602 9.6665L11.3327 7.99984L7.66602 6.33317ZM12.666 9.99984L11.8327 11.8332L9.99935 12.6665L11.8327 13.4998L12.666 15.3332L13.4993 13.4998L15.3327 12.6665L13.4993 11.8332L12.666 9.99984Z" fill="#53DFCD" />
     </symbol>
     <symbol id="shield-icon" viewBox="0 0 16 20">
-        <path fill-rule="evenodd" clip-rule="evenodd"
-            d="M2.73997 15.5116C4.12261 17.4137 5.87574 18.6321 7.99935 19.1668C10.123 18.6321 11.8761 17.4137 13.2587 15.5116C14.6414 13.6095 15.3327 11.4974 15.3327 9.17516V3.5835L7.99935 0.833496L0.666016 3.5835V9.17516C0.666016 11.4974 1.35734 13.6095 2.73997 15.5116ZM11.941 14.2168C10.9021 15.7293 9.58824 16.7377 7.99935 17.2418C6.41046 16.7377 5.09657 15.7293 4.05768 14.2168C3.01879 12.7043 2.49935 11.0238 2.49935 9.17516V4.84391L7.99935 2.78141L13.4993 4.84391V9.17516C13.4993 11.0238 12.9799 12.7043 11.941 14.2168ZM7.08268 11.8335V13.6668H8.91602V11.8335H7.08268ZM7.08268 6.3335V10.0002H8.91602V6.3335H7.08268Z"
-            fill="#F5F6F9" />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.73997 15.5116C4.12261 17.4137 5.87574 18.6321 7.99935 19.1668C10.123 18.6321 11.8761 17.4137 13.2587 15.5116C14.6414 13.6095 15.3327 11.4974 15.3327 9.17516V3.5835L7.99935 0.833496L0.666016 3.5835V9.17516C0.666016 11.4974 1.35734 13.6095 2.73997 15.5116ZM11.941 14.2168C10.9021 15.7293 9.58824 16.7377 7.99935 17.2418C6.41046 16.7377 5.09657 15.7293 4.05768 14.2168C3.01879 12.7043 2.49935 11.0238 2.49935 9.17516V4.84391L7.99935 2.78141L13.4993 4.84391V9.17516C13.4993 11.0238 12.9799 12.7043 11.941 14.2168ZM7.08268 11.8335V13.6668H8.91602V11.8335H7.08268ZM7.08268 6.3335V10.0002H8.91602V6.3335H7.08268Z" fill="#F5F6F9" />
     </symbol>
     <symbol id="sort-arrow-icon" viewBox="0 0 24 24">
-        <path d="M7 14L12 9L17 14H7Z" fill="currentColor" />
+        <path d="M7 14L12 9L17 14H7Z" fill="currentColor"/>
     </symbol>
     <symbol id="intel-agent-icon" viewBox="0 0 22 22">
-        <path fill-rule="evenodd" clip-rule="evenodd"
-            d="M19.4785 6.646L18.3327 9.16683L17.1868 6.646L14.666 5.50016L17.1868 4.35433L18.3327 1.8335L19.4785 4.35433L21.9993 5.50016L19.4785 6.646ZM10.9421 6.35954L10.0827 8.25016L9.22331 6.35954L7.33268 5.50016L9.22331 4.64079L10.0827 2.75016L10.9421 4.64079L12.8327 5.50016L10.9421 6.35954ZM14.1257 11.0735C13.7021 9.58339 12.7122 8.32999 11.4037 7.55915L11.6343 7.05178L12.6584 6.5863C13.6222 7.26199 14.4193 8.15964 14.9751 9.20483L14.1257 11.0735ZM14.078 14.4885C13.8127 15.3302 13.3654 16.0909 12.7842 16.7258C12.5902 16.1212 12.0378 15.6882 11.366 15.6882H10.6196V13.449C10.6196 13.0384 10.2837 12.7025 9.87316 12.7025H5.39459V11.2097H6.88744C7.29798 11.2097 7.63387 10.8738 7.63387 10.4632V8.97039H9.12673C9.2173 8.97039 9.30606 8.96221 9.3923 8.94656L8.53103 7.05178L5.66388 5.74853C2.8855 6.83561 0.916016 9.54047 0.916016 12.7025C0.916016 16.8228 4.26002 20.1668 8.3803 20.1668C11.1886 20.1668 13.6362 18.6134 14.9103 16.3195L14.078 14.4885ZM7.63387 18.6217C4.68548 18.256 2.40887 15.748 2.40887 12.7025C2.40887 12.2397 2.46859 11.7993 2.56562 11.3664L6.14101 14.9418V15.6882C6.14101 16.5093 6.8128 17.1811 7.63387 17.1811V18.6217ZM16.4421 13.6929L15.5827 15.5835L14.7233 13.6929L12.8327 12.8335L14.7233 11.9741L15.5827 10.0835L16.4421 11.9741L18.3327 12.8335L16.4421 13.6929Z"
-            fill="#F5F6F9" />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M19.4785 6.646L18.3327 9.16683L17.1868 6.646L14.666 5.50016L17.1868 4.35433L18.3327 1.8335L19.4785 4.35433L21.9993 5.50016L19.4785 6.646ZM10.9421 6.35954L10.0827 8.25016L9.22331 6.35954L7.33268 5.50016L9.22331 4.64079L10.0827 2.75016L10.9421 4.64079L12.8327 5.50016L10.9421 6.35954ZM14.1257 11.0735C13.7021 9.58339 12.7122 8.32999 11.4037 7.55915L11.6343 7.05178L12.6584 6.5863C13.6222 7.26199 14.4193 8.15964 14.9751 9.20483L14.1257 11.0735ZM14.078 14.4885C13.8127 15.3302 13.3654 16.0909 12.7842 16.7258C12.5902 16.1212 12.0378 15.6882 11.366 15.6882H10.6196V13.449C10.6196 13.0384 10.2837 12.7025 9.87316 12.7025H5.39459V11.2097H6.88744C7.29798 11.2097 7.63387 10.8738 7.63387 10.4632V8.97039H9.12673C9.2173 8.97039 9.30606 8.96221 9.3923 8.94656L8.53103 7.05178L5.66388 5.74853C2.8855 6.83561 0.916016 9.54047 0.916016 12.7025C0.916016 16.8228 4.26002 20.1668 8.3803 20.1668C11.1886 20.1668 13.6362 18.6134 14.9103 16.3195L14.078 14.4885ZM7.63387 18.6217C4.68548 18.256 2.40887 15.748 2.40887 12.7025C2.40887 12.2397 2.46859 11.7993 2.56562 11.3664L6.14101 14.9418V15.6882C6.14101 16.5093 6.8128 17.1811 7.63387 17.1811V18.6217ZM16.4421 13.6929L15.5827 15.5835L14.7233 13.6929L12.8327 12.8335L14.7233 11.9741L15.5827 10.0835L16.4421 11.9741L18.3327 12.8335L16.4421 13.6929Z" fill="#F5F6F9" />
     </symbol>
 </svg>
 
@@ -1634,22 +1671,27 @@ url('/app_resource/{{ title_logo }}');"
             <!-- Header -->
             <div class="header">
                 <div class="header-content">
-                    <div
-                        class="alert-badge alert-type-{% if alert_data.alertType.name|upper == 'URGENT' or alert_data.alertType.name|upper == 'URGENT UPDATE' %}urgent{% else %}default{% endif %}">
-                        {{ alert_data.alertType.name|default:"ALERT"|upper }}</div>
-                    {% if alert_data.liveBrief or alert_data.intelAgents %}
-                    <svg width="16" height="16">
-                        <use href="#alert-star-icon" />
-                    </svg>
+                    <div class="alert-badge alert-type-{% if alert_data.alertType.name|upper == 'URGENT' or alert_data.alertType.name|upper == 'URGENT UPDATE' %}urgent{% else %}default{% endif %}">{{ alert_data.alertType.name|default:"ALERT"|upper }}</div>
+                    {% if alert_data.intelAgents or alert_data.liveBrief %}
+                    <svg width="16" height="16"><use href="#alert-star-icon"/></svg>
                     {% endif %}
                     <div class="timestamp">{{ alert_data.alertTimestamp|default:"No timestamp available" }}</div>
+                            {% if alert_data.dataminrAlertUrl %}
+        <a href="{{ alert_data.dataminrAlertUrl }}" target="_blank" rel="noopener noreferrer" class="dataminr-link">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 8.5V12.5C12 13.0523 11.5523 13.5 11 13.5H3.5C2.94772 13.5 2.5 13.0523 2.5 12.5V5C2.5 4.44772 2.94772 4 3.5 4H7.5M10 2.5H13.5M13.5 2.5V6M13.5 2.5L8 8" 
+                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+            View in Dataminr
+        </a>
+                    {% endif %}
                 </div>
             </div>
 
 
             <!-- Main Content -->
-            {% if alert_data.intelAgents or alert_data.liveBrief %}
             <div class="main-content">
+                {% if alert_data.intelAgents or alert_data.liveBrief %}
                 <!-- ReGenAI Section - Unified Design -->
                 <div class="regen-section">
                     <!-- ReGenAI Header -->
@@ -1680,8 +1722,7 @@ url('/app_resource/{{ title_logo }}');"
                             {% for brief in alert_data.liveBrief %}
                             <div class="live-brief-timestamp">
                                 Last updated
-                                {% if brief.timestamp %}
-                                {{ brief.timestamp|slice:":10" }} {{ brief.timestamp|slice:"11:19" }}
+                                {% if brief.timestamp %} {{ brief.timestamp|slice:":10" }} {{ brief.timestamp|slice:"11:19" }}
                                 {% endif %}
                             </div>
                             <div class="live-brief-content" id="liveBriefContent">
@@ -1743,9 +1784,7 @@ url('/app_resource/{{ title_logo }}');"
                                     {% for entity in agent.discoveredEntities %}
                                     {% if forloop.counter <= 4 %} <div class="discovered-entity-item"
                                         onclick="openEntityDetailModal('{{ forloop.counter }}')">
-                                        <svg width="16" height="20">
-                                            <use href="#shield-icon" />
-                                        </svg>
+                                         <svg width="16" height="20"><use href="#shield-icon"/></svg>
                                         <span class="discovered-entity-name">{{ entity.name }}</span>
                                 </div>
                                 {% endif %}
@@ -1762,22 +1801,17 @@ url('/app_resource/{{ title_logo }}');"
                         {% endfor %}
                     </div>
                     {% endif %}
-                </div>
             </div>
             {% endif %}
-
 
             <div class="alert-title" id="alertTitle">{{ alert_data.headline|default:"No headline available" }}</div>
 
             <!-- Public Post Link Section -->
             {% if alert_data.publicPost and alert_data.publicPost.href %}
             <div class="public-post-section">
-                <a href="{{ alert_data.publicPost.href }}" target="_blank" rel="noopener noreferrer"
-                    class="public-post-link">
+                <a href="{{ alert_data.publicPost.href }}" target="_blank" rel="noopener noreferrer" class="public-post-link">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12 8.5V12.5C12 13.0523 11.5523 13.5 11 13.5H3.5C2.94772 13.5 2.5 13.0523 2.5 12.5V5C2.5 4.44772 2.94772 4 3.5 4H7.5M10 2.5H13.5M13.5 2.5V6M13.5 2.5L8 8"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12 8.5V12.5C12 13.0523 11.5523 13.5 11 13.5H3.5C2.94772 13.5 2.5 13.0523 2.5 12.5V5C2.5 4.44772 2.94772 4 3.5 4H7.5M10 2.5H13.5M13.5 2.5V6M13.5 2.5L8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     View Public Post
                 </a>
@@ -1898,7 +1932,7 @@ url('/app_resource/{{ title_logo }}');"
                         <table class="metadata-table" id="vulnerabilityTable">
                             <thead>
                                 <tr>
-                                    <th class="sortable-header" onclick="sortVulnerabilityTable(0, 'text')">
+                                    <th class="sortable-header">
                                         Vulnerability
                                     </th>
                                     <th class="sortable-header" onclick="sortVulnerabilityTable(1, 'number')">
@@ -2059,7 +2093,8 @@ url('/app_resource/{{ title_logo }}');"
                 </div>
                 <div class="dataminr-modal-tabs">
                     <button class="tab active" onclick="switchTab('overview')">Overview</button>
-                    <button class="tab" onclick="switchTab('entities')">Discovered entities</button>
+
+                    {% if alert_data.intelAgents.discoveredEntities %}<button class="tab" onclick="switchTab('entities')">Discovered entities</button> {% endif %}
                 </div>
                 <div class="dataminr-modal-body">
                     <div id="overview-content" class="tab-content active">
@@ -2176,6 +2211,18 @@ url('/app_resource/{{ title_logo }}');"
                         <div class="entity-info-item">
                             <span class="entity-info-label">Summary</span>
                             <div class="entity-info-value">{{ entity.summary }}</div>
+                            {% if entity.countryOfOrigin %}
+                                <div class="entity-info-label">Country of Origin</div>
+                                <img class="country-flag" 
+                                    src="https://flagcdn.com/w20/{{ entity.countryOfOrigin|lower }}.png" 
+                                    srcset="https://flagcdn.com/w40/{{ entity.countryOfOrigin|lower }}.png 2x" 
+                                    alt="{{ entity.countryOfOrigin }}" 
+                                    width="20" 
+                                    height="15">
+                                <span class="entity-info-value">
+                                    {{ entity.countryName|default:entity.countryOfOrigin }}
+                                </span>
+                              {% endif %}
                         </div>
                         {% endif %}
 
@@ -2391,7 +2438,7 @@ function showEntityNotFoundMessage(entityName) {
         if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
         }
-    }, 3000);
+    }, 5000);
 }
 
 /**
@@ -2617,14 +2664,14 @@ function toggleTTPSection(sectionId) {
 }
 
 // Vulnerability table sorting state
-let vulnerabilityCurrentSort = {column: -1, direction: 'asc'};
+window.vulnerabilityCurrentSort = window.vulnerabilityCurrentSort || {column: -1, direction: 'asc'};
 
 /**
  * Sorts vulnerability table by specified column with animations
  * @param {number} columnIndex - Index of column to sort by
  * @param {string} dataType - Type of data ('number', 'severity', or 'text')
  */
-function sortVulnerabilityTable(columnIndex, dataType) {
+ function sortVulnerabilityTable(columnIndex, dataType) {
     const table = document.getElementById('vulnerabilityTable');
     const tbody = document.getElementById('vulnerabilityTableBody');
     const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -2632,27 +2679,28 @@ function sortVulnerabilityTable(columnIndex, dataType) {
     // Add loading state
     tbody.style.opacity = '0.6';
     tbody.style.transition = 'opacity 0.2s ease';
+    
+    // Immediately update the header visuals for better feedback
+    // Remove sort classes from all headers first
+    table.querySelectorAll('.sortable-header').forEach(header => {
+        header.classList.remove('sort-asc', 'sort-desc');
+    });
+    
+    // Determine sort direction (do this before the setTimeout)
+    let direction = 'asc';
+    if (vulnerabilityCurrentSort.column === columnIndex) {
+        direction = vulnerabilityCurrentSort.direction === 'asc' ? 'desc' : 'asc';
+    }
+    
+    // Update current sort state
+    window.vulnerabilityCurrentSort  = {column: columnIndex, direction: direction};
+    
+    // Add sort class to current header immediately
+    const currentHeader = table.querySelectorAll('.sortable-header')[columnIndex];
+    currentHeader.classList.add(direction === 'asc' ? 'sort-asc' : 'sort-desc');
 
     setTimeout(() => {
-        // Determine sort direction
-        let direction = 'asc';
-        if (vulnerabilityCurrentSort.column === columnIndex) {
-            direction = vulnerabilityCurrentSort.direction === 'asc' ? 'desc' : 'asc';
-        }
-
-        // Update current sort state
-        vulnerabilityCurrentSort = {column: columnIndex, direction: direction};
-
-        // Remove sort classes from all headers
-        table.querySelectorAll('.sortable-header').forEach(header => {
-            header.classList.remove('sort-asc', 'sort-desc');
-        });
-
-        // Add sort class to current header
-        const currentHeader = table.querySelectorAll('.sortable-header')[columnIndex];
-        currentHeader.classList.add(direction === 'asc' ? 'sort-asc' : 'sort-desc');
-
-        // Sort rows (same logic as before)
+        // Sort rows
         rows.sort((a, b) => {
             let aVal, bVal;
 
