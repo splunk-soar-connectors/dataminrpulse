@@ -15,7 +15,7 @@
     "utctime_updated": "2025-04-11T19:48:20.247434Z",
     "package_name": "phantom_dataminrpulse",
     "main_module": "dataminrpulse_connector.py",
-    "min_phantom_version": "6.4.0",
+    "min_phantom_version": "6.1.0",
     "fips_compliant": false,
     "latest_tested_versions": [
         "Sep 1, 2025, Dataminr Pulse, API v2 v3 v4"

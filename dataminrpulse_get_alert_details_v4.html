@@ -121,7 +121,7 @@ and limitations under the License. -->
 }
 
 .entity-alias-item:before {
-    content: "•";
+    content: "\2022";
     position: absolute;
     left: 8px;
     top: 0;
@@ -434,7 +434,7 @@ and limitations under the License. -->
 }
 
 .dataminr-alert-widget .assessment-item::before {
-    content: '•';
+    content: '\2022';
     color: var(--dataminr-white);
     position: absolute;
     left: 0;
@@ -602,7 +602,7 @@ and limitations under the License. -->
 }
 
 .dataminr-alert-widget .intel-content li::before {
-    content: '•';
+    content: '\2022';
     color: var(--dataminr-white);
     position: absolute;
     left: 0;
@@ -656,7 +656,7 @@ and limitations under the License. -->
     text-overflow: ellipsis;
     line-height: 1.4;
     max-height: 2.8em;
-    /* 2 lines × 1.4 line-height */
+    /* 2 lines 1.4 line-height */
 }
 
 /* Fallback for browsers that don't support -webkit-line-clamp */
@@ -1388,7 +1388,7 @@ and limitations under the License. -->
 }
 
 .product-item::before {
-    content: '•';
+    content: '\2022';
     color: var(--dataminr-white);
     position: absolute;
     left: 0;
@@ -1857,7 +1857,7 @@ and limitations under the License. -->
                         <div class="metadata-section">
                           <div class="section-header" onclick="toggleMetadataSection('url-section')">
                             <h3>URL</h3>
-                            <span class="dropdown-icon">▼</span>
+                            <span class="dropdown-icon">&#9660;</span>
                           </div>
                           <div id="url-section" class="url-list">
                             {% for url in alert_data.metadata.0.cyber.URL %}
@@ -1878,7 +1878,7 @@ and limitations under the License. -->
                           <div class="section-header"
                                onclick="toggleMetadataSection('threat-actor-section')">
                             <h3>Threat Actor</h3>
-                            <span class="dropdown-icon">▼</span>
+                            <span class="dropdown-icon">&#9660;</span>
                           </div>
                           <div id="threat-actor-section">
                             <table class="metadata-table">
@@ -1918,7 +1918,7 @@ and limitations under the License. -->
                           <div class="section-header"
                                onclick="toggleMetadataSection('malware-section')">
                             <h3>Malware</h3>
-                            <span class="dropdown-icon">▼</span>
+                            <span class="dropdown-icon">&#9660;</span>
                           </div>
                           <div id="malware-section">
                             <table class="metadata-table">
@@ -1933,8 +1933,7 @@ and limitations under the License. -->
                                   <tr>
                                     <td>
                                       <span class="malware-name entity-clickable"
-                                            onclick="openEntityByName('{{ malware.name }}', event)">{{ malware.name
-                                      }}</span>
+                                            onclick="openEntityByName('{{ malware.name }}', event)">{{ malware.name }}</span>
                                     </td>
                                     <td>
                                       {% for os in malware.affectedOperatingSystems %}
@@ -1963,7 +1962,7 @@ and limitations under the License. -->
                           <div class="section-header"
                                onclick="toggleMetadataSection('vulnerability-section')">
                             <h3>Vulnerability</h3>
-                            <span class="dropdown-icon">▼</span>
+                            <span class="dropdown-icon">&#9660;</span>
                           </div>
                           <div id="vulnerability-section">
                             <table class="metadata-table" id="vulnerabilityTable">
@@ -2062,8 +2061,8 @@ and limitations under the License. -->
                           <div class="location-item">
                             <span class="location-label">Coordinates:</span>
                             <span class="location-value coordinates">
-                              {{ alert_data.estimatedEventLocation.coordinates.0 }}°N,
-                              {{ alert_data.estimatedEventLocation.coordinates.1 }}°E
+                              {{ alert_data.estimatedEventLocation.coordinates.0 }}&#176;N,
+                              {{ alert_data.estimatedEventLocation.coordinates.1 }}&#176;E
                             </span>
                           </div>
                         {% endif %}
@@ -2118,17 +2117,17 @@ and limitations under the License. -->
                 <div id="intelModal" class="dataminr-modal">
                   <div class="dataminr-modal-content">
                     <div class="dataminr-modal-header">
-                      <button class="back-btn" onclick="closeIntelModal()">← Back</button>
+                      <button class="back-btn" onclick="closeIntelModal()">&#8592; Back</button>
                       <br>
                       <svg width="22" height="22">
                         <use href="#intel-agent-icon" />
                       </svg>
                       <h3>Intel Agents</h3>
-                      <button class="close-btn" onclick="closeIntelModal()">&times;</button>
+                      <button class="close-btn" onclick="closeIntelModal()">&#215;</button>
                     </div>
                     <div class="dataminr-modal-tabs">
                       <button class="tab active" onclick="switchTab('overview')">Overview</button>
-                      {% if alert_data.intelAgents.discoveredEntities %}
+                      {% if alert_data.intelAgents.0.discoveredEntities %}
                         <button class="tab" onclick="switchTab('entities')">Discovered entities</button>
                       {% endif %}
                     </div>
@@ -2177,7 +2176,7 @@ and limitations under the License. -->
                                     {% if entity.summary %}<div class="entity-summary">{{ entity.summary }}</div>{% endif %}
                                   </div>
                                   <span class="entity-type">{{ entity.type }}</span>
-                                  <span class="chevron-right">›</span>
+                                  <span class="chevron-right">&#8250;</span>
                                 </div>
                               {% endfor %}
                             {% endif %}
@@ -2217,9 +2216,9 @@ and limitations under the License. -->
                           <div class="entity-detail-header">
                             <div class="entity-header-top">
                               <button class="back-btn"
-                                      onclick="closeEntityDetailModal('{{ forloop.counter }}')">← Back</button>
+                                      onclick="closeEntityDetailModal('{{ forloop.counter }}')">&#8592; Back</button>
                               <button class="close-btn"
-                                      onclick="closeEntityDetailModal('{{ forloop.counter }}')">&times;</button>
+                                      onclick="closeEntityDetailModal('{{ forloop.counter }}')">&#215;</button>
                             </div>
                             <div class="entity-title-section">
                               <div class="entity-title">

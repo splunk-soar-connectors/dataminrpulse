@@ -69,7 +69,7 @@ def _enrich_entity_country_names(alert_data):
     """
     country_map = {
         "AF": "Afghanistan",
-        "AX": "Åland Islands",
+        "AX": "Aland Islands",
         "AL": "Albania",
         "DZ": "Algeria",
         "AS": "American Samoa",
