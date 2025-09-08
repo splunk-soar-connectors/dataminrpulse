@@ -299,6 +299,7 @@ class DataminrPulseUtils:
         if refresh_token and self._api_version == "v3":
             data.update({"refresh_token": self._refresh_token, "grant_type": "refresh_token"})
         else:
+            headers.update({"X-Application-Name": "splunk_soar"})
             data.update({"grant_type": "api_key"})
 
         # Get the API version from the asset configuration and replace the {api_version} with the actual version
@@ -381,7 +382,7 @@ class DataminrPulseUtils:
 
         if self._dma_token:
             if self._api_version == "v4":
-                headers.update({"Authorization": f"Bearer {self._dma_token}"})
+                headers.update({"Authorization": f"Bearer {self._dma_token}", "X-Application-Name": "splunk_soar"})
             else:
                 headers.update({"Authorization": f"Dmauth {self._dma_token}"})
 
@@ -408,7 +409,7 @@ class DataminrPulseUtils:
                 return RetVal(action_result.get_status())
 
             if self._api_version == "v4":
-                headers.update({"Authorization": f"Bearer {self._dma_token}"})
+                headers.update({"Authorization": f"Bearer {self._dma_token}", "X-Application-Name": "splunk_soar"})
             else:
                 headers.update({"Authorization": f"Dmauth {self._dma_token}"})
 
