@@ -60,7 +60,7 @@ class TestConnectivityAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_post.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}",
+            f"https://gateway.dataminr.com/auth/2/token",
             headers=dataminrpulse_config.TOKEN_HEADER,
             data=dataminrpulse_config.TOKEN_DATA,
             params=None,
@@ -85,7 +85,7 @@ class TestConnectivityAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_post.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}",
+            f"https://gateway.dataminr.com/auth/2/token",
             headers=dataminrpulse_config.TOKEN_HEADER,
             data=dataminrpulse_config.TOKEN_DATA,
             params=None,
@@ -113,7 +113,7 @@ class TestConnectivityAction(unittest.TestCase):
 
         dataminrpulse_config.TOKEN_DATA["client_secret"] = dataminrpulse_config.CLIENT_DUMMY_ACTUAL
         mock_post.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}",
+            f"https://gateway.dataminr.com/auth/2/token",
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             verify=False,
             params=None,
@@ -135,13 +135,14 @@ class TestConnectivityAction(unittest.TestCase):
         self.test_json["config"]["client_id"] = dataminrpulse_config.CLIENT_DUMMY_ACTUAL
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
+
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
 
         dataminrpulse_config.TOKEN_DATA["client_id"] = dataminrpulse_config.CLIENT_DUMMY_ACTUAL
         mock_post.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_ENDPOINT_TOKEN}",
+            f"https://gateway.dataminr.com/auth/2/token",
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             verify=False,
             params=None,
