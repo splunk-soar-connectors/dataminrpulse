@@ -60,6 +60,7 @@ class TestGetListsAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
+
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
         self.assertEqual(ret_val["status"], "success")
@@ -98,7 +99,7 @@ class TestGetListsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}",
-            headers=dataminrpulse_config.ACTION_HEADER,
+            headers={'Authorization': 'Dmauth <dummy_token>'},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,
             verify=False,
