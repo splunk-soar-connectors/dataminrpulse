@@ -37,17 +37,13 @@ class OnPollAction(BaseAction):
         self._connector.save_progress("Executing Polling")
 
         list_id = self._connector.util._get_list_id(self._action_result)
-        query = self._connector.config.get("query", None)
 
-        if not (list_id or query):
-            return self._action_result.set_status(
-                phantom.APP_ERROR, "Please provide either valid 'list names' or 'query' in the asset configuration parameter"
-            )
-
+        if not list_id:
+            self._connector.save_progress("Since list ID is not provided, ingesting alerts from all the watchlists")
+            
         list_id_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_LIST_ID_VALUE, None)
-        query_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_QUERY_VALUE, None)
 
-        if (list_id_in_state_file != list_id) or (query_in_state_file != query):
+        if list_id_in_state_file != list_id:
             self._connector.is_state_updated = True
 
             # Reset values of from and to on changing configuration

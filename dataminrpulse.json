@@ -44,19 +44,10 @@
             "default": "v3",
             "order": 2
         },
-        "ph": {
-            "data_type": "ph",
-            "order": 3
-        },
         "list_names": {
-            "description": "List Names (comma-seperated values allowed). NOTE: If this field is blank and query is provided, it will ingest alerts from all the watchlists of the Dataminr Pulse account",
+            "description": "List Names (comma-seperated values allowed). NOTE: If this field is blank, it will ingest alerts from all the watchlists of the Dataminr Pulse account",
             "data_type": "string",
-            "order": 4
-        },
-        "query": {
-            "description": "Query",
-            "data_type": "string",
-            "order": 5
+            "order": 3
         },
         "alert_type": {
             "description": "Alert Type",
@@ -68,13 +59,13 @@
                 "Flash"
             ],
             "default": "All",
-            "order": 6
+            "order": 4
         },
         "page_size_for_polling": {
             "description": "Page Size for polling",
             "data_type": "numeric",
             "default": 40,
-            "order": 7
+            "order": 5
         }
     },
     "actions": [
