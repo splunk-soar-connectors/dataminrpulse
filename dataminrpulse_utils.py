@@ -424,34 +424,36 @@ class DataminrPulseUtils:
         list_names = self._connector.config.get("list_names", None)
         valid_list = []
 
+        if self._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
+        elif self._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS
+
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, action_result)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        if self._api_version == "v4":
+            resp_data = response.get("lists", {})
+        elif self._api_version == "v3":
+            resp_data = response.get("watchlists", {})
+
         if list_names:
             list_names = list_names.split(",")
-
-            if self._api_version == "v4":
-                endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
-            elif self._api_version == "v3":
-                endpoint = consts.DATAMINRPULSE_GET_LISTS
-
-            ret_val, response = self._connector.util._make_rest_call_helper(endpoint, action_result)
-            if phantom.is_fail(ret_val):
-                return action_result.get_status()
-
-            if self._api_version == "v4":
-                resp_data = response.get("lists", {})
-            elif self._api_version == "v3":
-                resp_data = response.get("watchlists", {})
-
             for list_name in list_names:
                 for _, watchlist_type in resp_data.items():
                     for list_dict in watchlist_type:
                         if list_name == list_dict["name"]:
                             valid_list.append(str(list_dict["id"]))
+        else:
+            # If list_names is None or empty, add all IDs from resp_data
+            for _, watchlist_type in resp_data.items():
+                for list_dict in watchlist_type:
+                    valid_list.append(str(list_dict["id"]))
 
-            list_id = ",".join(valid_list)
-            if list_id:
-                return list_id
-
-        return None
+        list_id = ",".join(valid_list)
+        if list_id:
+            return list_id
 
     def _process_alert_data(self, action_result, alert):
         """

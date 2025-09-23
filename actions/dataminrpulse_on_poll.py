@@ -37,10 +37,6 @@ class OnPollAction(BaseAction):
         self._connector.save_progress("Executing Polling")
 
         list_id = self._connector.util._get_list_id(self._action_result)
-
-        if not list_id:
-            self._connector.save_progress("Since list ID is not provided, ingesting alerts from all the watchlists")
-            
         list_id_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_LIST_ID_VALUE, None)
 
         if list_id_in_state_file != list_id:
@@ -52,7 +48,6 @@ class OnPollAction(BaseAction):
 
             # Storing updated configured values in state file
             self._connector.state[consts.DATAMINRPULSE_STATE_LIST_ID_VALUE] = list_id
-            self._connector.state[consts.DATAMINRPULSE_STATE_QUERY_VALUE] = query
 
         num = self._connector.config.get("page_size_for_polling", 40)
         ret_val, num = self._connector.util._validate_integer(self._action_result, num, "num", True)
@@ -66,7 +61,6 @@ class OnPollAction(BaseAction):
         # Prepare query parameters
         params = {
             "lists": list_id,
-            "query": query,
         }
 
         if self._connector.util._api_version == "v4":
