@@ -5,6 +5,7 @@
 This version of the app includes the following breaking changes that may require updates to existing playbooks:
 
 - **Removed Action:** The "get related alerts" action has been removed from this version.
+- **Removed Parameter:** The "query" parameter has been removed from asset configuration please update the on poll action accordingly.
 - **Alert Artifacts Enhancement:** Alert artifacts now include all available values from the Alert API response.
 - **Updated CEF Types:** The CEF types for URL artifacts and IP artifacts have been updated.
 
@@ -36,8 +37,7 @@ application. The parameters related to test connectivity action are Client ID an
 - ### On Poll
 
   This polling is to ingest the dynamic alerts of a particular watchlist that is configured on
-  this asset. The user can provide the watchlist names to ingest the alerts from, or provide the
-  query and set the pagesize for polling. The user can also filter the results of the alert
+  this asset. The user can provide the watchlist names to ingest the alerts from, and set the pagesize for polling. The user can also filter the results of the alert
   response, based on alert type.
 
   - **Manual Polling (POLL NOW)**
@@ -55,32 +55,17 @@ application. The parameters related to test connectivity action are Client ID an
       ingestion run. It stores the last run context of the fetched data. It starts fetching
       data based on the combination of the values of stored context for the previous ingestion
       run.
-    - **NOTE:** If the user changes the configuration related to 'list names' or 'query'
-      parameter while the schedule/interval polling is running, then the next polling cycle
-      will start fetching the latest data according to the updated configured parameters.
+    - **NOTE:** If the user changes the configuration related to 'list names' parameter while the schedule/interval polling is running, then the next polling cycle will start fetching the latest data according to the updated configured parameters.
 
   <!-- -->
 
   - **Action Parameter: List names**
 
-    - This parameter accepts comma-seperated names of the watchlist and it is required if the
-      user does not use this query parameter. Example: Company Cyber Alerts, Supply Chain
-      Partner Cyber Alerts
+    - This parameter accepts comma-seperated names of the watchlist and if it is blank, it will ingest alerts from all the watchlists of the Dataminr Pulse account. Example: Company Cyber Alerts, Supply Chain Partner Cyber Alerts
     - If any one of the list names is invalid in the comma-separated string, the action will
       skip that list name and continue with the valid ones.
     - **NOTE:** The list names asset parameter is case-sensitive and the user must provide the
       exact case match of the watchlist
-
-  - **Action Parameter: Query**
-
-    - This parameter accepts the search value for all the watchlists and it is required if we
-      do not use the list names parameter. Example: ("Test" AND "Application") OR ("text" AND
-      "json")
-    - The query parameter is case-insensitive.
-    - **Note:** If the user provides a list name and query both, then the action will return
-      queried alerts from that particular watchlist only.
-
-    **NOTE:** For polling, either 'list names' or 'query' must be provided to ingest alerts.
 
   - **Action Parameter: Page size for polling**
 
@@ -90,7 +75,7 @@ application. The parameters related to test connectivity action are Client ID an
 
   - **Action Parameter: Alert type**
 
-    - This parameter allows additional filtering above list names and query. When any of
+    - This parameter allows additional filtering above list names. When any of
       "Alert, Urgent, Flash" is selected, it just ingests the alerts with specific alert type
       from the alerts fetched by the API with configured pagesize. If "All" is selected, all
       the types of alerts will be ingested.
@@ -103,14 +88,6 @@ application. The parameters related to test connectivity action are Client ID an
       it's alert only. Thus, the severity of already ingested container would update only when
       an alert of higher severity than the existing one is ingested in the same container.
     - The priority order of severity levels (high to low): Flash > Urgent > Alert
-
-  - **Examples:**
-
-    - List the alert details with the list names 'Test alert 1,Test alert 2' and the query
-      ("Test" AND "Application") OR ("text" AND "json") with page size for polling as 10:
-      - List names = Test alert 1,Test alert 2
-      - Query = ("Test" AND "Application") OR ("text" AND "json")
-      - Page Size for Polling = 10
 
     ### Addition of Custom Severities on Ingested Data
 
