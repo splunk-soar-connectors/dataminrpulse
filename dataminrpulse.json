@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Dataminr",
     "license": "Copyright (c) 2023-2025 Dataminr",
-    "app_version": "1.2.1",
+    "app_version": "1.2.2",
     "utctime_updated": "2025-04-11T19:48:20.247434Z",
     "package_name": "phantom_dataminrpulse",
     "main_module": "dataminrpulse_connector.py",
@@ -45,7 +45,7 @@
             "order": 2
         },
         "list_names": {
-            "description": "List Names (comma-seperated values allowed). NOTE: If this field is blank, it will ingest alerts from all the watchlists of the Dataminr Pulse account",
+            "description": "List Names (comma-seperated values allowed). NOTE: If this field is blank, it will ingest alerts from all the lists of the Dataminr Pulse account",
             "data_type": "string",
             "order": 3
         },
