@@ -39,9 +39,8 @@ class GetAlertDetailsAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action")
 
         if alert_id:
-            params = {"query": f"{alert_id.split('-')[0]}"}
             ret_val, response = self._connector.util._make_rest_call_helper(
-                consts.DATAMINRPULSE_GET_ALERTS_V4, self._action_result, params=params
+                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=alert_id), self._action_result
             )
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
@@ -61,7 +60,8 @@ class GetAlertDetailsAction(BaseAction):
             if "alerts" in response:
                 alert_details = response["alerts"]
             else:
-                alert_details = response  # Single alert response
+                # Treat alert_details as a list so the customview can handle single or multiple alerts consistently
+                alert_details = [response]
         elif isinstance(response, list):
             alert_details = response
         else:
