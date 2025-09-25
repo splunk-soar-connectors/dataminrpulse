@@ -22,16 +22,15 @@
 
 import json
 import unittest
-import uuid
-from unittest.mock import patch
 
 import phantom.base_connector as base_conn
+
+
 try:
     import requests_mock
 except ImportError:
     requests_mock = None
 
-import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
 from . import dataminrpulse_config
@@ -72,30 +71,13 @@ class TestOnPollActionV4(unittest.TestCase):
                     "alerts": [
                         {
                             "alertId": "test-on-poll-alert-v4",
-                            "watchlistsMatchedByType": [
-                                {
-                                    "id": "3557389",
-                                    "type": "topics",
-                                    "name": "Cyber Alerts"
-                                }
-                            ],
+                            "watchlistsMatchedByType": [{"id": "3557389", "type": "topics", "name": "Cyber Alerts"}],
                             "eventTime": 1757488302315,
-                            "source": {
-                                "displayName": "test_source",
-                                "entityName": "test_source"
-                            },
+                            "source": {"displayName": "test_source", "entityName": "test_source"},
                             "alertType": "Alert",
-                            "metadata": {
-                                "cyber": {
-                                    "threatActors": [{"name": "Test Threat Actor"}],
-                                    "URL": [{"name": "example.com"}]
-                                }
-                            },
+                            "metadata": {"cyber": {"threatActors": [{"name": "Test Threat Actor"}], "URL": [{"name": "example.com"}]}},
                             "headline": "Test alert for v4 on poll",
-                            "publicPost": {
-                                "timestamp": "2025-08-11T15:17:26.296Z",
-                                "href": "https://example.com/test"
-                            }
+                            "publicPost": {"timestamp": "2025-08-11T15:17:26.296Z", "href": "https://example.com/test"},
                         }
                     ]
                 }
@@ -127,27 +109,13 @@ class TestOnPollActionV4(unittest.TestCase):
                     "alerts": [
                         {
                             "alertId": "test-query-on-poll-alert-v4",
-                            "watchlistsMatchedByType": [
-                                {
-                                    "id": "3557389",
-                                    "type": "topics",
-                                    "name": "Cyber Alerts"
-                                }
-                            ],
+                            "watchlistsMatchedByType": [{"id": "3557389", "type": "topics", "name": "Cyber Alerts"}],
                             "eventTime": 1757488302315,
-                            "source": {
-                                "displayName": "test_source",
-                                "entityName": "test_source"
-                            },
+                            "source": {"displayName": "test_source", "entityName": "test_source"},
                             "alertType": "Alert",
-                            "metadata": {
-                                "cyber": {}
-                            },
+                            "metadata": {"cyber": {}},
                             "headline": "Test query alert for v4 on poll",
-                            "publicPost": {
-                                "timestamp": "2025-08-11T15:17:26.296Z",
-                                "href": "https://example.com/query-test"
-                            }
+                            "publicPost": {"timestamp": "2025-08-11T15:17:26.296Z", "href": "https://example.com/query-test"},
                         }
                     ]
                 }
@@ -179,27 +147,13 @@ class TestOnPollActionV4(unittest.TestCase):
                     "alerts": [
                         {
                             "alertId": "test-list-on-poll-alert-v4",
-                            "watchlistsMatchedByType": [
-                                {
-                                    "id": "3557389",
-                                    "type": "topics",
-                                    "name": "Cyber Alerts"
-                                }
-                            ],
+                            "watchlistsMatchedByType": [{"id": "3557389", "type": "topics", "name": "Cyber Alerts"}],
                             "eventTime": 1757488302315,
-                            "source": {
-                                "displayName": "test_source",
-                                "entityName": "test_source"
-                            },
+                            "source": {"displayName": "test_source", "entityName": "test_source"},
                             "alertType": "Alert",
-                            "metadata": {
-                                "cyber": {}
-                            },
+                            "metadata": {"cyber": {}},
                             "headline": "Test list alert for v4 on poll",
-                            "publicPost": {
-                                "timestamp": "2025-08-11T15:17:26.296Z",
-                                "href": "https://example.com/list-test"
-                            }
+                            "publicPost": {"timestamp": "2025-08-11T15:17:26.296Z", "href": "https://example.com/list-test"},
                         }
                     ]
                 }
@@ -221,10 +175,7 @@ class TestOnPollActionV4(unittest.TestCase):
             f"https://api.dataminr.com/pulse/v1/alerts",
             status_code=401,
             headers=dataminrpulse_config.V4_DEFAULT_HEADERS,
-            json={
-                "error": "Unauthorized",
-                "message": "Invalid token"
-            },
+            json={"error": "Unauthorized", "message": "Invalid token"},
         )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)

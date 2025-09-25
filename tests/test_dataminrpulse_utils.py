@@ -485,7 +485,9 @@ class TestEpochToUTC(unittest.TestCase):
 
 class TestAddCEF(unittest.TestCase):
     """Class to test the add CEF method."""
+
     maxDiff = None
+
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
@@ -544,9 +546,23 @@ class TestExtractCyberValues(unittest.TestCase):
 
     @parameterized.expand(
         [
-            ("extract_ip", {"metadata": {"cyber": {"addresses": [{"ip": "0.0.0[.]0", "port": "1977"}]}}}, "addresses", [{'port': '1977', 'sourceAddress': '0.0.0[.]0'}]),
+            (
+                "extract_ip",
+                {"metadata": {"cyber": {"addresses": [{"ip": "0.0.0[.]0", "port": "1977"}]}}},
+                "addresses",
+                [{"port": "1977", "sourceAddress": "0.0.0[.]0"}],
+            ),
             ("extract_url", {"metadata": {"cyber": {"URLs": ["example[.]com"]}}}, "URLs", [{"requestURL": "example[.]com"}]),
-            ("extract_hash", {"metadata": {"cyber": {"hashes": ["5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"]}}}, "hashes", [{"fileHash": "5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"}]),
+            (
+                "extract_hash",
+                {
+                    "metadata": {
+                        "cyber": {"hashes": ["5f85677bb01576b77bc0f57057899d9ec92"]}  # pragma: allowlist secret
+                    }
+                },
+                "hashes",
+                [{"fileHash": "5f85677bb01576b77bc0f57057899d9ec92"}],  # pragma: allowlist secret
+            ),
             ("extract_malware", {"metadata": {"cyber": {"malwares": ["Redline stealer"]}}}, "malwares", [{"malwares": "Redline stealer"}]),
             ("extract_empty", {}, "addresses", []),
         ]
@@ -576,7 +592,6 @@ class TestCreateAlertArtifacts(unittest.TestCase):
         ]
     )
     def test_create_alert_artifacts_method(self, name, container_id, alert):
-
         """Test the the pass and fail cases of create alert artifacts method."""
         response = self.util._create_alert_artifacts(container_id, alert)
 

@@ -342,7 +342,9 @@ class DataminrPulseUtils:
                 try:
                     self._refresh_token = resp_json[consts.DATAMINRPULSE_STATE_REFRESH_TOKEN]
                 except KeyError:
-                    return action_result.set_status(phantom.APP_ERROR, f"Unable to retrieve refresh token for v3 API. {consts.DATAMINR_V3_V4_API_ERROR_MSG}")
+                    return action_result.set_status(
+                        phantom.APP_ERROR, f"Unable to retrieve refresh token for v3 API. {consts.DATAMINR_V3_V4_API_ERROR_MSG}"
+                    )
             self._expiration_time = resp_json[consts.DATAMINRPULSE_STATE_EXPIRE]
         except KeyError:
             self._connector.debug_print("Unable to find the DMA Token (Authentication Token) from the returned response")

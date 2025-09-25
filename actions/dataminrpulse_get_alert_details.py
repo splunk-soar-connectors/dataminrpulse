@@ -52,7 +52,7 @@ class GetAlertDetailsAction(BaseAction):
                 self._action_result.add_data(response)
             else:
                 return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
-            
+
         elif artifact_id:
             base_url = self._connector._get_phantom_base_url()
             url = consts.DATAMINRPULSE_GET_ARTIFACT_DETAILS.format(instance=base_url, artifact_id=artifact_id)
@@ -66,5 +66,5 @@ class GetAlertDetailsAction(BaseAction):
                 return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
         else:
             return self._action_result.set_status(phantom.APP_ERROR, "Please provide either artifact_id or alert_id")
-        
+
         return self._action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched alert details")

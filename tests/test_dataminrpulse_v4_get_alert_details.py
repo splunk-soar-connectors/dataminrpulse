@@ -62,30 +62,13 @@ class TestGetAlertDetailsAction(unittest.TestCase):
                 "alerts": [
                     {
                         "alertId": "1986897266-1757488294202-3",
-                        "watchlistsMatchedByType": [
-                            {
-                                "id": "3557389",
-                                "type": "topics",
-                                "name": "Cyber Alerts"
-                            }
-                        ],
+                        "watchlistsMatchedByType": [{"id": "3557389", "type": "topics", "name": "Cyber Alerts"}],
                         "eventTime": 1757488302315,
-                        "source": {
-                            "displayName": "test_source",
-                            "entityName": "test_source"
-                        },
+                        "source": {"displayName": "test_source", "entityName": "test_source"},
                         "alertType": "Alert",
-                        "metadata": {
-                            "cyber": {
-                                "threatActors": [{"name": "Test Threat Actor"}],
-                                "URL": [{"name": "example.com"}]
-                            }
-                        },
+                        "metadata": {"cyber": {"threatActors": [{"name": "Test Threat Actor"}], "URL": [{"name": "example.com"}]}},
                         "headline": "Test alert details",
-                        "publicPost": {
-                            "timestamp": "2025-08-11T15:17:26.296Z",
-                            "href": "https://example.com/test"
-                        }
+                        "publicPost": {"timestamp": "2025-08-11T15:17:26.296Z", "href": "https://example.com/test"},
                     }
                 ]
             }
@@ -115,26 +98,12 @@ class TestGetAlertDetailsAction(unittest.TestCase):
         mock_get.return_value.json.return_value = {
             "cef": {
                 "alertId": "test-artifact-alert-id",
-                "watchlistsMatchedByType": [
-                    {
-                        "id": "3557389",
-                        "type": "topics",
-                        "name": "Cyber Alerts"
-                    }
-                ],
+                "watchlistsMatchedByType": [{"id": "3557389", "type": "topics", "name": "Cyber Alerts"}],
                 "eventTime": 1757488302315,
-                "source": {
-                    "displayName": "artifact_source",
-                    "entityName": "artifact_source"
-                },
+                "source": {"displayName": "artifact_source", "entityName": "artifact_source"},
                 "alertType": "Alert",
-                "metadata": {
-                    "cyber": {
-                        "threatActors": [{"name": "Artifact Threat Actor"}],
-                        "URL": [{"name": "artifact-example.com"}]
-                    }
-                },
-                "headline": "Test artifact alert details"
+                "metadata": {"cyber": {"threatActors": [{"name": "Artifact Threat Actor"}], "URL": [{"name": "artifact-example.com"}]}},
+                "headline": "Test artifact alert details",
             }
         }
 
@@ -146,13 +115,7 @@ class TestGetAlertDetailsAction(unittest.TestCase):
 
         # Verify artifact API endpoint is called
         expected_url = f"https://127.0.0.1:8443//rest/artifact/12345"
-        mock_get.assert_called_with(
-            expected_url,
-            headers=None,
-            timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params=None,
-            verify=False
-        )
+        mock_get.assert_called_with(expected_url, headers=None, timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT, params=None, verify=False)
 
     @patch("dataminrpulse_utils.requests.get")
     def test_get_alert_details_v3_api_fail(self, mock_get):
@@ -196,10 +159,7 @@ class TestGetAlertDetailsAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {
-            "error": "unauthorized",
-            "message": "Invalid token"
-        }
+        mock_get.return_value.json.return_value = {"error": "unauthorized", "message": "Invalid token"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -215,10 +175,7 @@ class TestGetAlertDetailsAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 500
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {
-            "error": "internal_server_error",
-            "message": "Internal server error occurred"
-        }
+        mock_get.return_value.json.return_value = {"error": "internal_server_error", "message": "Internal server error occurred"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -241,12 +198,7 @@ class TestGetAlertDetailsAction(unittest.TestCase):
                         "alertId": "1986897266-1757488294202-3",
                         "headline": "Test metadata transformation",
                         "alertType": "Alert",
-                        "metadata": [{
-                            "cyber": {
-                                "URL": ["example.com"],
-                                "hashes": ["abc123"]
-                            }
-                        }]
+                        "metadata": [{"cyber": {"URL": ["example.com"], "hashes": ["abc123"]}}],
                     }
                 ]
             }

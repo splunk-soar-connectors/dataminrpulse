@@ -66,7 +66,7 @@ class TestConnectivityActionV4(unittest.TestCase):
             headers=dataminrpulse_config.V4_TOKEN_HEADER,
             params=None,
             verify=False,
-            data=dataminrpulse_config.V4_TOKEN_DATA
+            data=dataminrpulse_config.V4_TOKEN_DATA,
         )
 
     @patch("dataminrpulse_utils.requests.post")
@@ -76,10 +76,7 @@ class TestConnectivityActionV4(unittest.TestCase):
 
         mock_post.return_value.status_code = 401
         mock_post.return_value.headers = dataminrpulse_config.V4_DEFAULT_HEADERS
-        mock_post.return_value.json.return_value = {
-            "error": "invalid_client",
-            "error_description": "Invalid client credentials"
-        }
+        mock_post.return_value.json.return_value = {"error": "invalid_client", "error_description": "Invalid client credentials"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -93,14 +90,12 @@ class TestConnectivityActionV4(unittest.TestCase):
 
         mock_post.return_value.status_code = 400
         mock_post.return_value.headers = dataminrpulse_config.V4_DEFAULT_HEADERS
-        mock_post.return_value.json.return_value = {
-            "error": "invalid_request",
-            "error_description": "Missing required parameter"
-        }
+        mock_post.return_value.json.return_value = {"error": "invalid_request", "error_description": "Missing required parameter"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["status"], "failed")
+
 
 if __name__ == "__main__":
     unittest.main()

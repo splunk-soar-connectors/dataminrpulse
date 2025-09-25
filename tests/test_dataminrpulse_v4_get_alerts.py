@@ -24,8 +24,6 @@ import json
 import unittest
 from unittest.mock import patch
 
-import requests
-
 import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
@@ -62,22 +60,13 @@ class TestGetAlertsActionV4(unittest.TestCase):
             "nextPage": "/v1/alerts?lists=4773235&from=H4sIAAAAAAAA...",
             "alerts": [
                 {
-                    "metadata": {
-                        "cyber": {
-                            "threatActors": [{"name": "Test Threat Actor"}],
-                            "URL": [{"name": "example.com"}]
-                        }
-                    },
+                    "metadata": {"cyber": {"threatActors": [{"name": "Test Threat Actor"}], "URL": [{"name": "example.com"}]}},
                     "headline": "Test alert headline for v4 API",
-                    "publicPost": {
-                        "timestamp": "2025-08-11T15:17:26.296Z",
-                        "href": "https://example.com/test",
-                        "media": []
-                    },
+                    "publicPost": {"timestamp": "2025-08-11T15:17:26.296Z", "href": "https://example.com/test", "media": []},
                     "alertId": "test-alert-id-v4",
-                    "alertType": "Alert"
+                    "alertType": "Alert",
                 }
-            ]
+            ],
         }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -90,14 +79,8 @@ class TestGetAlertsActionV4(unittest.TestCase):
             f"https://api.dataminr.com/pulse/v1/alerts",
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             headers=dataminrpulse_config.V4_ACTION_HEADER,
-            params={
-                "lists": "4773235",
-                "query": None,
-                "from": None,
-                "to": None,
-                "pageSize": 40
-            },
-            verify=False
+            params={"lists": "4773235", "query": None, "from": None, "to": None, "pageSize": 40},
+            verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -115,14 +98,11 @@ class TestGetAlertsActionV4(unittest.TestCase):
                 {
                     "metadata": {"cyber": {}},
                     "headline": "Test query alert for v4 API",
-                    "publicPost": {
-                        "timestamp": "2025-08-11T15:17:26.296Z",
-                        "href": "https://example.com/query-test"
-                    },
+                    "publicPost": {"timestamp": "2025-08-11T15:17:26.296Z", "href": "https://example.com/query-test"},
                     "alertId": "test-query-alert-id-v4",
-                    "alertType": "Alert"
+                    "alertType": "Alert",
                 }
-            ]
+            ],
         }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -134,14 +114,8 @@ class TestGetAlertsActionV4(unittest.TestCase):
             f"https://api.dataminr.com/pulse/v1/alerts",
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             headers=dataminrpulse_config.V4_ACTION_HEADER,
-            params={
-                "lists": None,
-                "query": "test_query_v4",
-                "from": None,
-                "to": None,
-                "pageSize": 40
-            },
-            verify=False
+            params={"lists": None, "query": "test_query_v4", "from": None, "to": None, "pageSize": 40},
+            verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -155,7 +129,7 @@ class TestGetAlertsActionV4(unittest.TestCase):
         mock_get.return_value.json.return_value = {
             "previousPage": None,
             "nextPage": "/v1/alerts?lists=4773235&from=H4sIAAAAAAAA...",
-            "alerts": []  # Empty alerts for pagination test
+            "alerts": [],  # Empty alerts for pagination test
         }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -167,14 +141,8 @@ class TestGetAlertsActionV4(unittest.TestCase):
             f"https://api.dataminr.com/pulse/v1/alerts",
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             headers=dataminrpulse_config.V4_ACTION_HEADER,
-            params={
-                "lists": "4773235",
-                "query": None,
-                "from": None,
-                "to": None,
-                "pageSize": 40
-            },
-            verify=False
+            params={"lists": "4773235", "query": None, "from": None, "to": None, "pageSize": 40},
+            verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -185,10 +153,7 @@ class TestGetAlertsActionV4(unittest.TestCase):
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {
-            "error": "Unauthorized",
-            "message": "Invalid token"
-        }
+        mock_get.return_value.json.return_value = {"error": "Unauthorized", "message": "Invalid token"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -202,10 +167,7 @@ class TestGetAlertsActionV4(unittest.TestCase):
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {
-            "error": "Bad Request",
-            "message": "Invalid list ID"
-        }
+        mock_get.return_value.json.return_value = {"error": "Bad Request", "message": "Invalid list ID"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -219,11 +181,7 @@ class TestGetAlertsActionV4(unittest.TestCase):
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {
-            "previousPage": None,
-            "nextPage": None,
-            "alerts": []
-        }
+        mock_get.return_value.json.return_value = {"previousPage": None, "nextPage": None, "alerts": []}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

@@ -47,8 +47,8 @@ class TestConnectivityAction(BaseAction):
         if phantom.is_fail(ret_val):
             self._connector.save_progress(consts.DATAMINRPULSE_ERROR_TEST_CONNECTIVITY)
             return self._action_result.get_status()
-        
-        # Auth endpoints return 200 and issue tokens even when v3 credentials are used with v4 API (and vice versa). 
+
+        # Auth endpoints return 200 and issue tokens even when v3 credentials are used with v4 API (and vice versa).
         # We call the lists API to validate token access until the auth endpoints correctly return 401/403 for wrong-version credentials.
         if self._connector.util._api_version == "v4":
             endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
