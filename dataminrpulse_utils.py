@@ -424,7 +424,7 @@ class DataminrPulseUtils:
 
         return RetVal(phantom.APP_SUCCESS, resp_json)
 
-    def _get_list_id(self, action_result):
+    def _get_list_id(self, action_result, all_lists=False):
         """Get the list ids of respective list names"""
         list_names = self._connector.config.get("list_names", None)
         valid_list = []
@@ -443,7 +443,9 @@ class DataminrPulseUtils:
         elif self._api_version == "v3":
             resp_data = response.get("watchlists", {})
 
-        if list_names:
+        if list_names and not all_lists:
+            # list_name may be present if a poll is configured, but if all_lists is True,
+            # ignore list_name and return all list IDs
             list_names = list_names.split(",")
             for list_name in list_names:
                 for _, watchlist_type in resp_data.items():
@@ -451,7 +453,7 @@ class DataminrPulseUtils:
                         if list_name == list_dict["name"]:
                             valid_list.append(str(list_dict["id"]))
         else:
-            # If list_names is None or empty, add all IDs from resp_data
+            # If list_names is None, empty, or all_lists is True, add all IDs from resp_data
             for _, watchlist_type in resp_data.items():
                 for list_dict in watchlist_type:
                     valid_list.append(str(list_dict["id"]))
