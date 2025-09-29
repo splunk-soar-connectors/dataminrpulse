@@ -37,17 +37,9 @@ class OnPollAction(BaseAction):
         self._connector.save_progress("Executing Polling")
 
         list_id = self._connector.util._get_list_id(self._action_result)
-        query = self._connector.config.get("query", None)
-
-        if not (list_id or query):
-            return self._action_result.set_status(
-                phantom.APP_ERROR, "Please provide either valid 'list names' or 'query' in the asset configuration parameter"
-            )
-
         list_id_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_LIST_ID_VALUE, None)
-        query_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_QUERY_VALUE, None)
 
-        if (list_id_in_state_file != list_id) or (query_in_state_file != query):
+        if list_id_in_state_file != list_id:
             self._connector.is_state_updated = True
 
             # Reset values of from and to on changing configuration
@@ -56,7 +48,6 @@ class OnPollAction(BaseAction):
 
             # Storing updated configured values in state file
             self._connector.state[consts.DATAMINRPULSE_STATE_LIST_ID_VALUE] = list_id
-            self._connector.state[consts.DATAMINRPULSE_STATE_QUERY_VALUE] = query
 
         num = self._connector.config.get("page_size_for_polling", 40)
         ret_val, num = self._connector.util._validate_integer(self._action_result, num, "num", True)
@@ -70,7 +61,6 @@ class OnPollAction(BaseAction):
         # Prepare query parameters
         params = {
             "lists": list_id,
-            "query": query,
         }
 
         if self._connector.util._api_version == "v4":

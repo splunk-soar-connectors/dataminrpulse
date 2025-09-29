@@ -26,6 +26,7 @@ DATAMINRPULSE_GET_LISTS = "/account/2/get_lists?alertversion=14"
 DATAMINRPULSE_GET_LISTS_V4 = "/pulse/v1/lists"
 DATAMINRPULSE_GET_ALERTS = "/api/3/alerts?alertversion=14"
 DATAMINRPULSE_GET_ALERTS_V4 = "/pulse/v1/alerts"
+DATAMINRPULSE_GET_ALERT_V4 = "/pulse/v1/alerts/{alert_id}"
 DATAMINRPULSE_ENDPOINT_TOKEN = "/auth/{api_version}/token"
 DATAMINRPULSE_GET_ARTIFACT_DETAILS = "{instance}/rest/artifact/{artifact_id}"
 DATAMINRPULSE_STATE_TOKEN = "token"
@@ -63,3 +64,4 @@ DATAMINRPULSE_EMPTY_RESPONSE_STATUS_CODE = [200, 201, 204]
 DATAMINRPULSE_DECODE_FROM_ERROR = 'Error from server. Error message: Unable to decode "from" cursor, invalid format'
 DATAMINRPULSE_SEVERITY_ENDPOINT = "rest/severity"
 DATAMINRPULSE_SEVERITY_PAYLOAD = [{"color": "red", "name": "Flash"}, {"color": "orange", "name": "Urgent"}, {"color": "yellow", "name": "Alert"}]
+DATAMINR_V3_V4_API_ERROR_MSG = "Please ensure credentials are correct and correspond to the intended API version (v3 or v4)"

@@ -339,7 +339,12 @@ class DataminrPulseUtils:
         try:
             self._dma_token = resp_json[consts.DATAMINRPULSE_STATE_DMA_TOKEN]
             if self._api_version == "v3":
-                self._refresh_token = resp_json[consts.DATAMINRPULSE_STATE_REFRESH_TOKEN]
+                try:
+                    self._refresh_token = resp_json[consts.DATAMINRPULSE_STATE_REFRESH_TOKEN]
+                except KeyError:
+                    return action_result.set_status(
+                        phantom.APP_ERROR, f"Unable to retrieve refresh token for v3 API. {consts.DATAMINR_V3_V4_API_ERROR_MSG}"
+                    )
             self._expiration_time = resp_json[consts.DATAMINRPULSE_STATE_EXPIRE]
         except KeyError:
             self._connector.debug_print("Unable to find the DMA Token (Authentication Token) from the returned response")
@@ -419,39 +424,43 @@ class DataminrPulseUtils:
 
         return RetVal(phantom.APP_SUCCESS, resp_json)
 
-    def _get_list_id(self, action_result):
+    def _get_list_id(self, action_result, all_lists=False):
         """Get the list ids of respective list names"""
         list_names = self._connector.config.get("list_names", None)
         valid_list = []
 
-        if list_names:
+        if self._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
+        elif self._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS
+
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, action_result)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        if self._api_version == "v4":
+            resp_data = response.get("lists", {})
+        elif self._api_version == "v3":
+            resp_data = response.get("watchlists", {})
+
+        if list_names and not all_lists:
+            # list_name may be present if a poll is configured, but if all_lists is True,
+            # ignore list_name and return all list IDs
             list_names = list_names.split(",")
-
-            if self._api_version == "v4":
-                endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
-            elif self._api_version == "v3":
-                endpoint = consts.DATAMINRPULSE_GET_LISTS
-
-            ret_val, response = self._connector.util._make_rest_call_helper(endpoint, action_result)
-            if phantom.is_fail(ret_val):
-                return action_result.get_status()
-
-            if self._api_version == "v4":
-                resp_data = response.get("lists", {})
-            elif self._api_version == "v3":
-                resp_data = response.get("watchlists", {})
-
             for list_name in list_names:
                 for _, watchlist_type in resp_data.items():
                     for list_dict in watchlist_type:
                         if list_name == list_dict["name"]:
                             valid_list.append(str(list_dict["id"]))
+        else:
+            # If list_names is None, empty, or all_lists is True, add all IDs from resp_data
+            for _, watchlist_type in resp_data.items():
+                for list_dict in watchlist_type:
+                    valid_list.append(str(list_dict["id"]))
 
-            list_id = ",".join(valid_list)
-            if list_id:
-                return list_id
-
-        return None
+        list_id = ",".join(valid_list)
+        if list_id:
+            return list_id
 
     def _process_alert_data(self, action_result, alert):
         """

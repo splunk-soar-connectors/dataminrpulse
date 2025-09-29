@@ -99,7 +99,7 @@ class TestGetListsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}",
-            headers={'Authorization': 'Dmauth <dummy_token>'},
+            headers={"Authorization": "Dmauth <dummy_token>"},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,
             verify=False,

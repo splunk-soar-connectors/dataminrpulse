@@ -22,7 +22,6 @@
 
 
 import json
-import os
 
 import encryption_helper
 import requests
@@ -35,7 +34,7 @@ load_dotenv()
 APPLICATION_VERSION = "6.4.1.361"
 INTEGRATION_VERSION = "1.2.1"
 CONTENT_TYPE = "application/json"
-DEFAULT_ASSET_ID = "54"
+DEFAULT_ASSET_ID = "58"
 DEFAULT_HEADERS = {"Content-Type": CONTENT_TYPE}
 STATE_FILE_PATH = f"/opt/phantom/local_data/app_states/8630b723-b317-4765-b923-5be5229c71d1/{DEFAULT_ASSET_ID}_state.json"
 ACTION_HEADER = {"Authorization": "Dmauth <dummy_token>"}
@@ -52,7 +51,7 @@ PAGE_SIZE = 40
 ALERT_TYPE = "All"
 
 # V4 API Configuration
-V4_DEFAULT_ASSET_ID = "53"
+V4_DEFAULT_ASSET_ID = "58"
 V4_API_VERSION = "v4"
 V4_CLIENT_ID = "<v4_client_id>"
 V4_CLIENT_SECRET = "<v4_client_secret>"
@@ -60,9 +59,9 @@ V4_LIST_NAMES = "test crest cyber"
 V4_QUERY = "9374245408687001916"
 V4_PAGE_SIZE = 1
 V4_ALERT_TYPE = "All"
-V4_DEFAULT_HEADERS = {"Content-Type": CONTENT_TYPE, 'X-Application-Name': 'splunk_soar'}
-V4_TOKEN_HEADER = {"Content-Type": "application/x-www-form-urlencoded", 'X-Application-Name': 'splunk_soar'}
-V4_ACTION_HEADER = {"Authorization": "Bearer <dummy_token>", 'X-Application-Name': 'splunk_soar'}
+V4_DEFAULT_HEADERS = {"Content-Type": CONTENT_TYPE, "X-Application-Name": "splunk_soar"}
+V4_TOKEN_HEADER = {"Content-Type": "application/x-www-form-urlencoded", "X-Application-Name": "splunk_soar"}
+V4_ACTION_HEADER = {"Authorization": "Bearer <dummy_token>", "X-Application-Name": "splunk_soar"}
 V4_STATE_FILE_PATH = f"/opt/phantom/local_data/app_states/8630b723-b317-4765-b923-5be5229c71d1/{V4_DEFAULT_ASSET_ID}_state.json"
 V4_TOKEN_DATA = {"client_id": V4_CLIENT_ID, "client_secret": V4_CLIENT_SECRET, "grant_type": "api_key"}
 
@@ -150,13 +149,15 @@ ALERT_DATA = {
 ALERT_DATA_CEF = {
     "alertId": "85992181617703100451674976448185-1674976448217-1",
     "alertType": {"id": "alert", "name": "Alert", "color": "FFBB05"},
-    "metadata": [{
-        "cyber": {
-            "addresses": [{"ip": "77.73.133[.]62"}],
-            "hashes": ["5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],  # pragma: allowlist secret
-            "malwares": ["Redline stealer"],
+    "metadata": [
+        {
+            "cyber": {
+                "addresses": [{"ip": "77.73.133[.]62"}],
+                "hashes": ["5f85677bb01576b77bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"],  # pragma: allowlist secret
+                "malwares": ["Redline stealer"],
+            }
         }
-    }],
+    ],
 }
 
 TOKEN_DUMMY_DMA_TOKEN_1 = "dummy value 1"
@@ -191,6 +192,7 @@ def set_state_file(dmaToken=False):
 
     with open(STATE_FILE_PATH, "w+") as fp:
         fp.write(state_file)
+
 
 def v4_set_state_file(dmaToken=False):
     """Save the state file as per requirement.

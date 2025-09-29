@@ -39,44 +39,41 @@ class GetAlertDetailsAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action")
 
         if alert_id:
+            # Fetch lists first and pass with alert ID to get alertType, alertTopics, alertCompanies, and listsMatched.
+            # These fields come from the user's list context and are not part of the alert itself.
+            # The API requires the list IDs to include this information.
+            list_id = self._connector.util._get_list_id(self._action_result, all_lists=True)
+
+            params = {
+                "lists": list_id,
+            }
+
             ret_val, response = self._connector.util._make_rest_call_helper(
-                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=alert_id), self._action_result
+                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=alert_id), self._action_result, params=params
             )
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
+
+            if response:
+                # Handle metadata field as a list to maintain consistency with the response received when fetching from artifact ID
+                if response.get("metadata"):
+                    response["metadata"] = [response["metadata"]]
+                self._action_result.add_data(response)
+            else:
+                return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
+
         elif artifact_id:
             base_url = self._connector._get_phantom_base_url()
-
             url = consts.DATAMINRPULSE_GET_ARTIFACT_DETAILS.format(instance=base_url, artifact_id=artifact_id)
             ret_val, response = self._connector.util._make_rest_call(url, self._action_result)
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
             response = response.get("cef", {})
+            if response:
+                self._action_result.add_data(response)
+            else:
+                return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
         else:
             return self._action_result.set_status(phantom.APP_ERROR, "Please provide either artifact_id or alert_id")
-
-        # Handle both single alert and alerts array response
-        if isinstance(response, dict):
-            if "alerts" in response:
-                alert_details = response["alerts"]
-            else:
-                # Treat alert_details as a list so the customview can handle single or multiple alerts consistently
-                alert_details = [response]
-        elif isinstance(response, list):
-            alert_details = response
-        else:
-            alert_details = []
-
-        # Add each alert as separate data item
-        if alert_details:
-            if isinstance(alert_details, list):
-                for alert in alert_details:
-                    if alert.get("metadata"):
-                        alert["metadata"] = [alert["metadata"]]
-                    self._action_result.add_data(alert)
-            else:
-                self._action_result.add_data(alert_details)
-        else:
-            return self._action_result.set_status(phantom.APP_ERROR, "No alert details found")
 
         return self._action_result.set_status(phantom.APP_SUCCESS, "Successfully fetched alert details")

@@ -24,8 +24,6 @@ import json
 import unittest
 from unittest.mock import patch
 
-import requests
-
 import dataminrpulse_consts as consts
 from dataminrpulse_connector import DataminrPulseConnector
 
@@ -69,7 +67,7 @@ class TestGetListsActionV4(unittest.TestCase):
             headers={"Authorization": "Bearer <dummy_token>", "X-Application-Name": "splunk_soar"},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params=None,
-            verify=False
+            verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
@@ -94,13 +92,11 @@ class TestGetListsActionV4(unittest.TestCase):
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.V4_DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = {
-            "error": "Unauthorized",
-            "message": "Invalid token"
-        }
+        mock_get.return_value.json.return_value = {"error": "Unauthorized", "message": "Invalid token"}
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["status"], "failed")
+
 
 if __name__ == "__main__":
     unittest.main()

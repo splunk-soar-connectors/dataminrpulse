@@ -64,7 +64,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
-            headers={'Authorization': 'Dmauth <dummy_token>'},
+            headers={"Authorization": "Dmauth <dummy_token>"},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
                 "lists": "3557389",
@@ -206,7 +206,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
-            headers={'Authorization': 'Dmauth <dummy_token>'},
+            headers={"Authorization": "Dmauth <dummy_token>"},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
                 "lists": "3557389",
@@ -254,7 +254,7 @@ class TestGetAlertsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
-            headers={'Authorization': 'Dmauth <dummy_token>'},
+            headers={"Authorization": "Dmauth <dummy_token>"},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
             params={
                 "lists": "3557389",
