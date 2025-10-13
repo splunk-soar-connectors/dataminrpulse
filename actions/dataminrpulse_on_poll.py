@@ -102,8 +102,8 @@ class OnPollAction(BaseAction):
             if self._connector.util._api_version == "v4":
                 data = response.get("alerts")
             elif self._connector.util._api_version == "v3":
-                data = response.get("data", {})
-            for alert in data.get("alerts"):
+                data = response.get("data", {}).get("alerts", [])
+            for alert in data:
                 if alert_type == alert.get("alertType", {}).get("name", ""):
                     alerts.append(alert)
         else:

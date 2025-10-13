@@ -248,6 +248,10 @@ and limitations under the License. -->
     background-color: #f47d3e;
 }
 
+.dataminr-alert-widget .alert-badge.alert-type-flash {
+    background-color: #E1211E;
+}
+
 .dataminr-alert-widget .timestamp {
     font-size: 14px;
     color: #a0a7b4;
@@ -380,7 +384,7 @@ and limitations under the License. -->
     color: var(--dataminr-primary);
 }
 
-/* Intel Agent Section - Exact Match to Image */
+/* Intel Agents Section - Exact Match to Image */
 .dataminr-alert-widget .intel-agent-section {
     margin-top: 24px;
     background: transparent;
@@ -1688,7 +1692,7 @@ and limitations under the License. -->
               <!-- Header -->
               <div class="header">
                 <div class="header-content">
-                  <div class="alert-badge alert-type-{% if alert_data.alertType.name|upper == 'URGENT' or alert_data.alertType.name|upper == 'URGENT UPDATE' %}urgent{% else %}default{% endif %}">
+                  <div class="alert-badge alert-type-{% if alert_data.alertType.name|upper == 'URGENT' or alert_data.alertType.name|upper == 'URGENT UPDATE' %}urgent{% elif alert_data.alertType.name|upper == 'FLASH' %}flash{% else %}default{% endif %}">
                     {{ alert_data.alertType.name|default:"ALERT"|upper }}
                   </div>
                   {% if alert_data.intelAgents or alert_data.liveBrief %}
@@ -1759,7 +1763,7 @@ and limitations under the License. -->
                           {% endfor %}
                         </div>
                       {% endif %}
-                      <!-- Intel Agent Section -->
+                      <!-- Intel Agents Section -->
                       {% if alert_data.intelAgents %}
                         <div class="intel-agent-section">
                           <div class="intel-agent-header">
@@ -1770,7 +1774,7 @@ and limitations under the License. -->
                                  xmlns="http://www.w3.org/2000/svg">
                               <path fill-rule="evenodd" clip-rule="evenodd" d="M19.4785 6.646L18.3327 9.16683L17.1868 6.646L14.666 5.50016L17.1868 4.35433L18.3327 1.8335L19.4785 4.35433L21.9993 5.50016L19.4785 6.646ZM10.9421 6.35954L10.0827 8.25016L9.22331 6.35954L7.33268 5.50016L9.22331 4.64079L10.0827 2.75016L10.9421 4.64079L12.8327 5.50016L10.9421 6.35954ZM14.1257 11.0735C13.7021 9.58339 12.7122 8.32999 11.4037 7.55915L11.6343 7.05178L12.6584 6.5863C13.6222 7.26199 14.4193 8.15964 14.9751 9.20483L14.1257 11.0735ZM14.078 14.4885C13.8127 15.3302 13.3654 16.0909 12.7842 16.7258C12.5902 16.1212 12.0378 15.6882 11.366 15.6882H10.6196V13.449C10.6196 13.0384 10.2837 12.7025 9.87316 12.7025H5.39459V11.2097H6.88744C7.29798 11.2097 7.63387 10.8738 7.63387 10.4632V8.97039H9.12673C9.2173 8.97039 9.30606 8.96221 9.3923 8.94656L8.53103 7.05178L5.66388 5.74853C2.8855 6.83561 0.916016 9.54047 0.916016 12.7025C0.916016 16.8228 4.26002 20.1668 8.3803 20.1668C11.1886 20.1668 13.6362 18.6134 14.9103 16.3195L14.078 14.4885ZM7.63387 18.6217C4.68548 18.256 2.40887 15.748 2.40887 12.7025C2.40887 12.2397 2.46859 11.7993 2.56562 11.3664L6.14101 14.9418V15.6882C6.14101 16.5093 6.8128 17.1811 7.63387 17.1811V18.6217ZM16.4421 13.6929L15.5827 15.5835L14.7233 13.6929L12.8327 12.8335L14.7233 11.9741L15.5827 10.0835L16.4421 11.9741L18.3327 12.8335L16.4421 13.6929Z" fill="#F5F6F9" />
                             </svg>
-                            <span class="intel-agent-title">Intel Agent</span>
+                            <span class="intel-agent-title">Intel Agents</span>
                           </div>
                           <!-- Assessment Section -->
                           <div class="assessment-section">
@@ -2154,7 +2158,7 @@ and limitations under the License. -->
                           {% endfor %}
                         {% else %}
                           <div style="margin-bottom: 16px;">
-                            <strong>No Intel Agent data available</strong>
+                            <strong>No Intel Agents data available</strong>
                             <br>
                             Please check the alert data source.
                           </div>

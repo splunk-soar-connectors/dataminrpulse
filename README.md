@@ -1,7 +1,7 @@
 # Dataminr Pulse for Splunk SOAR
 
 Publisher: Dataminr <br>
-Connector Version: 1.2.2 <br>
+Connector Version: 2.0.0 <br>
 Product Vendor: Dataminr <br>
 Product Name: Dataminr Pulse <br>
 Minimum Product Version: 6.4.0
@@ -12,7 +12,7 @@ Pulse's AI-powered real-time intelligence integrates into Splunk SOAR workflows 
 
 **Important Changes in This Version:**
 
-This version of the app includes the following breaking changes that may require updates to existing playbooks:
+This version of the app includes the following breaking changes that may require updates to existing playbooks and asset configuration:
 
 - **Removed Action:** The "get related alerts" action has been removed from this version.
 - **Removed Parameter:** The "query" parameter has been removed from asset configuration please update the on poll action accordingly.
@@ -213,6 +213,26 @@ application. The parameters related to test connectivity action are Client ID an
       - List ID = 1234567,1234568
       - Query = ("Test" AND "Application") OR ("text" AND "json")
       - Max Alerts = 10
+
+- ### Get Alert Details
+
+  Fetch the details of an alert from the Dataminr platform using either the Alert ID or an already ingested alert's Artifact ID. The fetched details are displayed in a custom view/UI.
+
+  - **Action Parameter: Alert ID**
+
+    - Accepts the ID of the Dataminr alert.
+    - Required if the Artifact ID parameter is not provided.
+
+  - **Action Parameter: Artifact ID**
+
+    - Accepts the ID of the ingested artifact.
+    - Required if the Alert ID parameter is not provided.
+    - If both Alert ID and Artifact ID are provided, **Alert ID takes priority**.
+
+  **Note:** You must provide either a valid Alert ID or Artifact ID to fetch alert details.
+
+  - If using **Alert ID**, the connector makes an API call to fetch the alert details from Dataminr.
+  - If using **Artifact ID**, the connector fetches the alert details from the already ingested data.
 
 ### Configuration variables
 

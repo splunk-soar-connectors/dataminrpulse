@@ -472,7 +472,7 @@ class DataminrPulseUtils:
         """
         container = {}
         if self._api_version == "v4":
-            if len(alert.get("intelAgents", [])) >= 1:
+            if len(alert.get("intelAgents", [])) >= 1 or alert.get("liveBrief"):
                 container["name"] = "✨ " + alert.get("headline")
             else:
                 container["name"] = alert.get("headline") or alert["alertId"]
