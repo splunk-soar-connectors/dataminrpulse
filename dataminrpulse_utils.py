@@ -28,6 +28,7 @@ import encryption_helper
 import phantom.app as phantom
 import requests
 from bs4 import BeautifulSoup
+from phantom.utils import config as ph_config
 
 import dataminrpulse_consts as consts
 
@@ -471,13 +472,15 @@ class DataminrPulseUtils:
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS with status message
         """
         container = {}
+        regen_ai = False
         if self._api_version == "v4":
             if len(alert.get("intelAgents", [])) >= 1 or alert.get("liveBrief"):
+                regen_ai = True
                 container["name"] = "✨ " + alert.get("headline")
             else:
                 container["name"] = alert.get("headline") or alert["alertId"]
             container["severity"] = alert.get("alertType", {}).get("name", "Alert")
-            container["source_data_identifier"] = alert["alertId"]
+            container["source_data_identifier"] = alert.get("linkedAlerts", [{}])[0].get("parentAlertId") or alert.get("alertId")
         elif self._api_version == "v3":
             container["name"] = alert.get("caption") or alert["alertId"]
             container["severity"] = alert.get("alertType", {}).get("name", "Alert")
@@ -490,6 +493,11 @@ class DataminrPulseUtils:
 
         if consts.DATAMINRPULSE_DUPLICATE_CONTAINER_FOUND_MSG in message.lower():
             self._connector.debug_print("Duplicate container found")
+            if regen_ai:
+                self._connector.debug_print("Updating existing artifacts with latest regen AI information")
+                artifacts = self._get_artifacts(container_id)
+                for artifact in artifacts:
+                    self._update_artifact(artifact, intel_agents=alert.get("intelAgents"), live_brief=alert.get("liveBrief"))
 
         self._connector.debug_print("Creating alert artifacts")
         alert_artifacts = self._create_alert_artifacts(container_id, alert)
@@ -499,6 +507,37 @@ class DataminrPulseUtils:
             return action_result.set_status(phantom.APP_ERROR, message)
 
         return phantom.APP_SUCCESS
+
+    def _get_artifacts(self, container_id):
+        """
+        Get artifacts for a container.
+
+        :param container_id: container ID
+        :return: artifacts list
+        """
+        response = requests.get(
+            f"{self._connector.get_phantom_base_url()}/rest/container/{container_id}/artifacts",
+            verify=ph_config.platform_strict_tls,
+        )
+        return response.json().get("data", [])
+
+    def _update_artifact(self, artifact, intel_agents=None, live_brief=None):
+        """
+        Update artifact.
+
+        :param artifact: artifact to update
+        """
+        artifact_id = artifact.get("id")
+        if intel_agents:
+            artifact["cef"]["intelAgents"] = intel_agents
+        if live_brief:
+            artifact["cef"]["liveBrief"] = live_brief
+        response = requests.post(
+            f"{self._connector.get_phantom_base_url()}/rest/artifact/{artifact_id}",
+            verify=ph_config.platform_strict_tls,
+            json=artifact,
+        )
+        return response.json()
 
     def _create_alert_artifacts(self, container_id, alert, artifact_id=None):
         """

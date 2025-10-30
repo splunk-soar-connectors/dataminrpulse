@@ -150,7 +150,9 @@ class OnPollAction(BaseAction):
         if self._connector.is_poll_now():
             self._connector.save_progress("Ingesting all possible artifacts (ignoring maximum artifacts value) for POLL NOW")
 
-        for index, alert in enumerate(alerts):
+        for index, alert in enumerate(
+            reversed(alerts)
+        ):  # Traverse alerts in reverse order to ensure older alerts are processed first, so the latest alerts appear first after ingestion
             try:
                 self._connector.send_progress("Processing alert # {} with Alert ID ending in: {}".format(index + 1, alert["alertId"][-10:]))
                 ret_val = self._connector.util._process_alert_data(self._action_result, alert)
