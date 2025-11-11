@@ -228,14 +228,11 @@ application. The parameters related to test connectivity action are Client ID an
 
 > **Note:** The following issues occur only in the custom UI output when the get_alert_details action is executed with the Alert ID parameter and do not occur when using the Artifact ID parameter.
 
-1. **Missing Alert Timestamp**:
-   When retrieving alert details using the Alert ID, certain alerts may not display the timestamp. This occurs because the API response for some alerts accessed directly by Alert ID may omit the timestamp field. As a result, the time information can be missing or inaccurate. To ensure accurate timestamps, it is recommended to use the Artifact ID from an already ingested alert in Splunk SOAR, which always contains the timestamp as recorded during ingestion.
-
 1. **Outdated or Missing IntelAgents and LiveBrief Content**:
    The IntelAgents and LiveBrief fields contain AI-generated content that can change over time as new alerts are ingested or as updates occur in Dataminr. When alert details are retrieved using the Alert ID, the information in these fields may appear outdated or missing. This behavior occurs because the Alert ID retrieves a snapshot that may not reflect the most recent updates. In contrast, using the Artifact ID returns the latest AI-generated content as stored in the Splunk SOAR environment, ensuring accuracy and consistency with current data.
 
-1. **Extra Information in listedMatched, alertTopics, and alertCompanies Fields**:
-   When retrieving alert details using the Alert ID, the response may include additional or unexpected data in the `listedMatched`, `alertTopics`, and `alertCompanies` fields. This extra information might not align with what was originally ingested. Retrieval using the Artifact ID returns only the data ingested into Splunk SOAR, ensuring a more accurate and relevant result.
+1. **Not Receiving Lists and Topics**:
+   When retrieving alert details using the Alert ID, the Lists and Topics fields may not be returned. This is expected behavior, as lists and topics are contextual information associated with the list, not the alert itself
 
-1. **Differences in Alert Type Across Lists**:
-   The alert type (such as Flash, Urgent, or Alert) is determined by the context of the list in which the alert is ingested. If the same alert exists in multiple lists with different alert types, fetching details by Alert ID will always return the highest severity type (Flash > Urgent > Alert), regardless of list context. For example, if an alert is ingested as type Alert in List A and Urgent in List B, a query by Alert ID will return Urgent. Retrieval using the Artifact ID displays the alert type as it was ingested within the specific context, ensuring contextual accuracy.
+1. **Differences in Alert Type**:
+   The alert type (such as Flash, Urgent, or Alert) is determined by the context of the list in which the alert is ingested. When fetching an alert using the Alert ID, it is retrieved as a standalone alert that is not associated with any list; therefore, the alert type may appear as the default Alert. In contrast, alerts ingested via the on-poll mechanism will display the correct alert type based on the list context defined in the Dataminr account.

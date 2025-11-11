@@ -39,17 +39,8 @@ class GetAlertDetailsAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action")
 
         if alert_id:
-            # Fetch lists first and pass with alert ID to get alertType, alertTopics, alertCompanies, and listsMatched.
-            # These fields come from the user's list context and are not part of the alert itself.
-            # The API requires the list IDs to include this information.
-            list_id = self._connector.util._get_list_id(self._action_result, all_lists=True)
-
-            params = {
-                "lists": list_id,
-            }
-
             ret_val, response = self._connector.util._make_rest_call_helper(
-                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=alert_id), self._action_result, params=params
+                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=alert_id), self._action_result
             )
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
