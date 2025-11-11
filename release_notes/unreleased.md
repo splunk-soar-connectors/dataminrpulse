@@ -3,6 +3,5 @@
 * Added full alert details to the alert artifact
 * Added support for the Get Alert Details action
 * Removed the Get Related Alerts action
-* Updated CEF types for:
-    * IP in Address artifacts
-    * URL in URL artifacts
+* Updated CEF types for: IP in Address artifacts and URL in URL artifacts
+* Removed query parameter from asset configuration
