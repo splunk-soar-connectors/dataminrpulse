@@ -21,6 +21,8 @@
 # and limitations under the License.
 
 
+import urllib.parse as urlparse
+
 import phantom.app as phantom
 
 import dataminrpulse_consts as consts
@@ -35,17 +37,9 @@ class OnPollAction(BaseAction):
         self._connector.save_progress("Executing Polling")
 
         list_id = self._connector.util._get_list_id(self._action_result)
-        query = self._connector.config.get("query", None)
-
-        if not (list_id or query):
-            return self._action_result.set_status(
-                phantom.APP_ERROR, "Please provide either valid 'list names' or 'query' in the asset configuration parameter"
-            )
-
         list_id_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_LIST_ID_VALUE, None)
-        query_in_state_file = self._connector.state.get(consts.DATAMINRPULSE_STATE_QUERY_VALUE, None)
 
-        if (list_id_in_state_file != list_id) or (query_in_state_file != query):
+        if list_id_in_state_file != list_id:
             self._connector.is_state_updated = True
 
             # Reset values of from and to on changing configuration
@@ -54,7 +48,6 @@ class OnPollAction(BaseAction):
 
             # Storing updated configured values in state file
             self._connector.state[consts.DATAMINRPULSE_STATE_LIST_ID_VALUE] = list_id
-            self._connector.state[consts.DATAMINRPULSE_STATE_QUERY_VALUE] = query
 
         num = self._connector.config.get("page_size_for_polling", 40)
         ret_val, num = self._connector.util._validate_integer(self._action_result, num, "num", True)
@@ -68,21 +61,33 @@ class OnPollAction(BaseAction):
         # Prepare query parameters
         params = {
             "lists": list_id,
-            "query": query,
-            "num": num,
-            "from": None,
-            "to": None,
-            "application": "splunk_soar",
-            "application_version": f"{self._connector.get_product_version()}",
-            "integration_version": f"{self._connector.get_app_json().get('app_version')}",
         }
+
+        if self._connector.util._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_ALERTS_V4
+            params.update(
+                {
+                    "pageSize": num,
+                }
+            )
+        elif self._connector.util._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_ALERTS
+            params.update(
+                {
+                    "num": num,
+                    "application": "splunk_soar",
+                    "application_version": f"{self._connector.get_product_version()}",
+                    "integration_version": f"{self._connector.get_app_json().get('app_version')}",
+                }
+            )
+
         if not self._connector.is_poll_now() and self._connector.state.get(consts.DATAMINRPULSE_STATE_TO_VALUE, None):
             # To fetch new alerts, we assign to's value in from
             from_value = self._connector.state[consts.DATAMINRPULSE_STATE_TO_VALUE]
             params.update({"from": from_value})
 
         # Polling
-        ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params)
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, self._action_result, params=params)
         if phantom.is_fail(ret_val):
             msg = self._action_result.get_message()
             if msg and (consts.DATAMINRPULSE_DECODE_FROM_ERROR in msg):
@@ -94,17 +99,39 @@ class OnPollAction(BaseAction):
 
         alerts = []
         if alert_type != "All":
-            for alert in response.get("data").get("alerts"):
+            if self._connector.util._api_version == "v4":
+                data = response.get("alerts")
+            elif self._connector.util._api_version == "v3":
+                data = response.get("data", {}).get("alerts", [])
+            for alert in data:
                 if alert_type == alert.get("alertType", {}).get("name", ""):
                     alerts.append(alert)
         else:
-            alerts.extend(response.get("data").get("alerts", []))
+            if self._connector.util._api_version == "v4":
+                data = response.get("alerts")
+            elif self._connector.util._api_version == "v3":
+                data = response.get("data", {}).get("alerts", [])
+            alerts.extend(data)
 
         # Schedule Polling
         if not self._connector.is_poll_now():
             self._connector.is_state_updated = True
-            to_value = response.get("data", {}).get("to", None)
-            from_value = response.get("data", {}).get("from", None)
+            if self._connector.util._api_version == "v3":
+                to_value = response.get("data", {}).get("to", None)
+                from_value = response.get("data", {}).get("from", None)
+            elif self._connector.util._api_version == "v4":
+                if response.get("previousPage"):
+                    parsed_url = urlparse.urlparse(response.get("previousPage"))
+                    query_params = urlparse.parse_qs(parsed_url.query)
+
+                    if "to" in query_params:
+                        to_value = urlparse.unquote(query_params["to"][0])
+                if response.get("nextPage"):
+                    parsed_url = urlparse.urlparse(response.get("nextPage"))
+                    query_params = urlparse.parse_qs(parsed_url.query)
+
+                    if "from" in query_params:
+                        from_value = urlparse.unquote(query_params["from"][0])
 
             if to_value:
                 self._connector.state[consts.DATAMINRPULSE_STATE_TO_VALUE] = to_value
@@ -123,7 +150,9 @@ class OnPollAction(BaseAction):
         if self._connector.is_poll_now():
             self._connector.save_progress("Ingesting all possible artifacts (ignoring maximum artifacts value) for POLL NOW")
 
-        for index, alert in enumerate(alerts):
+        for index, alert in enumerate(
+            reversed(alerts)
+        ):  # Traverse alerts in reverse order to ensure older alerts are processed first, so the latest alerts appear first after ingestion
             try:
                 self._connector.send_progress("Processing alert # {} with Alert ID ending in: {}".format(index + 1, alert["alertId"][-10:]))
                 ret_val = self._connector.util._process_alert_data(self._action_result, alert)

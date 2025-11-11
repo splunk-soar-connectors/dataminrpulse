@@ -48,6 +48,18 @@ class TestConnectivityAction(BaseAction):
             self._connector.save_progress(consts.DATAMINRPULSE_ERROR_TEST_CONNECTIVITY)
             return self._action_result.get_status()
 
+        # Auth endpoints return 200 and issue tokens even when v3 credentials are used with v4 API (and vice versa).
+        # We call the lists API to validate token access until the auth endpoints correctly return 401/403 for wrong-version credentials.
+        if self._connector.util._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
+        elif self._connector.util._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS
+
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, self._action_result)
+        if phantom.is_fail(ret_val):
+            self._action_result.append_to_message(consts.DATAMINR_V3_V4_API_ERROR_MSG)
+            return self._action_result.get_status()
+
         # Reset values of from and to on running Test connectivity
         self._connector.state.pop(consts.DATAMINRPULSE_STATE_FROM_VALUE, None)
         self._connector.state.pop(consts.DATAMINRPULSE_STATE_TO_VALUE, None)

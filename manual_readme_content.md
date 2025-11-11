@@ -1,3 +1,20 @@
+## Backward Compatibility
+
+**Important Changes in This Version:**
+
+This version of the app includes the following breaking changes that may require updates to existing playbooks and asset configuration:
+
+- **Removed Action:** The "get related alerts" action has been removed from this version.
+- **Removed Parameter:** The "query" parameter has been removed from asset configuration please update the on poll action accordingly.
+- **Alert Artifacts Enhancement:** Alert artifacts now include all available values from the Alert API response.
+- **Updated CEF Types:** The CEF types for URL artifacts and IP artifacts have been updated.
+
+**Action Required:**
+
+- Users must update their existing playbooks accordingly to maintain backward compatibility with these changes.
+
+**NOTE:** If a user is upgrading the API version from v3 to v4, they must run test connectivity before executing any actions, otherwise the actions will fail.
+
 ## Explanation of the Asset Configuration Parameters
 
 The asset configuration parameters affect 'test connectivity' and some other actions of the
@@ -5,6 +22,7 @@ application. The parameters related to test connectivity action are Client ID an
 
 - **Client ID:** Client ID.
 - **Client Secret:** Client Secret.
+- **API Version:** API Version [v3 or v4].
 
 ## Explanation of the Actions' Parameters
 
@@ -19,8 +37,7 @@ application. The parameters related to test connectivity action are Client ID an
 - ### On Poll
 
   This polling is to ingest the dynamic alerts of a particular watchlist that is configured on
-  this asset. The user can provide the watchlist names to ingest the alerts from, or provide the
-  query and set the pagesize for polling. The user can also filter the results of the alert
+  this asset. The user can provide the watchlist names to ingest the alerts from, and set the pagesize for polling. The user can also filter the results of the alert
   response, based on alert type.
 
   - **Manual Polling (POLL NOW)**
@@ -38,42 +55,27 @@ application. The parameters related to test connectivity action are Client ID an
       ingestion run. It stores the last run context of the fetched data. It starts fetching
       data based on the combination of the values of stored context for the previous ingestion
       run.
-    - **NOTE:** If the user changes the configuration related to 'list names' or 'query'
-      parameter while the schedule/interval polling is running, then the next polling cycle
-      will start fetching the latest data according to the updated configured parameters.
+    - **NOTE:** If the user changes the configuration related to 'list names' parameter while the schedule/interval polling is running, then the next polling cycle will start fetching the latest data according to the updated configured parameters.
 
   <!-- -->
 
   - **Action Parameter: List names**
 
-    - This parameter accepts comma-seperated names of the watchlist and it is required if the
-      user does not use this query parameter. Example: Company Cyber Alerts, Supply Chain
-      Partner Cyber Alerts
+    - This parameter accepts comma-seperated names of the watchlist and if it is blank, it will ingest alerts from all the watchlists of the Dataminr Pulse account. Example: Company Cyber Alerts, Supply Chain Partner Cyber Alerts
     - If any one of the list names is invalid in the comma-separated string, the action will
       skip that list name and continue with the valid ones.
     - **NOTE:** The list names asset parameter is case-sensitive and the user must provide the
       exact case match of the watchlist
 
-  - **Action Parameter: Query**
-
-    - This parameter accepts the search value for all the watchlists and it is required if we
-      do not use the list names parameter. Example: ("Test" AND "Application") OR ("text" AND
-      "json")
-    - The query parameter is case-insensitive.
-    - **Note:** If the user provides a list name and query both, then the action will return
-      queried alerts from that particular watchlist only.
-
-    **NOTE:** For polling, either 'list names' or 'query' must be provided to ingest alerts.
-
   - **Action Parameter: Page size for polling**
 
     - This parameter allows the user to limit the number of alerts in the response. It expects
       a numeric value as an input.
-    - The default value is 40 for this parameter.
+    - The default value is 40 for this parameter. The maximum 100 alerts can be fetched at a time. If the user provides a value greater than 100, then the on poll ingest 100 alerts only in single cycle.
 
   - **Action Parameter: Alert type**
 
-    - This parameter allows additional filtering above list names and query. When any of
+    - This parameter allows additional filtering above list names. When any of
       "Alert, Urgent, Flash" is selected, it just ingests the alerts with specific alert type
       from the alerts fetched by the API with configured pagesize. If "All" is selected, all
       the types of alerts will be ingested.
@@ -86,14 +88,6 @@ application. The parameters related to test connectivity action are Client ID an
       it's alert only. Thus, the severity of already ingested container would update only when
       an alert of higher severity than the existing one is ingested in the same container.
     - The priority order of severity levels (high to low): Flash > Urgent > Alert
-
-  - **Examples:**
-
-    - List the alert details with the list names 'Test alert 1,Test alert 2' and the query
-      ("Test" AND "Application") OR ("text" AND "json") with page size for polling as 10:
-      - List names = Test alert 1,Test alert 2
-      - Query = ("Test" AND "Application") OR ("text" AND "json")
-      - Page Size for Polling = 10
 
     ### Addition of Custom Severities on Ingested Data
 
@@ -210,27 +204,35 @@ application. The parameters related to test connectivity action are Client ID an
       - Query = ("Test" AND "Application") OR ("text" AND "json")
       - Max Alerts = 10
 
-- ### Get Related Alerts
+- ### Get Alert Details
 
-  Fetch the details of the asset from the Dataminr platform for the given Alert ID.
+  Fetch the details of an alert from the Dataminr platform using either the Alert ID or an already ingested alert's Artifact ID. The fetched details are displayed in a custom view/UI.
 
   - **Action Parameter: Alert ID**
 
-    - This parameter is the unique key for any particular alert and it is a required
-      parameter.
-    - If the Alert ID provided is invalid, the action will return an empty response.
-    - Users can get the alert ID by executing the "get alerts" action.
+    - Accepts the ID of the Dataminr alert.
+    - Required if the Artifact ID parameter is not provided.
 
-  - **Action Parameter: Include Root**
+  - **Action Parameter: Artifact ID**
 
-    - This parameter accepts a boolean value and it is optional.
-    - This parameter is used if the user wants the root alert (provided alert) in the get
-      related alerts response.
+    - Accepts the ID of the ingested artifact.
+    - Required if the Alert ID parameter is not provided.
+    - If both Alert ID and Artifact ID are provided, **Alert ID takes priority**.
 
-  - **Examples:**
+  **Note:** You must provide either a valid Alert ID or Artifact ID to fetch alert details.
 
-    - List the alerts detail with the Alert ID '01234567-1672385801826-3' with includeRoot as
-      True.
+  - If using **Alert ID**, the connector makes an API call to fetch the alert details from Dataminr.
+  - If using **Artifact ID**, the connector fetches the alert details from the already ingested data.
 
-      - Alert ID = 01234567-1672385801826-3
-      - includeRoot = True
+## Known Issues
+
+> **Note:** The following issues occur only in the custom UI output when the get_alert_details action is executed with the Alert ID parameter and do not occur when using the Artifact ID parameter.
+
+1. **Outdated or Missing IntelAgents and LiveBrief Content**:
+   The IntelAgents and LiveBrief fields contain AI-generated content that can change over time as new alerts are ingested or as updates occur in Dataminr. When alert details are retrieved using the Alert ID, the information in these fields may appear outdated or missing. This behavior occurs because the Alert ID retrieves a snapshot that may not reflect the most recent updates. In contrast, using the Artifact ID returns the latest AI-generated content as stored in the Splunk SOAR environment, ensuring accuracy and consistency with current data.
+
+1. **Not Receiving Lists and Topics**:
+   When retrieving alert details using the Alert ID, the Lists and Topics fields may not be returned. This is expected behavior, as lists and topics are contextual information associated with the list, not the alert itself
+
+1. **Differences in Alert Type**:
+   The alert type (such as Flash, Urgent, or Alert) is determined by the context of the list in which the alert is ingested. When fetching an alert using the Alert ID, it is retrieved as a standalone alert that is not associated with any list; therefore, the alert type may appear as the default Alert. In contrast, alerts ingested via the on-poll mechanism will display the correct alert type based on the list context defined in the Dataminr account.

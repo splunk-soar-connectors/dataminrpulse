@@ -1,4 +1,4 @@
-# File: test_dataminrpulse_get_related_alerts.py
+# File: test_dataminrpulse_get_lists.py
 #
 # Copyright (c) 2023-2025 Dataminr
 #
@@ -20,6 +20,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+
 import json
 import unittest
 from unittest.mock import patch
@@ -30,53 +31,57 @@ from dataminrpulse_connector import DataminrPulseConnector
 from . import dataminrpulse_config
 
 
-class TestGetRelatedAlertsAction(unittest.TestCase):
-    """Class to test the get related alerts action."""
+class TestGetListsAction(unittest.TestCase):
+    """Class to test the get lists action."""
 
     def setUp(self):
         """Set up method for the tests."""
         self.connector = DataminrPulseConnector()
         self.test_json = dict(dataminrpulse_config.TEST_JSON)
-        self.test_json.update({"action": "get related alerts", "identifier": "get_related_alerts"})
+        self.test_json.update({"action": "get lists", "identifier": "get_lists"})
 
         return super().setUp()
 
     @patch("dataminrpulse_utils.requests.get")
-    def test_get_related_alerts_pass(self, mock_get):
-        """Test the valid case for the get related alerts action.
+    def test_get_lists_pass(self, mock_get):
+        """Test the valid case for the get lists action.
 
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json["parameters"] = [{"alert_id": "1732199368-1670922260060-3"}]
+        self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = [{"data": "dummy_data"}]
+        mock_get.return_value.json.return_value = {
+            "watchlists": {"TOPIC": [{"data": "dummy_data"}], "CUSTOM": [{"data": "dummy_data"}], "COMPANY": [{"data": "dummy_data"}]}
+        }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
+
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
         self.assertEqual(ret_val["status"], "success")
-        self.assertEqual(ret_val["result_data"][0]["message"], "Total related alerts: 1")
 
         mock_get.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}",
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}",
             headers=dataminrpulse_config.ACTION_HEADER,
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={"id": "1732199368-1670922260060-3", "includeRoot": False},
+            params=None,
             verify=False,
         )
 
     @patch("dataminrpulse_utils.requests.get")
-    def test_get_related_alerts_fail(self, mock_get):
-        """Test the get related alerts action with unauthorized error.
+    def test_get_lists_invalid(self, mock_get):
+        """Test the get lists action with unauthorized error.
 
         Token is available in the state file.
         Patch the get() to return the unauthorized response.
         """
         dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json["parameters"] = [{"alert_id": "1732199368-1670922260060-3"}]
+        self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
@@ -84,6 +89,8 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(
             ret_val["result_data"][0]["message"],
@@ -91,36 +98,9 @@ class TestGetRelatedAlertsAction(unittest.TestCase):
         )
 
         mock_get.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}",
-            headers=dataminrpulse_config.ACTION_HEADER,
+            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_LISTS}",
+            headers={"Authorization": "Dmauth <dummy_token>"},
             timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={"id": "1732199368-1670922260060-3", "includeRoot": False},
-            verify=False,
-        )
-
-    @patch("dataminrpulse_utils.requests.get")
-    def test_get_related_alerts_invalid_alertid_pass(self, mock_get):
-        """Test the get related alerts action with invalid alert id.
-
-        Token is available in the state file.
-        Patch the get() to return the unauthorized response.
-        """
-        dataminrpulse_config.set_state_file(dmaToken=True)
-        self.test_json["parameters"] = [{"alert_id": "alert-id"}]
-
-        mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
-        mock_get.return_value.json.return_value = []
-
-        ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
-        ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val["status"], "success")
-        self.assertEqual(ret_val["result_data"][0]["message"], "Total related alerts: 0")
-
-        mock_get.assert_called_with(
-            f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_RELATED_ALERTS}",
-            headers=dataminrpulse_config.ACTION_HEADER,
-            timeout=consts.DATAMINRPULSE_REQUEST_TIMEOUT,
-            params={"id": "alert-id", "includeRoot": False},
+            params=None,
             verify=False,
         )

@@ -28,6 +28,7 @@ import encryption_helper
 import phantom.app as phantom
 import requests
 from bs4 import BeautifulSoup
+from phantom.utils import config as ph_config
 
 import dataminrpulse_consts as consts
 
@@ -49,6 +50,7 @@ class DataminrPulseUtils:
         self._dma_token = None
         self._refresh_token = None
         self._expiration_time = 0
+        self._api_version = self._connector.config.get("api_version", "v3")
 
         if connector:
             # Decrypt the state file
@@ -183,7 +185,6 @@ class DataminrPulseUtils:
             return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
         message = f"Error from server. {resp_json}"
-
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
     def _process_response(self, response, action_result):
@@ -227,7 +228,7 @@ class DataminrPulseUtils:
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
-    def _make_rest_call(self, endpoint, action_result, method="get", headers=None, params=None, **kwargs):
+    def _make_rest_call(self, url, action_result, method="get", headers=None, params=None, **kwargs):
         """Make an REST API call and passes the response to the process method.
 
         :param endpoint: The endpoint string to make the REST API request
@@ -241,9 +242,6 @@ class DataminrPulseUtils:
             request_func = getattr(requests, method)
         except AttributeError:
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"))
-
-        # Create a URL to connect to
-        url = f"{consts.DATAMINRPULSE_BASE_URL}{endpoint}"
 
         time_in_seconds_429 = 120
         time_in_seconds_500 = 15
@@ -299,12 +297,24 @@ class DataminrPulseUtils:
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
         data = {"client_id": self._connector.config["client_id"], "client_secret": self._connector.config["client_secret"]}
-        if refresh_token:
+        if refresh_token and self._api_version == "v3":
             data.update({"refresh_token": self._refresh_token, "grant_type": "refresh_token"})
         else:
+            headers.update({"X-Application-Name": "splunk_soar"})
             data.update({"grant_type": "api_key"})
 
-        ret_val, resp_json = self._make_rest_call(consts.DATAMINRPULSE_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers)
+        # Get the API version from the asset configuration and replace the {api_version} with the actual version
+        if self._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_ENDPOINT_TOKEN.format(api_version=2)
+        elif self._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_ENDPOINT_TOKEN.format(api_version="v1")
+
+        if self._api_version == "v3":
+            base_url = consts.DATAMINRPULSE_BASE_URL.format(api_version="gateway")
+        elif self._api_version == "v4":
+            base_url = consts.DATAMINRPULSE_BASE_URL.format(api_version="api")
+        url = f"{base_url}{endpoint}"
+        ret_val, resp_json = self._make_rest_call(url, action_result, data=data, method="post", headers=headers)
 
         if refresh_token:
             # If refresh token is expired, generate a new token
@@ -317,9 +327,11 @@ class DataminrPulseUtils:
                     "client_secret": self._connector.config["client_secret"],
                     "grant_type": "api_key",
                 }
-                ret_val, resp_json = self._make_rest_call(
-                    consts.DATAMINRPULSE_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers
-                )
+
+                endpoint_ref = consts.DATAMINRPULSE_ENDPOINT_TOKEN.format(api_version=2)
+                base_url_ref = consts.DATAMINRPULSE_BASE_URL.format(api_version="gateway")
+                url_ref = f"{base_url_ref}{endpoint_ref}"
+                ret_val, resp_json = self._make_rest_call(url_ref, action_result, data=data, method="post", headers=headers)
 
         if phantom.is_fail(ret_val):
             self._connector.state.pop(consts.DATAMINRPULSE_STATE_TOKEN, None)
@@ -327,7 +339,13 @@ class DataminrPulseUtils:
 
         try:
             self._dma_token = resp_json[consts.DATAMINRPULSE_STATE_DMA_TOKEN]
-            self._refresh_token = resp_json[consts.DATAMINRPULSE_STATE_REFRESH_TOKEN]
+            if self._api_version == "v3":
+                try:
+                    self._refresh_token = resp_json[consts.DATAMINRPULSE_STATE_REFRESH_TOKEN]
+                except KeyError:
+                    return action_result.set_status(
+                        phantom.APP_ERROR, f"Unable to retrieve refresh token for v3 API. {consts.DATAMINR_V3_V4_API_ERROR_MSG}"
+                    )
             self._expiration_time = resp_json[consts.DATAMINRPULSE_STATE_EXPIRE]
         except KeyError:
             self._connector.debug_print("Unable to find the DMA Token (Authentication Token) from the returned response")
@@ -369,51 +387,81 @@ class DataminrPulseUtils:
             headers = {}
 
         if self._dma_token:
-            headers.update({"Authorization": f"Dmauth {self._dma_token}"})
+            if self._api_version == "v4":
+                headers.update({"Authorization": f"Bearer {self._dma_token}", "X-Application-Name": "splunk_soar"})
+            else:
+                headers.update({"Authorization": f"Dmauth {self._dma_token}"})
 
-        ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, headers=headers, params=params, **kwargs)
+        if self._api_version == "v3":
+            base_url = consts.DATAMINRPULSE_BASE_URL.format(api_version="gateway")
+        elif self._api_version == "v4":
+            base_url = consts.DATAMINRPULSE_BASE_URL.format(api_version="api")
+        url = f"{base_url}{endpoint}"
+
+        ret_val, resp_json = self._make_rest_call(url, action_result, method, headers=headers, params=params, **kwargs)
 
         # If token is expired, generate a new token
         msg = action_result.get_message()
 
-        if msg and ("Invalid refresh token" in msg or "Invalid token" in msg):
+        if msg and (
+            "Invalid refresh token" in msg
+            or "Invalid token" in msg
+            or "Token has expired" in msg
+            or "Token has been revoked" in msg
+            or "Access token was not provided" in msg
+        ):
             ret_val = self._generate_token(action_result, self._use_refresh_token())
             if phantom.is_fail(ret_val):
                 return RetVal(action_result.get_status())
 
-            headers.update({"Authorization": f"Dmauth {self._dma_token}"})
+            if self._api_version == "v4":
+                headers.update({"Authorization": f"Bearer {self._dma_token}", "X-Application-Name": "splunk_soar"})
+            else:
+                headers.update({"Authorization": f"Dmauth {self._dma_token}"})
 
-            ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, headers=headers, params=params, **kwargs)
+            ret_val, resp_json = self._make_rest_call(url, action_result, method, headers=headers, params=params, **kwargs)
         if phantom.is_fail(ret_val):
             return RetVal(action_result.get_status())
 
         return RetVal(phantom.APP_SUCCESS, resp_json)
 
-    def _get_list_id(self, action_result):
+    def _get_list_id(self, action_result, all_lists=False):
         """Get the list ids of respective list names"""
         list_names = self._connector.config.get("list_names", None)
         valid_list = []
 
-        if list_names:
+        if self._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS_V4
+        elif self._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_LISTS
+
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, action_result)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        if self._api_version == "v4":
+            resp_data = response.get("lists", {})
+        elif self._api_version == "v3":
+            resp_data = response.get("watchlists", {})
+
+        if list_names and not all_lists:
+            # list_name may be present if a poll is configured, but if all_lists is True,
+            # ignore list_name and return all list IDs
             list_names = list_names.split(",")
-
-            ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_LISTS, action_result)
-            if phantom.is_fail(ret_val):
-                return action_result.get_status()
-
-            watchlists = response.get("watchlists", {})
-
             for list_name in list_names:
-                for _, watchlist_type in watchlists.items():
+                for _, watchlist_type in resp_data.items():
                     for list_dict in watchlist_type:
                         if list_name == list_dict["name"]:
                             valid_list.append(str(list_dict["id"]))
+        else:
+            # If list_names is None, empty, or all_lists is True, add all IDs from resp_data
+            for _, watchlist_type in resp_data.items():
+                for list_dict in watchlist_type:
+                    valid_list.append(str(list_dict["id"]))
 
-            list_id = ",".join(valid_list)
-            if list_id:
-                return list_id
-
-        return None
+        list_id = ",".join(valid_list)
+        if list_id:
+            return list_id
 
     def _process_alert_data(self, action_result, alert):
         """
@@ -424,9 +472,19 @@ class DataminrPulseUtils:
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS with status message
         """
         container = {}
-        container["name"] = alert.get("caption") or alert["alertId"]
-        container["severity"] = alert.get("alertType", {}).get("name", "Alert")
-        container["source_data_identifier"] = alert.get("parentAlertId") or alert["alertId"]
+        regen_ai = False
+        if self._api_version == "v4":
+            if len(alert.get("intelAgents", [])) >= 1 or alert.get("liveBrief"):
+                regen_ai = True
+                container["name"] = "✨ " + alert.get("headline")
+            else:
+                container["name"] = alert.get("headline") or alert["alertId"]
+            container["severity"] = alert.get("alertType", {}).get("name", "Alert")
+            container["source_data_identifier"] = alert.get("linkedAlerts", [{}])[0].get("parentAlertId") or alert.get("alertId")
+        elif self._api_version == "v3":
+            container["name"] = alert.get("caption") or alert["alertId"]
+            container["severity"] = alert.get("alertType", {}).get("name", "Alert")
+            container["source_data_identifier"] = alert.get("parentAlertId") or alert["alertId"]
 
         ret_val, message, container_id = self._connector.save_container(container)
 
@@ -435,6 +493,11 @@ class DataminrPulseUtils:
 
         if consts.DATAMINRPULSE_DUPLICATE_CONTAINER_FOUND_MSG in message.lower():
             self._connector.debug_print("Duplicate container found")
+            if regen_ai:
+                self._connector.debug_print("Updating existing artifacts with latest regen AI information")
+                artifacts = self._get_artifacts(container_id)
+                for artifact in artifacts:
+                    self._update_artifact(artifact, intel_agents=alert.get("intelAgents"), live_brief=alert.get("liveBrief"))
 
         self._connector.debug_print("Creating alert artifacts")
         alert_artifacts = self._create_alert_artifacts(container_id, alert)
@@ -444,6 +507,37 @@ class DataminrPulseUtils:
             return action_result.set_status(phantom.APP_ERROR, message)
 
         return phantom.APP_SUCCESS
+
+    def _get_artifacts(self, container_id):
+        """
+        Get artifacts for a container.
+
+        :param container_id: container ID
+        :return: artifacts list
+        """
+        response = requests.get(
+            f"{self._connector.get_phantom_base_url()}/rest/container/{container_id}/artifacts",
+            verify=ph_config.platform_strict_tls,
+        )
+        return response.json().get("data", [])
+
+    def _update_artifact(self, artifact, intel_agents=None, live_brief=None):
+        """
+        Update artifact.
+
+        :param artifact: artifact to update
+        """
+        artifact_id = artifact.get("id")
+        if intel_agents:
+            artifact["cef"]["intelAgents"] = intel_agents
+        if live_brief:
+            artifact["cef"]["liveBrief"] = live_brief
+        response = requests.post(
+            f"{self._connector.get_phantom_base_url()}/rest/artifact/{artifact_id}",
+            verify=ph_config.platform_strict_tls,
+            json=artifact,
+        )
+        return response.json()
 
     def _create_alert_artifacts(self, container_id, alert, artifact_id=None):
         """
@@ -479,6 +573,7 @@ class DataminrPulseUtils:
 
         alert_artifact["source_data_identifier"] = artifact_id
         alert_artifact["data"] = alert.get("metadata", {})
+
         alert_artifact["cef"] = self._add_cef(alert)
 
         if alert_artifact["cef"].get("eventTime"):
@@ -518,31 +613,19 @@ class DataminrPulseUtils:
         return parameter
 
     def _add_cef(self, alert):
-        """Add cef data to alert artifact."""
+        """Add cef data to alert artifact preserving original structure."""
         cef = {}
+
         for key, value in alert.items():
-            cef[key] = {}
+            self._connector.debug_print(f"Adding CEF data to alert artifact for key: {key}")
             try:
-                if isinstance(value, list):
-                    self._add_list_value_to_cef(cef, key, value)
-
-                elif isinstance(value, dict):
-                    if key == "subCaption":
-                        cef.update(value)
-                        cef.pop(key, {})
-                    elif key == "metadata":
-                        cef.pop(key, {})
-
-                    else:
-                        cef[key] = value
-
-                else:
-                    if key == "headerColor":
-                        cef.pop(key, {})
-                    else:
-                        cef[key] = value
-
+                # Include all key-value pairs as they are without modification
+                if key == "metadata":
+                    self._connector.debug_print(f"upating value form dict to list of dict: {key}")
+                    value = [value]
+                cef[key] = value
             except Exception:
+                self._connector.debug_print(f"Exception occurred for {key} while adding CEF data to alert artifact")
                 cef[key] = value
 
         return cef
@@ -587,14 +670,26 @@ class DataminrPulseUtils:
         file_data = file_data.get("metadata", {}).get("cyber", {}).get(cyber_key, [])
         for data in file_data:
             if data and isinstance(data, dict):
-                cyber_values.append(data)
+                # Handle key mapping for addresses (ip -> sourceAdress and name -> requestURL)
+                if cyber_key == "addresses" and "ip" in data:
+                    updated_data = data.copy()
+                    updated_data["sourceAddress"] = updated_data.pop("ip")
+                    cyber_values.append(updated_data)
+                elif cyber_key == "URL" and "name" in data:
+                    updated_data = data.copy()
+                    updated_data["requestURL"] = updated_data.pop("name")
+                    cyber_values.append(updated_data)
+                else:
+                    cyber_values.append(data)
             elif data and isinstance(data, str):
-                if cyber_key == "URLs":
+                if cyber_key == "URLs" or cyber_key == "URL":
                     cyber_values.append({"requestURL": data})
                 elif cyber_key == "hashes":
                     cyber_values.append({"fileHash": data})
                 elif cyber_key == "asns":
                     cyber_values.append({"asn": data})
+                elif cyber_key == "addresses":
+                    cyber_values.append({"SourceAddress": data})
                 else:
                     cyber_values.append({cyber_key: data})
 

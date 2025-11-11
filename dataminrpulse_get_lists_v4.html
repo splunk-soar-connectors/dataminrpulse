@@ -10,7 +10,7 @@
 {% block custom_tools %}{% endblock %}
 {% block widget_content %}
   <!-- Main Start Block -->
-  <!-- File: dataminrpulse_get_related_alerts.html
+  <!-- File: dataminrpulse_get_lists.html
 Copyright (c) 2023-2025 Dataminr
 
 This unpublished material is proprietary to Dataminr.
@@ -104,40 +104,29 @@ and limitations under the License. -->
       {% if not result.data %}
         <h4 class="nm-h4-style">No data found</h4>
       {% else %}
-        <h3 class="nm-h4-style">Alerts Info</h3>
-        <table class="nm-table-horizontal">
+        <h3 class="nm-h4-style">Watchlist Info</h3>
+        <table class="nm-table-horizontal" width="100%">
           <thead>
-            <th>Alert ID</th>
-            <th>Parent Alert ID</th>
-            <th>Caption</th>
-            <th>Alert Type</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Sub Type</th>
           </thead>
-          {% for alert in result.data %}
+          {% for list in result.data %}
             <tr>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['dataminrpulse alert id'], 'value': '{{ alert.alertId }}' }], 0, {{ container.id }}, null, false);">
-                  {{ alert.alertId }}
+                   onclick="context_menu(this, [{'contains': ['dataminrpulse list id'], 'value': '{{ list.id }}' }], 0, {{ container.id }}, null, false);">
+                  {{ list.id }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                 </a>
               </td>
-              <td>
-                {% if not alert.parentAlertId %}
-                  {{ alert.parentAlertId }}
-                {% else %}
-                  <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['dataminrpulse alert id'], 'value': '{{ alert.parentAlertId }}' }], 0, {{ container.id }}, null, false);">
-                    {{ alert.parentAlertId }}
-                    &nbsp;
-                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                  </a>
-                {% endif %}
-              </td>
-              <td>{{ alert.caption }}</td>
-              <td>{{ alert.alertType.name }}</td>
-            {% endfor %}
-          </tr>
+              <td>{{ list.name }}</td>
+              <td>{{ list.type }}</td>
+              <td>{{ list.subType }}</td>
+            </tr>
+          {% endfor %}
         </table>
       {% endif %}
     {% endfor %}
