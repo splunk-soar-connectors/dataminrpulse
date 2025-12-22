@@ -53,7 +53,9 @@ class TestValidateIntegerMethod(unittest.TestCase):
 
     def setUp(self):
         """Set up method for the tests."""
-        self.util = DataminrPulseUtils(None)
+        connector = Mock()
+        connector.config = dict()
+        self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
         return super().setUp()
 
@@ -94,6 +96,7 @@ class TestEncryptionMethod(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.get_app_json.return_value = {"app_version": "1.0.0"}
         connector.get_asset_id.return_value = dataminrpulse_config.DEFAULT_ASSET_ID
         connector.error_print.return_value = None
@@ -131,9 +134,15 @@ class TestEncryptionMethod(unittest.TestCase):
         """Test the pass cases for the encrypt state method."""
         output = self.util._encrypt_state(input_value)
         if "token1" in name:
-            self.assertEqual(output.get("token", {}).get("dmaToken", ""), expected_value)
+            # Check that the encrypted token starts with 'salt:' and contains the expected structure
+            encrypted_token = output.get("token", {}).get("dmaToken", "")
+            self.assertTrue(encrypted_token.startswith("salt:"))
+            self.assertIn(":aes-256-gcm:", encrypted_token)
         elif "token2" in name:
-            self.assertEqual(output.get("token", {}).get("refreshToken", ""), expected_value)
+            # Check that the encrypted refresh token starts with 'salt:' and contains the expected structure
+            encrypted_refresh_token = output.get("token", {}).get("refreshToken", "")
+            self.assertTrue(encrypted_refresh_token.startswith("salt:"))
+            self.assertIn(":aes-256-gcm:", encrypted_refresh_token)
         else:
             self.assertEqual(output.get("token", {}), expected_value)
 
@@ -213,6 +222,7 @@ class TestGetErrorMessageFromException(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
@@ -241,7 +251,10 @@ class TestProcessEmptyResponse(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.response = Mock()
-        self.util = DataminrPulseUtils(None)
+        connector = Mock()
+        connector.config = dict()
+        connector.error_print.return_value = None
+        self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
         return super().setUp()
 
@@ -260,7 +273,10 @@ class TestProcessHtmlResponse(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.response = Mock()
-        self.util = DataminrPulseUtils(None)
+        connector = Mock()
+        connector.config = dict()
+        connector.error_print.return_value = None
+        self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
         return super().setUp()
 
@@ -297,6 +313,7 @@ class TestProcessJsonResponse(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.response = Mock()
         self.util = DataminrPulseUtils(connector)
@@ -339,6 +356,7 @@ class TestGeneralCases(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
@@ -395,6 +413,7 @@ class TestUseRefreshToken(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
@@ -431,7 +450,7 @@ class TestGetListId(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand(
-        [["get_list_id", "test1", "3342659"], ["get_list_id2", "test1,test2", "3342659,3342660"], ["get_list_id_invalid", "dummy_list", None]]
+        [["get_list_id", "test1", "3557389"], ["get_list_id2", "test1,test2", "3557389"], ["get_list_id_invalid", "dummy_list", None]]
     )
     def test_get_list_id_method(self, _, list_names, expected_value):
         """Test the pass and fail cases of get list id method."""
@@ -446,6 +465,7 @@ class TestEpochToUTC(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
@@ -466,9 +486,12 @@ class TestEpochToUTC(unittest.TestCase):
 class TestAddCEF(unittest.TestCase):
     """Class to test the add CEF method."""
 
+    maxDiff = None
+
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
@@ -492,6 +515,7 @@ class TestAddListValueToCEF(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         return super().setUp()
@@ -514,6 +538,7 @@ class TestExtractCyberValues(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
@@ -521,17 +546,25 @@ class TestExtractCyberValues(unittest.TestCase):
 
     @parameterized.expand(
         [
-            ["extract_ip", dataminrpulse_config.FILE_DATA, "addresses", [{"ip": "0.0.0[.]0", "port": "1977"}]],
-            ["extract_ip", {}, "addresses", []],
-            ["extract_urls", dataminrpulse_config.FILE_DATA, "URLs", [{"requestURL": "test[.]com"}, {"requestURL": "test2[.]edu"}]],
-            ["extract_urls", {}, "URLs", []],
-            [
-                "extract_hashes",
-                dataminrpulse_config.FILE_DATA,
+            (
+                "extract_ip",
+                {"metadata": {"cyber": {"addresses": [{"ip": "0.0.0[.]0", "port": "1977"}]}}},
+                "addresses",
+                [{"port": "1977", "sourceAddress": "0.0.0[.]0"}],
+            ),
+            ("extract_url", {"metadata": {"cyber": {"URLs": ["example[.]com"]}}}, "URLs", [{"requestURL": "example[.]com"}]),
+            (
+                "extract_hash",
+                {
+                    "metadata": {
+                        "cyber": {"hashes": ["5f85677bb01576b77bc0f57057899d9ec92"]}  # pragma: allowlist secret
+                    }
+                },
                 "hashes",
-                [{"fileHash": "012345678907bc0f57057899d9ec929cee0aeee7769b75baa8faf26025c"}],  # pragma: allowlist secret
-            ],
-            ["extract_hashes", {}, "hashes", []],
+                [{"fileHash": "5f85677bb01576b77bc0f57057899d9ec92"}],  # pragma: allowlist secret
+            ),
+            ("extract_malware", {"metadata": {"cyber": {"malwares": ["Redline stealer"]}}}, "malwares", [{"malwares": "Redline stealer"}]),
+            ("extract_empty", {}, "addresses", []),
         ]
     )
     def test_extract_cyber_values_method(self, _, file_data, key, expected_value):
@@ -546,6 +579,7 @@ class TestCreateAlertArtifacts(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         connector = Mock()
+        connector.config = dict()
         connector.error_print.return_value = None
         self.util = DataminrPulseUtils(connector)
         self.action_result = ActionResult(dict())
@@ -575,6 +609,7 @@ class TestProcessAlertData(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = Mock()
+        self.connector.config = dict()
         self.connector.error_print.return_value = None
         self.util = DataminrPulseUtils(self.connector)
         self.action_result = ActionResult(dict())

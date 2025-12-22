@@ -21,6 +21,8 @@
 # and limitations under the License.
 
 
+import urllib.parse as urlparse
+
 import phantom.app as phantom
 
 import dataminrpulse_consts as consts
@@ -35,6 +37,7 @@ class GetAlertsAction(BaseAction):
         list_id = self._param.get("list_id", None)
         use_asset_configured_lists = self._param.get("use_asset_configured_lists", False)
         query = self._param.get("query", None)
+        self._action_result.update_summary({"api_version_used": self._connector.util._api_version})
 
         # Accepts comma-seperated list only
         if list_id:
@@ -68,27 +71,53 @@ class GetAlertsAction(BaseAction):
             return self._action_result.get_status()
 
         # Prepare query parameters
-        params = {
-            "lists": list_id,
-            "query": query,
-            "from": from_value,
-            "to": to_value,
-            "num": num,
-            "application": "splunk_soar",
-            "application_version": f"{self._connector.get_product_version()}",
-            "integration_version": f"{self._connector.get_app_json().get('app_version')}",
-        }
+        params = {"lists": list_id, "query": query, "from": from_value, "to": to_value}
 
+        if self._connector.util._api_version == "v4":
+            endpoint = consts.DATAMINRPULSE_GET_ALERTS_V4
+            params.update(
+                {
+                    "pageSize": num,
+                }
+            )
+        elif self._connector.util._api_version == "v3":
+            endpoint = consts.DATAMINRPULSE_GET_ALERTS
+            params.update(
+                {
+                    "num": num,
+                    "application": "splunk_soar",
+                    "application_version": f"{self._connector.get_product_version()}",
+                    "integration_version": f"{self._connector.get_app_json().get('app_version')}",
+                }
+            )
         # Make rest call to fetch the alerts
-        ret_val, response = self._connector.util._make_rest_call_helper(consts.DATAMINRPULSE_GET_ALERTS, self._action_result, params=params)
+        ret_val, response = self._connector.util._make_rest_call_helper(endpoint, self._action_result, params=params)
 
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
+        total_alerts = 0
+        if self._connector.util._api_version == "v4":
+            data = response
+            if data.get("nextPage"):
+                parsed_url = urlparse.urlparse(data.get("nextPage"))
+                query_params = urlparse.parse_qs(parsed_url.query)
 
-        data = response.get("data", {})
+                if "from" in query_params:
+                    data.update({"nextPage": urlparse.unquote(query_params["from"][0])})
+
+            if data.get("previousPage"):
+                parsed_url = urlparse.urlparse(data.get("previousPage"))
+                query_params = urlparse.parse_qs(parsed_url.query)
+
+                if "to" in query_params:
+                    data.update({"previousPage": urlparse.unquote(query_params["to"][0])})
+
+        elif self._connector.util._api_version == "v3":
+            data = response.get("data", {})
+        total_alerts = len(data.get("alerts", []))
         self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({"total_alerts": len(data.get("alerts", []))})
+        self._action_result.update_summary({"total_alerts": total_alerts})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

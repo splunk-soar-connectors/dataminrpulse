@@ -114,7 +114,7 @@ class TestOnPollAction(unittest.TestCase):
 
         self.test_json.update({"user_session_token": dataminrpulse_config.get_session_id(self.connector)})
         dataminrpulse_config.ALERT_DATA.update({"alertId": str(uuid.uuid4())})
-        self.test_json.update({"query": dataminrpulse_config.ALERT_DATA.get("alertId"), "list_names": "3342659"})
+        self.test_json.update({"query": dataminrpulse_config.ALERT_DATA.get("alertId"), "list_names": "3557389"})
 
         mock_get.get(
             f"https://gateway.dataminr.com{consts.DATAMINRPULSE_GET_ALERTS}",
@@ -156,8 +156,6 @@ class TestOnPollAction(unittest.TestCase):
             params={
                 "lists": None,
                 "query": "query",
-                "from": None,
-                "to": None,
                 "num": 40,
                 "application": "splunk_soar",
                 "application_version": dataminrpulse_config.APPLICATION_VERSION,
