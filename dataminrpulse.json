@@ -7,18 +7,18 @@
     "logo": "logo_dataminrpulse.svg",
     "logo_dark": "logo_dataminrpulse_dark.svg",
     "product_name": "Dataminr Pulse",
-    "python_version": "3",
+    "python_version": "3, 3.13",
     "product_version_regex": ".*",
     "publisher": "Dataminr",
-    "license": "Copyright (c) 2023-2025 Dataminr",
-    "app_version": "2.0.0",
+    "license": "Copyright (c) 2023-2026 Dataminr",
+    "app_version": "2.0.1",
     "utctime_updated": "2025-12-22T12:53:33.142188Z",
     "package_name": "phantom_dataminrpulse",
     "main_module": "dataminrpulse_connector.py",
     "min_phantom_version": "6.4.0",
     "fips_compliant": false,
     "latest_tested_versions": [
-        "Oct 10, 2025, Dataminr Pulse, API v2 v3 v4"
+        "March 06, 2026, Dataminr Pulse, API v3 v4"
     ],
     "configuration": {
         "client_id": {

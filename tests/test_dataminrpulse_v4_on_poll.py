@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_on_poll_v4.py
 #
-# Copyright (c) 2023-2025 Dataminr
+# Copyright (c) 2023-2026 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and

@@ -1,6 +1,6 @@
 # File: test_dataminrpulse_test_connectivity.py
 #
-# Copyright (c) 2023-2025 Dataminr
+# Copyright (c) 2023-2026 Dataminr
 #
 # This unpublished material is proprietary to Dataminr.
 # All rights reserved. The methods and
