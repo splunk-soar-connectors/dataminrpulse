@@ -21,6 +21,8 @@
 # and limitations under the License.
 
 
+from urllib.parse import quote
+
 import phantom.app as phantom
 
 import dataminrpulse_consts as consts
@@ -40,7 +42,7 @@ class GetAlertDetailsAction(BaseAction):
 
         if alert_id:
             ret_val, response = self._connector.util._make_rest_call_helper(
-                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=alert_id), self._action_result
+                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=quote(str(alert_id), safe="")), self._action_result
             )
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
