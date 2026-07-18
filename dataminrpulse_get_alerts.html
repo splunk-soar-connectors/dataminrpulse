@@ -125,7 +125,7 @@ and limitations under the License. -->
                 <tr>
                   <td>
                     <a href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['dataminrpulse alert id'], 'value': '{{ alert.alertId }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['dataminrpulse alert id'], 'value': '{{ alert.alertId|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ alert.alertId }}
                       &nbsp;
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -138,7 +138,7 @@ and limitations under the License. -->
                       {% for watchlist in alert.watchlistsMatchedByType %}
                         <tr>
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['dataminrpulse list id'], 'value': '{{ watchlist.id }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['dataminrpulse list id'], 'value': '{{ watchlist.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             {{ watchlist.id }}
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -174,7 +174,7 @@ and limitations under the License. -->
             <tr>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['dataminrpulse from cursor value'], 'value': '{{ result.from }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['dataminrpulse from cursor value'], 'value': '{{ result.from|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.from }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -182,7 +182,7 @@ and limitations under the License. -->
               </td>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['dataminrpulse to cursor value'], 'value': '{{ result.to }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['dataminrpulse to cursor value'], 'value': '{{ result.to|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.to }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
