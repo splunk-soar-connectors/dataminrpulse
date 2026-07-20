@@ -82,6 +82,23 @@ class TestGetAlertDetailsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["data"][0]["data"]["alerts"][0]["alertId"], "1986897266-1757488294202-3")
 
     @patch("dataminrpulse_utils.requests.get")
+    def test_get_alert_details_encodes_alert_id_as_path_segment(self, mock_get):
+        """Test that an alert ID cannot alter the Dataminr request path."""
+        dataminrpulse_config.set_state_file(dmaToken=True)
+
+        self.test_json["config"]["api_version"] = "v4"
+        self.test_json["parameters"] = [{"alert_id": "../lists?"}]
+
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.headers = dataminrpulse_config.DEFAULT_HEADERS
+        mock_get.return_value.json.return_value = {"alertId": "../lists?"}
+
+        self.connector._handle_action(json.dumps(self.test_json), None)
+
+        request_url = mock_get.call_args.args[0]
+        self.assertTrue(request_url.endswith("/pulse/v1/alerts/..%2Flists%3F"))
+
+    @patch("dataminrpulse_utils.requests.get")
     def test_get_alert_details_with_artifact_id_pass(self, mock_get):
         """
         Test the valid case for the get alert details action with artifact_id.

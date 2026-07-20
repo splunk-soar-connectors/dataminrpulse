@@ -1905,7 +1905,7 @@ and limitations under the License. -->
                                     <td>
                                       <a href="#"
                                          class="cve-link entity-clickable"
-                                         onclick="openEntityByName('{{ actor.name }}', event)">{{ actor.name }}</a>
+                                         onclick="openEntityByName('{{ actor.name|escapejs }}', event)">{{ actor.name }}</a>
                                     </td>
                                     <td>
                                       {% if actor.countryOfOrigin %}
@@ -1943,7 +1943,7 @@ and limitations under the License. -->
                                   <tr>
                                     <td>
                                       <span class="malware-name entity-clickable"
-                                            onclick="openEntityByName('{{ malware.name }}', event)">{{ malware.name }}</span>
+                                            onclick="openEntityByName('{{ malware.name|escapejs }}', event)">{{ malware.name }}</span>
                                     </td>
                                     <td>
                                       {% for os in malware.affectedOperatingSystems %}
@@ -2012,7 +2012,7 @@ and limitations under the License. -->
                                     <td>
                                       <a href="#"
                                          class="cve-link entity-clickable"
-                                         onclick="openEntityByName('{{ vuln.id }}', event)">{{ vuln.id }}</a>
+                                         onclick="openEntityByName('{{ vuln.id|escapejs }}', event)">{{ vuln.id }}</a>
                                     </td>
                                     <td data-sort-value="{{ vuln.cvss|default:0 }}">
                                       {% if vuln.cvss and vuln.cvss != 0 %}
@@ -2469,10 +2469,16 @@ function openEntityByName(entityName, event) {
 function showEntityNotFoundMessage(entityName) {
     const notification = document.createElement('div');
     notification.className = 'entity-not-found-notification';
-    notification.innerHTML = `
-        <div class="notification-title">Entity Details Not Available</div>
-        <div class="notification-message">"${entityName}" is not in the discovered entities list.</div>
-    `;
+
+    const title = document.createElement('div');
+    title.className = 'notification-title';
+    title.textContent = 'Entity Details Not Available';
+    notification.appendChild(title);
+
+    const message = document.createElement('div');
+    message.className = 'notification-message';
+    message.textContent = `"${entityName}" is not in the discovered entities list.`;
+    notification.appendChild(message);
 
     document.body.appendChild(notification);
 
