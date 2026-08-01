@@ -98,6 +98,19 @@ class TestGetAlertDetailsAction(unittest.TestCase):
         request_url = mock_get.call_args.args[0]
         self.assertTrue(request_url.endswith("/pulse/v1/alerts/..%2Flists%3F"))
 
+    def test_get_alert_details_rejects_exact_dot_segments(self):
+        """Test that path-significant dot segments cannot become alert resources."""
+        for alert_id in (".", ".."):
+            with self.subTest(alert_id=alert_id), self.assertRaisesRegex(ValueError, "valid Dataminr Pulse alert ID"):
+                GetAlertDetailsAction._build_alert_endpoint(alert_id)
+
+    def test_get_alert_details_keeps_encoded_dot_segments_inert(self):
+        """Test that encoded and double-encoded dots remain one opaque segment."""
+        for alert_id, expected_suffix in (("%2e%2e", "%252e%252e"), ("%252e%252e", "%25252e%25252e")):
+            with self.subTest(alert_id=alert_id):
+                endpoint = GetAlertDetailsAction._build_alert_endpoint(alert_id)
+                self.assertEqual(endpoint, f"/pulse/v1/alerts/{expected_suffix}")
+
     @patch("dataminrpulse_utils.requests.get")
     def test_get_alert_details_with_artifact_id_pass(self, mock_get):
         """

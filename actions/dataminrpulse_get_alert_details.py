@@ -21,7 +21,7 @@
 # and limitations under the License.
 
 
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 import phantom.app as phantom
 
@@ -32,6 +32,21 @@ from actions import BaseAction
 class GetAlertDetailsAction(BaseAction):
     """Class to handle get alert details action."""
 
+    @staticmethod
+    def _build_alert_endpoint(alert_id):
+        """Build one canonical alert-resource endpoint from an opaque alert ID."""
+        if not isinstance(alert_id, str) or not alert_id or alert_id in {".", ".."}:
+            raise ValueError("Please provide a valid Dataminr Pulse alert ID")
+
+        encoded_alert_id = quote(alert_id, safe="")
+        endpoint = consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=encoded_alert_id)
+        parsed_endpoint = urlsplit(endpoint)
+        path_segments = parsed_endpoint.path.split("/")
+        if parsed_endpoint.query or parsed_endpoint.fragment or path_segments[:4] != ["", "pulse", "v1", "alerts"] or len(path_segments) != 5:
+            raise ValueError("Please provide a valid Dataminr Pulse alert ID")
+
+        return endpoint
+
     def execute(self):
         """Execute the get alert details action."""
         alert_id = self._param.get("alert_id")
@@ -41,9 +56,12 @@ class GetAlertDetailsAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, "Please use the latest v4 API version to perform this action")
 
         if alert_id:
-            ret_val, response = self._connector.util._make_rest_call_helper(
-                consts.DATAMINRPULSE_GET_ALERT_V4.format(alert_id=quote(str(alert_id), safe="")), self._action_result
-            )
+            try:
+                endpoint = self._build_alert_endpoint(alert_id)
+            except ValueError as error:
+                return self._action_result.set_status(phantom.APP_ERROR, str(error))
+
+            ret_val, response = self._connector.util._make_rest_call_helper(endpoint, self._action_result)
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
 
